@@ -1,0 +1,23 @@
+{
+  "name": "eip-server",
+  "version": "0.1.0",
+  "description": "SportsFun EIP - Server Application",
+  "main": "eip-server.js",
+  "scripts": {
+      "start": "nodemon eip-server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongodb": "^2.2.31"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xobtah/EIP-Server.git"
+  },
+  "author": "Sylvain Garant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xobtah/EIP-Server/issues"
+  },
+  "homepage": "https://github.com/Xobtah/EIP-Server#readme"
+}

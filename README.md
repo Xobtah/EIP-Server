@@ -1,1 +1,1 @@
-# KipFit
+# EIP-Server
