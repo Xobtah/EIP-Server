@@ -35,6 +35,13 @@ let Server = function (port, mongoURL) {
         Close: function () {
             if (db)
                 db.close();
+        },
+
+        Route: function (method, route, callback) {
+            if (!app[method])
+                throw new Error('Unknown method: ' + method);
+
+            app[method](route, callback);
         }
     });
 };
