@@ -1,0 +1,117 @@
+{
+	"info": {
+		"name": "EIP-SportsFun",
+		"_postman_id": "3b977078-7909-988e-30a1-7f5b1b57401a",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Getting users list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Response is ok', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "149.202.41.22:8080/api/users",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting posts list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Response is ok', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "149.202.41.22:8080/api/posts",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting activities list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Response is ok', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "149.202.41.22:8080/api/activities",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"activities"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
