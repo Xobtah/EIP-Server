@@ -19,35 +19,41 @@ Server.Init((DataBase) => {
     });
 
     Server.Route('get', '/api/users', (req, res) => {
-	DataBase.Users.Find().toArray((err, result) => {
-	    res.header("Access-Control-Allow-Origin", "*");
-	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	    if (err)
-		res.sendStatus(500);
-	    else
-		res.send(result);
-	});
+        DataBase.Users.Find().toArray((err, result) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    	    if (err)
+    		      res.sendStatus(500);
+    	    else
+    		      res.send(result);
+    	});
     });
 
     Server.Route('get', '/api/posts', (req, res) => {
-	DataBase.Posts.Find().toArray((err, result) => {
-	    res.header("Access-Control-Allow-Origin", "*");
-	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	    if (err)
-		res.sendStatus(500);
-	    else
-		res.send(result);
-	});
+    	DataBase.Posts.Find().toArray((err, result) => {
+    	    res.header("Access-Control-Allow-Origin", "*");
+    	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    	    if (err)
+    		      res.sendStatus(500);
+    	    else
+    		      res.send(result);
+    	});
     });
 
     Server.Route('get', '/api/activities', (req, res) => {
-	DataBase.Activities.Find().toArray((err, result) => {
-	    res.header("Access-Control-Allow-Origin", "*");
-	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	    if (err)
-		res.sendStatus(500);
-	    else
-		res.send(result);
-	});
+    	DataBase.Activities.Find().toArray((err, result) => {
+    	    res.header("Access-Control-Allow-Origin", "*");
+    	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    	    if (err)
+    		      res.sendStatus(500);
+    	    else
+    		      res.send(result);
+    	});
+    });
+
+    Server.Route('post', '/api/posts', (req, res) => {
+        if (req.body)
+        	DataBase.Posts.Insert(req.body);
+        res.sendStatus(200);
     });
 });

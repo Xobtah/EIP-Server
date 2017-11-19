@@ -4,10 +4,12 @@
   "description": "SportsFun EIP - Server Application",
   "main": "eip-server.js",
   "scripts": {
-      "start": "nodemon eip-server.js"
+    "start": "nodemon eip-server.js"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "express-fileupload": "^0.3.0",
     "mongodb": "^2.2.31"
   },
   "repository": {

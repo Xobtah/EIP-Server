@@ -6,6 +6,11 @@
 let express = require('express');
 let MongoClient = require('mongodb').MongoClient;
 let app = express();
+let bodyParser = require('body-parser');
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(require('express-fileupload')());
 
 let DataBase = require('./DataBase/DataBase');
 
