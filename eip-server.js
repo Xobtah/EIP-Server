@@ -31,8 +31,19 @@ Server.Init((DataBase) => {
 
     function postInCollection(collection, req, res) {
         if (req.body)
-        	DataBase[collection].Insert(req.body);
-        res.sendStatus(200);
+        	DataBase[collection].Insert(req.body).then((commandResult) => {
+                if (commandResult.result.ok)
+                    res.send(commandResult.ops);
+                else
+                    res.sendStatus(500);
+            });
+    }
+
+    function deleteInCollectionById(collection, req, res) {
+        if (req.body)
+            DataBase[collection].Remove(req.body).then((commandResult) => {
+                res.send(commandResult.result);
+            });
     }
 
     Server.Route('get', '/api/users', (req, res) => findInCollection('Users', req, res));
@@ -41,4 +52,9 @@ Server.Init((DataBase) => {
 
     Server.Route('post', '/api/posts', (req, res) => postInCollection('Posts', req, res));
     Server.Route('post', '/api/users', (req, res) => postInCollection('Users', req, res));
+    Server.Route('post', '/api/activities', (req, res) => postInCollection('Activities', req, res));
+
+    Server.Route('delete', '/api/users', (req, res) => deleteInCollectionById('Users', req, res));
+    Server.Route('delete', '/api/posts', (req, res) => deleteInCollectionById('Posts', req, res));
+    Server.Route('delete', '/api/activities', (req, res) => deleteInCollectionById('Activities', req, res));
 });
