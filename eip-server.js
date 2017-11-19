@@ -15,11 +15,11 @@ Server.Init((DataBase) => {
     });
 
     Server.Route('post', '/hardware', (req, res) => {
-	res.sendStatus(200);
+	       res.sendStatus(200);
     });
 
-    Server.Route('get', '/api/users', (req, res) => {
-        DataBase.Users.Find().toArray((err, result) => {
+    function findInCollection(collection, req, res) {
+        DataBase[collection].Find().toArray((err, result) => {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "X-Requested-With");
     	    if (err)
@@ -27,33 +27,18 @@ Server.Init((DataBase) => {
     	    else
     		      res.send(result);
     	});
-    });
+    }
 
-    Server.Route('get', '/api/posts', (req, res) => {
-    	DataBase.Posts.Find().toArray((err, result) => {
-    	    res.header("Access-Control-Allow-Origin", "*");
-    	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    	    if (err)
-    		      res.sendStatus(500);
-    	    else
-    		      res.send(result);
-    	});
-    });
-
-    Server.Route('get', '/api/activities', (req, res) => {
-    	DataBase.Activities.Find().toArray((err, result) => {
-    	    res.header("Access-Control-Allow-Origin", "*");
-    	    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    	    if (err)
-    		      res.sendStatus(500);
-    	    else
-    		      res.send(result);
-    	});
-    });
-
-    Server.Route('post', '/api/posts', (req, res) => {
+    function postInCollection(collection, req, res) {
         if (req.body)
-        	DataBase.Posts.Insert(req.body);
+        	DataBase[collection].Insert(req.body);
         res.sendStatus(200);
-    });
+    }
+
+    Server.Route('get', '/api/users', (req, res) => findInCollection('Users', req, res));
+    Server.Route('get', '/api/posts', (req, res) => findInCollection('Posts', req, res));
+    Server.Route('get', '/api/activities', (req, res) => findInCollection('Activities', req, res));
+
+    Server.Route('post', '/api/posts', (req, res) => postInCollection('Posts', req, res));
+    Server.Route('post', '/api/users', (req, res) => postInCollection('Users', req, res));
 });
