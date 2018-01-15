@@ -5,8 +5,9 @@
 
 let PrototypeRoutes = require('./PrototypeRoutes');
 let UserAuthRoutes = require('./UserAuthRoutes');
+let UnidentifiedRoutes = require('./UnidentifiedRoutes');
 
-let Routes = [
+let routes = [
     {
         method: 'get',
         route: '/',
@@ -22,5 +23,10 @@ let Routes = [
 ];
 
 module.exports = function (Server) {
-    return (Routes.concat(new PrototypeRoutes(Server)).concat(new UserAuthRoutes(Server)));
+    let unidentifiedRoutes = new UnidentifiedRoutes(Server);
+    let identifiedRoutes = routes.concat(new PrototypeRoutes(Server)).concat(new UserAuthRoutes(Server));
+
+    unidentifiedRoutes.forEach((route) => route.auth = false);
+    identifiedRoutes.forEach((route) => route.auth = true);
+    return (identifiedRoutes.concat(unidentifiedRoutes));
 };
