@@ -28,8 +28,8 @@ module.exports = function (Server) {
             method: 'post',
             route: '/api/user/edit/password',
             callback (req, res) {
-                checkFields(req.body, [ 'oldPassword', 'newPassword', 'token' ], (fields) => {
-                    // Finding user by username
+                checkFields(req.body, [ 'oldPassword', 'newPassword' ], (fields) => {
+                    // Finding user by id
                     Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
                         if (err || !result)
                             return (res.status(500).send('User not found'));
@@ -58,11 +58,24 @@ module.exports = function (Server) {
             method: 'post',
             route: '/api/user/edit/email',
             callback (req, res) {
-                checkFields(req.body, [ 'oldEmail', 'newEmail', 'password', 'token' ], (fields) => {
-                    Server.DataBase.Users.UpdateOne({ _id: new Server.DataBase.ObjectID(req.token._id), password: fields.password, email: fields.oldEmail }, { $set: { email: fields.newEmail } }, (err, result) => {
-                        if (err || !result.result.nModified)
-                            return (res.status(500).send(err || 'User not found'));
-                        res.status(200).send('Email updated');
+                checkFields(req.body, [ 'email', 'password' ], (fields) => {
+                    // Finding user by id
+                    Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
+                        if (err || !result)
+                            return (res.status(500).send('User not found'));
+                        // Comparing password with hash
+                        bcrypt.compare(fields.password, result.password, (err, sameHash) => {
+                            if (err)
+                                return (res.status(500).send('Failed to compare hashes'));
+                            if (!sameHash)
+                                return (res.status(401).send('Bad password'));
+                            else
+                                Server.DataBase.Users.UpdateOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, { $set: { email: fields.email } }, (err, result) => {
+                                    if (err || !result.result.nModified)
+                                        return (res.status(500).send('Failed to update email'));
+                                    res.status(200).send('Email updated');
+                                });
+                        });
                     });
                 }, (key) => res.status(401).send('Missing key \'' + key + '\' in body'));
             }
@@ -71,6 +84,31 @@ module.exports = function (Server) {
             route: '/api/user/lostpassword',
             callback (req, res) {
                 res.sendStatus(200);
+            }
+        }, {
+            method: 'delete',
+            route: '/api/user/edit/delete',
+            callback (req, res) {
+                checkFields(req.body, [ 'password' ], (fields) => {
+                    // Getting user by id
+                    Server.DataBase.Users.FindOne({ _id: req.token._id }, (err, result) => {
+                        if (err || !result)
+                            return (res.status(500).send('User not found'));
+                        // Comparing password with hash
+                        bcrypt.compare(fields.password, result.password, (err, sameHash) => {
+                            if (err)
+                                return (res.status(500).send('Failed to compare hashes'));
+                            if (!sameHash)
+                                return (res.status(401).send('Bad password'));
+                            else
+                                Server.DataBase.Users.Remove({ _id: result._id }, (err, obj) => {
+                                    if (err || !obj.result.n)
+                                        return (res.status(500).send('Failed to delete user'));
+                                    res.status(200).send('User has been deleted');
+                                });
+                        });
+                    });
+                }, (key) => res.status(401).send('Missing key \'' + key + '\' in body'));
             }
         }
     ]);
