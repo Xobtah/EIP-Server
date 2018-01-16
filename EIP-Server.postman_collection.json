@@ -1,0 +1,615 @@
+{
+	"info": {
+		"name": "EIP-Server",
+		"_postman_id": "7755568a-18e8-e52e-be65-0a06db916e90",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register new user w/out all info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "feae3fa9-c4e8-4fd1-850f-a571917382a2",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 401', function () {",
+							"    //pm.response.to.have.status(401);",
+							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('Missing key \\'email\\' in body');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userName",
+							"value": "Notch",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "Markus",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "Person",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "markus.person@mojang.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "birthDate",
+							"value": "dunno",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "ididnotcreateminecraft",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/register",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "848e65be-d451-4fd1-a6ac-fc5a83bbcbf5",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('User Markus Person inserted');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userName",
+							"value": "Notch",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "Markus",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "Person",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "markus.person@mojang.com",
+							"type": "text"
+						},
+						{
+							"key": "birthDate",
+							"value": "dunno",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ididnotcreateminecraft",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/register",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "08452318-1845-4ca8-8c0e-d02bc96ebe08",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"postman.setGlobalVariable('token', jsonData.token);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Successfully logged in');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userName",
+							"value": "Notch",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ididnotcreateminecraft",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/login",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register same user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2b74cbb-664e-49ac-b2be-ad2f62626079",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 401', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('A user with username \\'Notch\\' already exists');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userName",
+							"value": "Notch",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "Markus",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "Person",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "markus.person@mojang.com",
+							"type": "text"
+						},
+						{
+							"key": "birthDate",
+							"value": "dunno",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ididnotcreateminecraft",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/register",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Changing user's password w/ correct password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "92c2a97a-14a5-4b8e-af48-f2699be339fe",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('Password updated');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "oldPassword",
+							"value": "ididnotcreateminecraft",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "newPassword",
+							"value": "icreatedminecraft",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/edit/password",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"edit",
+						"password"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Changing user's password w/out correct password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "41cf1b0a-e686-4742-98ec-17acfb72fb50",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 401', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('Bad password');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "oldPassword",
+							"value": "notthecorrectpassword",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "newPassword",
+							"value": "icreatedminecraft",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/edit/password",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"edit",
+						"password"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user w/ wrong password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b9897ee-e548-44cd-91b9-e6a926ef3329",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2516fcd0-3b79-4344-bad2-b5534f928d59",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 401', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('Bad password');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "password",
+							"value": "ididnotcreateminecraft",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/edit/delete",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"edit",
+						"delete"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b9897ee-e548-44cd-91b9-e6a926ef3329",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dd0229bc-cddf-4b69-9151-0d08d1966d8c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(responseBody).to.be.equal('User has been deleted');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "password",
+							"value": "icreatedminecraft",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/edit/delete",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"edit",
+						"delete"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3289820d-428b-45a9-8d28-c0e72a64e522",
+				"type": "text/javascript",
+				"exec": [
+					"pm.environment.set('token', null);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "19d80660-02ee-4b2e-aa5b-f7a32852ce71",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
