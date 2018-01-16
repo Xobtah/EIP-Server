@@ -91,7 +91,7 @@ module.exports = function (Server) {
             callback (req, res) {
                 checkFields(req.body, [ 'password' ], (fields) => {
                     // Getting user by id
-                    Server.DataBase.Users.FindOne({ _id: req.token._id }, (err, result) => {
+                    Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
                         if (err || !result)
                             return (res.status(500).send('User not found'));
                         // Comparing password with hash
