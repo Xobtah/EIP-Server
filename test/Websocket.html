@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <script>
+            let socket = io();
+
+            socket.on('hi', () => console.log('Works!'));
+        </script>
+    </body>
+</html>

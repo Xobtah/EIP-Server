@@ -2,9 +2,9 @@
   "name": "eip-server",
   "version": "0.1.0",
   "description": "SportsFun EIP - Server Application",
-  "main": "eip-server.js",
+  "main": "server/eip-server.js",
   "scripts": {
-    "start": "nodemon eip-server.js"
+    "start": "nodemon server/eip-server.js"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
