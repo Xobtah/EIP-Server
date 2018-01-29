@@ -3,24 +3,7 @@
 ** @website: https://github.com/Xobtah
 */
 
-let bcrypt = require('bcrypt');
-let saltRounds = 10;
-
-let checkFields = function (body, fields, success, error) {
-    let object = {};
-    let operationSuccess = false;
-
-    operationSuccess = fields.every((key) => {
-        if (!body[key]) {
-            error(key);
-            return (false);
-        }
-        object[key] = body[key];
-        return (true);
-    });
-    if (operationSuccess)
-        success(object);
-};
+var Utils = require('./../../lib/Utils');
 
 module.exports = function (Server) {
     return ([
@@ -28,19 +11,19 @@ module.exports = function (Server) {
             method: 'post',
             route: '/api/user/edit/password',
             callback (req, res) {
-                checkFields(req.body, [ 'oldPassword', 'newPassword' ], (fields) => {
+                Utils.checkFields(req.body, [ 'oldPassword', 'newPassword' ], (fields) => {
                     // Finding user by id
                     Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
                         if (err || !result)
                             return (res.status(500).send('User not found'));
                         // Comparing password with hash
-                        bcrypt.compare(fields.oldPassword, result.password, (err, sameHash) => {
+                        Utils.bcrypt.compare(fields.oldPassword, result.password, (err, sameHash) => {
                             if (err)
                                 return (res.status(500).send('Failed to compare hashes'));
                             if (!sameHash)
                                 return (res.status(401).send('Bad password'));
                             else
-                                bcrypt.hash(fields.newPassword, saltRounds, (err, hash) => {
+                                Utils.bcrypt.hash(fields.newPassword, /*saltRounds*/Server.app.get('secret'), (err, hash) => {
                                     if (err)
                                         return (res.status(500).send('Failed to hash password'));
                                     // Updating password
@@ -58,13 +41,13 @@ module.exports = function (Server) {
             method: 'post',
             route: '/api/user/edit/email',
             callback (req, res) {
-                checkFields(req.body, [ 'email', 'password' ], (fields) => {
+                Utils.checkFields(req.body, [ 'email', 'password' ], (fields) => {
                     // Finding user by id
                     Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
                         if (err || !result)
                             return (res.status(500).send('User not found'));
                         // Comparing password with hash
-                        bcrypt.compare(fields.password, result.password, (err, sameHash) => {
+                        Utils.bcrypt.compare(fields.password, result.password, (err, sameHash) => {
                             if (err)
                                 return (res.status(500).send('Failed to compare hashes'));
                             if (!sameHash)
@@ -89,13 +72,13 @@ module.exports = function (Server) {
             method: 'delete',
             route: '/api/user/edit/delete',
             callback (req, res) {
-                checkFields(req.body, [ 'password' ], (fields) => {
+                Utils.checkFields(req.body, [ 'password' ], (fields) => {
                     // Getting user by id
                     Server.DataBase.Users.FindOne({ _id: new Server.DataBase.ObjectID(req.token._id) }, (err, result) => {
                         if (err || !result)
                             return (res.status(500).send('User not found'));
                         // Comparing password with hash
-                        bcrypt.compare(fields.password, result.password, (err, sameHash) => {
+                        Utils.bcrypt.compare(fields.password, result.password, (err, sameHash) => {
                             if (err)
                                 return (res.status(500).send('Failed to compare hashes'));
                             if (!sameHash)
