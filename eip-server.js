@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/sportsfun').then(() => {
     app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
     require('./models/User.js');
+    require('./models/Post.js');
 
     app.use(require('./routes'));
 

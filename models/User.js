@@ -64,12 +64,6 @@ UserSchema.methods.updateEmail = function (email, callback) {
 }
 
 /*UserSchema.pre('save', function (next) {
-    bcrypt.hash(this.password, saltRounds, (err, hash) => {
-        if (err)
-            next({ success: false, message: 'Failed to hash password' });
-        this.password = hash;
-        next();
-    });
 });*/
 
 mongoose.model('User', UserSchema);
