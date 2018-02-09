@@ -4,6 +4,7 @@
 */
 
 let router = require('express').Router();
+let config = require('./../../config');
 let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
@@ -31,7 +32,7 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
         user.tryPassword(req.fields.password).then((samePassword) => {
             if (!samePassword)
                 return (res.status(500).send({ success: false, message: 'Incorrect password' }));
-            JWT.sign({ _id: user._id }, 'secret', (err, token) => {
+            JWT.sign({ _id: user._id }, config.secret || 'secret', (err, token) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
                 res.status(200).send({ success: true, message: 'Logged in', data: { token } });

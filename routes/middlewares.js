@@ -5,10 +5,11 @@
 
 let JWT = require('jsonwebtoken');
 let User = require('mongoose').model('User');
+let config = require('./../config');
 
 function setTokenFromBody(req, res, next) {
     if (req.body.token) {
-        JWT.verify(req.body.token, 'secret', (err, decoded) => {
+        JWT.verify(req.body.token, config.secret || 'secret', (err, decoded) => {
             if (err)
                 return (res.status(500).send('Failed to authenticate token'));
             req.token = decoded;

@@ -5,6 +5,7 @@
 
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt');
+let config = require('./../config');
 let saltRounds = 10;
 
 let UserSchema = mongoose.Schema({
@@ -50,7 +51,7 @@ UserSchema.methods.tryPassword = function (password, callback) {
 }
 
 UserSchema.methods.setPassword = function (password, callback) {
-    return (bcrypt.hash(password, saltRounds, (err, hash) => {
+    return (bcrypt.hash(password, config.saltRounds || saltRounds, (err, hash) => {
         if (err)
             return (callback('Failed to hash password'));
         this.password = hash;

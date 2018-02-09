@@ -3,6 +3,8 @@
 ** Website: https://github.com/Xobtah
 */
 
+let config = require('./config');
+
 let express = require('express');
 let app = express();
 //let httpServer = null;
@@ -23,7 +25,7 @@ mongoose.connect('mongodb://localhost:27017/sportsfun').then(() => {
     app.use(require('./routes'));
 
     //httpServer = require('http').createServer(app);
-    app.listen(8080, () => console.log('App is listening! :)'));
+    app.listen(config.post || 8080, () => console.log('App is listening! :)'));
     //httpServer.listen(8080, () => console.log('App is listening! :)'));
 }).catch((err) => {
     console.log(err);
