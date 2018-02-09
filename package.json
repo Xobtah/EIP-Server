@@ -2,17 +2,15 @@
   "name": "eip-server",
   "version": "0.1.0",
   "description": "SportsFun EIP - Server Application",
-  "main": "server/eip-server.js",
+  "main": "eip-server.js",
   "scripts": {
-    "start": "nodemon server/eip-server.js"
+    "start": "nodemon eip-server.js"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
-    "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "express-fileupload": "^0.3.0",
     "jsonwebtoken": "^8.1.0",
-    "mongodb": "^2.2.31",
+    "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
     "nodemon": "^1.12.5",
     "socket.io": "^2.0.4"
