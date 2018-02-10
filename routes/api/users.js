@@ -29,6 +29,8 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
     User.getUserByUsername(req.fields.username, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
+        if (!user)
+            return (res.status(500).send({ success: false, message: 'User \'' + req.fields.username + '\' does not exist' }));
         user.tryPassword(req.fields.password).then((samePassword) => {
             if (!samePassword)
                 return (res.status(500).send({ success: false, message: 'Incorrect password' }));
