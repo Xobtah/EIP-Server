@@ -3,25 +3,36 @@
 ** Website: https://github.com/Xobtah
 */
 
+// config
 let config = require('./config');
 
+// web server & rest routing
 let express = require('express');
 let app = express();
 let httpServer = require('http').createServer(app);
 
+// ws routing
+let io = require('socket.io')(httpServer);
+
+// middlewares
 let bodyParser = require('body-parser');
 let Morgan = require('morgan');
 
+// database
 let mongoose = require('mongoose');
-let io = require('socket.io')(httpServer);
 
+// adding middlewares
 app.use(Morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+// adding models
 require('./models/User.js');
 require('./models/Post.js');
 
+// routing
 app.use(require('./routes'));
+io.on('connection', require('./routes/websocket'));
 
+// connect to mongo & run the app
 mongoose.connect('mongodb://localhost:27017/sportsfun').then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)'))).catch(console.log);
