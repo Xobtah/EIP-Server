@@ -9,6 +9,10 @@ let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
 
+router.get('/', mid.checkLogin, (req, res) => {
+    res.status(200).send({ success: true, message: 'OK', data: req.user });
+});
+
 router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), (req, res) => {
     let user = new User();
     for (key in req.fields)
@@ -43,7 +47,7 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
     });
 });
 
-router.post('/edit/password', mid.token, mid.user, mid.password, mid.fields([ 'newPassword' ]), (req, res) => {
+router.post('/edit/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res) => {
     req.user.setPassword(req.fields.newPassword, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
@@ -51,7 +55,7 @@ router.post('/edit/password', mid.token, mid.user, mid.password, mid.fields([ 'n
     });
 });
 
-router.post('/edit/email', mid.token, mid.user, mid.password, mid.fields([ 'email' ]), (req, res) => {
+router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) => {
     req.user.updateEmail(req.fields.email, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
@@ -59,7 +63,7 @@ router.post('/edit/email', mid.token, mid.user, mid.password, mid.fields([ 'emai
     });
 });
 
-router.delete('/', mid.token, mid.user, mid.password, (req, res) => {
+router.delete('/', mid.checkLogin, (req, res) => {
     req.user.remove((err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));

@@ -70,6 +70,11 @@ module.exports = {
     password () {
         checkUserPassword.apply({}, arguments);
     },
+    checkLogin () {
+        setTokenFromBody.apply({}, arguments);
+        setUserFromToken.apply({}, arguments);
+        checkUserPassword.apply({}, arguments);
+    },
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {
