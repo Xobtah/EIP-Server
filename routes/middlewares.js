@@ -8,24 +8,24 @@ let User = require('mongoose').model('User');
 let config = require('./../config');
 
 function setTokenFromBody(req, res, next) {
-    if (req.body.token) {
-        JWT.verify(req.body.token, config.secret || 'secret', (err, decoded) => {
+    if (req.headers.token) {
+        JWT.verify(req.headers.token, config.secret || 'secret', (err, decoded) => {
             if (err)
-                return (res.status(500).send('Failed to authenticate token'));
+                next(new Error({ success: false, status: 500, message: 'Failed to authenticate token' }));
             req.token = decoded;
             next();
         });
     }
     else
-        return (res.status(403).send('No token provided'));
+        next(new Error({ success: false, status: 403, message: 'No token provided' }));
 }
 
 function setUserFromToken(req, res, next) {
     if (!req.token)
-        return (res.status(500).send({ success: false, message: 'Token not set' }));
+        next(new Error({ success: false, status: 500, message: 'Token not set' }));
     User.findById(req.token._id, (err, user) => {
         if (err)
-            return (res.status(500).send({ success: false, message: err }));
+            next(new Error({ success: false, status: 500, message: err }));
         req.user = user;
         next();
     });
@@ -33,12 +33,12 @@ function setUserFromToken(req, res, next) {
 
 function checkUserPassword(req, res, next) {
     if (!req.user)
-        return (res.status(500).send({ success: false, message: 'User not set' }));
+        next(new Error({ success: false, status: 500, message: 'User variable not set' }));
     if (!req.body.password)
-        return (res.status(401).send('Missing key \'password\' in body'));
+        next(new Error({ success: false, status: 401, message: 'Missing key \'password\' in body' }));
     req.user.tryPassword(req.body.password).then((samePassword) => {
         if (!samePassword)
-            return (res.status(500).send({ success: false, message: 'Incorrect password' }));
+            next(new Error({ success: false, status: 500, message: 'Incorrect password' }));
         next();
     });
 }
@@ -61,30 +61,24 @@ function checkFields(body, fields, success, error) {
 }
 
 module.exports = {
-    token () {
-        setTokenFromBody.apply({}, arguments);
-    },
-    user () {
-        setUserFromToken.apply({}, arguments);
-    },
-    password () {
-        checkUserPassword.apply({}, arguments);
-    },
-    checkLogin () {
-        setTokenFromBody.apply({}, arguments);
-        setUserFromToken.apply({}, arguments);
-        checkUserPassword.apply({}, arguments);
-    },
-    checkUser () {
-        setTokenFromBody.apply({}, arguments);
-        setUserFromToken.apply({}, arguments);
-    },
+    token: setTokenFromBody,
+    user: setUserFromToken,
+    password: checkUserPassword,
+    checkLogin: [
+        setTokenFromBody,
+        setUserFromToken,
+        checkUserPassword
+    ],
+    checkUser: [
+        setTokenFromBody,
+        setUserFromToken
+    ],
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {
                 req.fields = fields;
                 next();
-            }, (key) => res.status(401).send('Missing key \'' + key + '\' in body'));
+            }, (key) => next(new Error({ success: false, status: 403, message: 'Missing key \'' + key + '\' in body' })));
         });
     }
 };
