@@ -38,7 +38,7 @@ function checkUserPassword(req, res, next) {
         next(new Error({ success: false, status: 401, message: 'Missing key \'password\' in body' }));
     req.user.tryPassword(req.body.password).then((samePassword) => {
         if (!samePassword)
-            next(new Error({ success: false, status: 500, message: 'Incorrect password' }));
+            next(new Error({ success: false, status: 403, message: 'Incorrect password' }));
         next();
     });
 }

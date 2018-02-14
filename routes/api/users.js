@@ -37,7 +37,7 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
             return (res.status(500).send({ success: false, message: 'User \'' + req.fields.username + '\' does not exist' }));
         user.tryPassword(req.fields.password).then((samePassword) => {
             if (!samePassword)
-                return (res.status(500).send({ success: false, message: 'Incorrect password' }));
+                return (res.status(403).send({ success: false, message: 'Incorrect password' }));
             JWT.sign({ _id: user._id }, config.secret || 'secret', (err, token) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
