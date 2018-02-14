@@ -12,16 +12,16 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "feae3fa9-c4e8-4fd1-850f-a571917382a2",
+						"id": "580b239c-7702-407f-9335-ddf1c95587a4",
 						"type": "text/javascript",
 						"exec": [
-							"pm.test('Status code is 401', function () {",
-							"    //pm.response.to.have.status(401);",
-							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"pm.test('Status code is 500', function () {",
+							"    //pm.response.to.have.status(500);",
+							"    pm.expect(pm.response.code).to.be.equal(500);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Missing key \\'email\\' in body');",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
 							"});"
 						]
 					}
@@ -29,43 +29,15 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userName",
-							"value": "Notch",
-							"type": "text"
-						},
-						{
-							"key": "firstName",
-							"value": "Markus",
-							"type": "text"
-						},
-						{
-							"key": "lastName",
-							"value": "Person",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "markus.person@mojang.com",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "birthDate",
-							"value": "dunno",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "password",
-							"value": "ididnotcreateminecraft",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"Notch\",\n\t\"password\": \"ididnotcreateminecraft\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/register",
@@ -91,7 +63,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "848e65be-d451-4fd1-a6ac-fc5a83bbcbf5",
+						"id": "dd83d2d5-e8aa-4175-8fa5-b3fe8c5d64b1",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -99,7 +71,7 @@
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('User Markus Person inserted');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User Markus Person has been inserted');",
 							"});"
 						]
 					}
@@ -107,41 +79,15 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userName",
-							"value": "Notch",
-							"type": "text"
-						},
-						{
-							"key": "firstName",
-							"value": "Markus",
-							"type": "text"
-						},
-						{
-							"key": "lastName",
-							"value": "Person",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "markus.person@mojang.com",
-							"type": "text"
-						},
-						{
-							"key": "birthDate",
-							"value": "dunno",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "ididnotcreateminecraft",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"Notch\",\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"firstName\": \"Markus\",\n\t\"lastName\": \"Person\",\n\t\"birthDate\": \"Sat Feb 10 2018 14:54:40 GMT-0500 (EST)\",\n\t\"email\": \"notch@mojang.com\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/register",
@@ -167,19 +113,20 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "08452318-1845-4ca8-8c0e-d02bc96ebe08",
+						"id": "604b32b2-cd59-415d-8bc9-99fa02eaa85a",
 						"type": "text/javascript",
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
 							"",
-							"postman.setGlobalVariable('token', jsonData.token);",
+							"//postman.setGlobalVariable('token', jsonData.data.token);",
+							"pm.globals.set('token', jsonData.data.token);",
 							"",
 							"pm.test('Status code is 200', function () {",
 							"    pm.expect(pm.response.code).to.be.equal(200);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Successfully logged in');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Logged in');",
 							"});"
 						]
 					}
@@ -187,21 +134,15 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userName",
-							"value": "Notch",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "ididnotcreateminecraft",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"Notch\",\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"firstName\": \"Markus\",\n\t\"lastName\": \"Person\",\n\t\"birthDate\": \"Sat Feb 10 2018 14:54:40 GMT-0500 (EST)\",\n\t\"email\": \"notch@mojang.com\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/login",
@@ -222,83 +163,7 @@
 			"response": []
 		},
 		{
-			"name": "Register same user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "b2b74cbb-664e-49ac-b2be-ad2f62626079",
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('Status code is 401', function () {",
-							"    pm.expect(pm.response.code).to.be.equal(401);",
-							"});",
-							"",
-							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('A user with username \\'Notch\\' already exists');",
-							"});"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userName",
-							"value": "Notch",
-							"type": "text"
-						},
-						{
-							"key": "firstName",
-							"value": "Markus",
-							"type": "text"
-						},
-						{
-							"key": "lastName",
-							"value": "Person",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "markus.person@mojang.com",
-							"type": "text"
-						},
-						{
-							"key": "birthDate",
-							"value": "dunno",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "ididnotcreateminecraft",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "149.202.41.22:8080/api/user/register",
-					"host": [
-						"149",
-						"202",
-						"41",
-						"22"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"user",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Changing user's password w/ correct password",
+			"name": "Changing user's password w/out correct password",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -313,15 +178,15 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "92c2a97a-14a5-4b8e-af48-f2699be339fe",
+						"id": "f38e923b-7f1c-42bf-8722-e6484118119c",
 						"type": "text/javascript",
 						"exec": [
-							"pm.test('Status code is 200', function () {",
-							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"pm.test('Status code is 403', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(403);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Password updated');",
+							"    pm.expect(responseBody).to.be.equal('Incorrect password');",
 							"});"
 						]
 					}
@@ -329,29 +194,19 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "oldPassword",
-							"value": "ididnotcreateminecraft",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "newPassword",
-							"value": "icreatedminecraft",
-							"description": "",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/edit/password",
@@ -374,7 +229,7 @@
 			"response": []
 		},
 		{
-			"name": "Changing user's password w/out correct password",
+			"name": "Changing user's password w/ correct password",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -389,15 +244,15 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "41cf1b0a-e686-4742-98ec-17acfb72fb50",
+						"id": "ff97e287-83f3-4152-add2-7015b75a2ad5",
 						"type": "text/javascript",
 						"exec": [
-							"pm.test('Status code is 401', function () {",
-							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Bad password');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Password has been changed');",
 							"});"
 						]
 					}
@@ -405,29 +260,19 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "oldPassword",
-							"value": "notthecorrectpassword",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "newPassword",
-							"value": "icreatedminecraft",
-							"description": "",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"newPassword\": \"icreatedminecraft\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/edit/password",
@@ -465,15 +310,19 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "2516fcd0-3b79-4344-bad2-b5534f928d59",
+						"id": "1ce4b441-b641-4b40-9b1e-5448a6e50810",
 						"type": "text/javascript",
 						"exec": [
-							"pm.test('Status code is 401', function () {",
-							"    pm.expect(pm.response.code).to.be.equal(401);",
+							"pm.test('Status code is 403', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(403);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Bad password');",
+							"    pm.expect(responseBody).to.be.equal('Incorrect  password');",
+							"});",
+							"",
+							"pm.test('Correct response error', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
 							"});"
 						]
 					}
@@ -481,26 +330,22 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "password",
-							"value": "ididnotcreateminecraft",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"description": "",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/edit/delete",
+					"raw": "149.202.41.22:8080/api/user",
 					"host": [
 						"149",
 						"202",
@@ -510,9 +355,7 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"user",
-						"edit",
-						"delete"
+						"user"
 					]
 				},
 				"description": ""
@@ -535,7 +378,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dd0229bc-cddf-4b69-9151-0d08d1966d8c",
+						"id": "abf14b04-86ea-42bb-88f6-875b9bf35c0a",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -543,7 +386,7 @@
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('User has been deleted');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User Markus Person has been deleted');",
 							"});"
 						]
 					}
@@ -551,26 +394,22 @@
 			],
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "password",
-							"value": "icreatedminecraft",
-							"description": "",
-							"type": "text"
-						},
-						{
-							"key": "token",
-							"value": "{{token}}",
-							"description": "",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"icreatedminecraft\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/edit/delete",
+					"raw": "149.202.41.22:8080/api/user",
 					"host": [
 						"149",
 						"202",
@@ -580,9 +419,7 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"user",
-						"edit",
-						"delete"
+						"user"
 					]
 				},
 				"description": ""
