@@ -51,7 +51,7 @@ router.post('/edit/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (re
     req.user.setPassword(req.fields.newPassword, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(500).send({ success: true, message: 'Password has been changed' });
+        res.status(200).send({ success: true, message: 'Password has been changed' });
     });
 });
 
@@ -59,7 +59,7 @@ router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) =
     req.user.updateEmail(req.fields.email, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(500).send({ success: true, message: 'Email has been changed' });
+        res.status(200).send({ success: true, message: 'Email has been changed' });
     });
 });
 
@@ -67,7 +67,7 @@ router.delete('/', mid.checkLogin, (req, res) => {
     req.user.remove((err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(500).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been deleted' });
+        res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been deleted' });
     });
 });
 
