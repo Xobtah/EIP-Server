@@ -4,8 +4,6 @@
 */
 
 let router = require('express').Router();
-let config = require('./../../config');
-let User = require('mongoose').model('User');
 let mid = require('./../middlewares');
 
 // Plus users routes

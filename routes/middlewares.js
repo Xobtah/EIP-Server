@@ -75,6 +75,10 @@ module.exports = {
         setUserFromToken.apply({}, arguments);
         checkUserPassword.apply({}, arguments);
     },
+    checkUser () {
+        setTokenFromBody.apply({}, arguments);
+        setUserFromToken.apply({}, arguments);
+    },
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {

@@ -29,10 +29,13 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // adding models
 require('./models/User.js');
 require('./models/Post.js');
+require('./models/Message.js');
 
 // routing
 app.use(require('./routes'));
 io.on('connection', require('./routes/websocket'));
 
 // connect to mongo & run the app
-mongoose.connect('mongodb://localhost:27017/sportsfun').then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)'))).catch(console.log);
+mongoose.connect(config.mongoURL || 'mongodb://localhost:27017/sportsfun')
+    .then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)')))
+    .catch(console.log);
