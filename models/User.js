@@ -39,7 +39,8 @@ let UserSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    friends: [ mongoose.Schema.Types.ObjectId ]
+    friends: [ mongoose.Schema.Types.ObjectId ],
+    bio: String
 }, { timestamps: true });
 
 UserSchema.statics.getUserByUsername = function (username, callbalk) {

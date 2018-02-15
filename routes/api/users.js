@@ -17,10 +17,13 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), (req, res) => {
+    console.log('reg');
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];
     user.friends = [];
+    if (req.body.bio)
+        user.bio = req.body.bio;
     user.setPassword(user.password, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
