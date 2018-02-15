@@ -13,7 +13,10 @@ router.get('/', mid.checkUser, (req, res) => {
     User.find({}, (err, users) => {
         res.status(200).send(users);
     });
-    //res.status(200).send({ success: true, message: 'OK', data: req.user });
+});
+
+router.get('/self', mid.checkUser, (req, res) => {
+    res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
 router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), (req, res) => {
