@@ -3,7 +3,11 @@
 ** @website: https://github.com/Xobtah
 */
 
-let router = require('express').Router();
+let express = require('express');
+let path = require('path');
+let router = express.Router();
+
+router.use('/static', express.static(path.join(__dirname, '..', 'assets')));
 
 router.use('/api', require('./api'));
 

@@ -48,12 +48,12 @@ let UserSchema = mongoose.Schema({
     profilePic: {
         type: String,
         required: true,
-        default: ''
+        default: '/static/user_default.jpg'
     },
     coverPic: {
         type: String,
         required: true,
-        default: ''
+        default: '/static/cover_default.jpg'
     }
 }, { timestamps: true });
 
