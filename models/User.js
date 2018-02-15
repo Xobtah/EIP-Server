@@ -40,7 +40,21 @@ let UserSchema = mongoose.Schema({
         required: true
     },
     friends: [ mongoose.Schema.Types.ObjectId ],
-    bio: String
+    bio: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    profilePic: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    coverPic: {
+        type: String,
+        required: true,
+        default: ''
+    }
 }, { timestamps: true });
 
 UserSchema.statics.getUserByUsername = function (username, callbalk) {
