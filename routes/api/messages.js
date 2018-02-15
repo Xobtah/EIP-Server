@@ -17,7 +17,7 @@ router.get('/:id', mid.checkUser, (req, res) => {
     });
 });
 
-router.post('/new', mid.checkUser, mid.fields([ 'content', 'to' ]), (req, res) => {
+router.post('/', mid.checkUser, mid.fields([ 'content', 'to' ]), (req, res) => {
     let message = new Message();
     message.content = req.fields.content;
     message.to = req.fields.to;

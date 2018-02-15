@@ -9,7 +9,7 @@ let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
 
-router.get('/', mid.checkLogin, (req, res) => {
+router.get('/', mid.checkUser, (req, res) => {
     res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
