@@ -42,17 +42,14 @@ let UserSchema = mongoose.Schema({
     friends: [ mongoose.Schema.Types.ObjectId ],
     bio: {
         type: String,
-        required: true,
         default: ''
     },
     profilePic: {
         type: String,
-        required: true,
         default: '/static/user_default.jpg'
     },
     coverPic: {
         type: String,
-        required: true,
         default: '/static/cover_default.jpg'
     }
 }, { timestamps: true });
