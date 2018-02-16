@@ -12,15 +12,19 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "580b239c-7702-407f-9335-ddf1c95587a4",
+						"id": "164f3f21-1512-40e6-a60a-76bf1a027e89",
 						"type": "text/javascript",
 						"exec": [
-							"pm.test('Status code is 500', function () {",
+							"pm.test('Status code is 403', function () {",
 							"    //pm.response.to.have.status(500);",
-							"    pm.expect(pm.response.code).to.be.equal(500);",
+							"    pm.expect(pm.response.code).to.be.equal(403);",
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
+							"});",
+							"",
+							"pm.test('Success is false', function () {",
 							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
 							"});"
 						]
@@ -63,7 +67,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "dd83d2d5-e8aa-4175-8fa5-b3fe8c5d64b1",
+						"id": "79a6d946-76d6-4a5e-bb45-81ee1b9fb7fa",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -72,6 +76,10 @@
 							"",
 							"pm.test('Correct response error', function () {",
 							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User Markus Person has been inserted');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
 							"});"
 						]
 					}
@@ -113,7 +121,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "604b32b2-cd59-415d-8bc9-99fa02eaa85a",
+						"id": "3d2f696f-e7b0-434c-a08d-1b64ad9d7792",
 						"type": "text/javascript",
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
@@ -127,6 +135,10 @@
 							"",
 							"pm.test('Correct response error', function () {",
 							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Logged in');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
 							"});"
 						]
 					}
@@ -178,15 +190,19 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f38e923b-7f1c-42bf-8722-e6484118119c",
+						"id": "1e540dbf-8f3f-41dc-8203-1348dfa829e9",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 403', function () {",
 							"    pm.expect(pm.response.code).to.be.equal(403);",
 							"});",
 							"",
+							"pm.test('Success is false', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
+							"});",
+							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Incorrect password');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Incorrect password');",
 							"});"
 						]
 					}
@@ -206,7 +222,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\"\n}"
+					"raw": "{\n\t\"password\": \"thecakeisalie\",\n\t\"newPassword\": \"stillalive\"\n}"
 				},
 				"url": {
 					"raw": "149.202.41.22:8080/api/user/edit/password",
@@ -244,7 +260,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ff97e287-83f3-4152-add2-7015b75a2ad5",
+						"id": "64c9e4ec-c26e-437e-92a3-8126260eb4e5",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -253,6 +269,10 @@
 							"",
 							"pm.test('Correct response error', function () {",
 							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Password has been changed');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
 							"});"
 						]
 					}
@@ -310,7 +330,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1ce4b441-b641-4b40-9b1e-5448a6e50810",
+						"id": "7d2fead6-2b7d-437e-8fa7-5f3345ce0310",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 403', function () {",
@@ -318,10 +338,10 @@
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(responseBody).to.be.equal('Incorrect  password');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Incorrect password');",
 							"});",
 							"",
-							"pm.test('Correct response error', function () {",
+							"pm.test('Success is false', function () {",
 							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(false);",
 							"});"
 						]
@@ -378,7 +398,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "abf14b04-86ea-42bb-88f6-875b9bf35c0a",
+						"id": "306319fb-99ae-4c89-afb4-11dcf3347a6a",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -387,6 +407,10 @@
 							"",
 							"pm.test('Correct response error', function () {",
 							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User Markus Person has been deleted');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
 							"});"
 						]
 					}
