@@ -20,7 +20,7 @@ router.get('/self', mid.checkUser, (req, res) => {
 });
 
 router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), (req, res) => {
-    User.getById(req.token._id, (err, user) => {
+    User.findById(req.token._id, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         for (key in req.fields)
@@ -30,7 +30,7 @@ router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', '
         user.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'User ' + req.fields.firstName + ' ' + req.fields.lastName + ' has been inserted' });
+            res.status(200).send({ success: true, message: 'User ' + user.username + ' has been updated' });
         });
     });
 });
