@@ -7,13 +7,13 @@ let router = require('express').Router();
 let Message = require('mongoose').model('Message');
 let mid = require('./../middlewares');
 
-router.get('/:id', mid.checkUser, (req, res) => {
+router.get('/:id', mid.token, mid.checkUser, (req, res) => {
     if (!req.params.id)
         return (req.status(403).send({ success: false, message: 'Missing path param id' }));
-    Message.getById(req.params.id, (err, message) => {
+    Message.find({ author: req.token._id, to: req.params.id }, (err, messages) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'OK', data: message });
+        res.status(200).send({ success: true, message: 'OK', data: messages });
     });
 });
 

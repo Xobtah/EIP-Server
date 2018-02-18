@@ -45,9 +45,10 @@ function checkUserPassword(req, res, next) {
 
 function checkFields(body, fields, success, error) {
     let object = {};
-    let operationSuccess = false;
+    //let operationSuccess = false;
+    let ключ = null;
 
-    operationSuccess = fields.every((key) => {
+    /*operationSuccess = fields.every((key) => {
         if (!body[key]) {
             if (typeof error == 'function')
                 error(key);
@@ -57,6 +58,16 @@ function checkFields(body, fields, success, error) {
         return (true);
     });
     if (operationSuccess)
+        success(object);*/
+    fields.forEach((key) => {
+        if (body[key])
+            object[key] = body[key];
+        else
+            ключ = key;
+    });
+    if (error && ключ)
+        error(ключ);
+    else
         success(object);
 }
 
@@ -79,6 +90,14 @@ module.exports = {
                 req.fields = fields;
                 next();
             }, (key) => next({ success: false, status: 403, message: 'Missing key \'' + key + '\' in body' }));
+        });
+    },
+    optionalFields (optFields) {
+        return (function (req, res, next) {
+            checkFields(req.body, optFields, (fields) => {
+                req.fields = fields;
+                next();
+            });
         });
     }
 };
