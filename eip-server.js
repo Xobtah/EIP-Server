@@ -27,9 +27,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // adding models
-require('./models/User.js');
-require('./models/Post.js');
-require('./models/Message.js');
+require('./models');
 
 // routing
 app.use(require('./routes'));
