@@ -19,6 +19,10 @@ router.use((req, res, next) => {
 
 router.use('/api', require('./api'));
 
+router.get('/', (req, res) => {
+    res.send('It\'s up, my dudes :)');
+});
+
 // Error middleware
 router.use(function (err, req, res, next) {
     return (res.status(err.status || 500).send({ success: false, message: err.message }));
