@@ -33,6 +33,8 @@ require('./models');
 app.use(require('./routes'));
 io.on('connection', require('./routes/websocket'));
 
+//console.log(require('express-list-endpoints')(app));
+
 // connect to mongo & run the app
 mongoose.connect(config.mongoURL || 'mongodb://localhost:27017/sportsfun')
     .then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)')))
