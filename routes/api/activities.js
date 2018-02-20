@@ -15,7 +15,7 @@ router.get('/', mid.token, (req, res) => {
     });
 });
 
-router.post('/create', mid.token, mid.fields([ 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]) (req, res) => {
+router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]) (req, res) => {
     let activity = new Activity();
     for (key in req.fields)
         activity[key] = req.fields[key];
