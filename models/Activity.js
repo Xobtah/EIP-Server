@@ -19,7 +19,10 @@ let ActivitySchema = mongoose.Schema({
         default: 'sport'
     },
     timeSpent: Number,
-    date: Date
+    date: {
+        type: Date,
+        default: new Date()
+    }
 }, { timestamps: true });
 
 mongoose.model('Activity', ActivitySchema);
