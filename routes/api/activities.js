@@ -15,7 +15,7 @@ router.get('/', mid.token, (req, res) => {
     });
 });
 
-router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date', 'goal' ]), (req, res) => {
+router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]), (req, res) => {
     let activity = new Activity();
     for (key in req.fields)
         activity[key] = req.fields[key];
@@ -26,7 +26,7 @@ router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpen
     });
 });
 
-router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date', 'goal' ]), (req, res) => {
+router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date' ]), (req, res) => {
     if (!req.params.id)
         return (res.status(500).send({ success: false, message: 'Missing path param ID' }));
     Activity.findOne({ _id: req.params.id }, (err, activity) => {
