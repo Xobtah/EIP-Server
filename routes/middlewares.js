@@ -87,6 +87,8 @@ module.exports = {
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {
+                if (!req.fields)
+                    req.fields = {};
                 for (key in fields)
                     req.fields[key] = fields[key];
                 next();
@@ -96,6 +98,8 @@ module.exports = {
     optionalFields (optFields) {
         return (function (req, res, next) {
             checkFields(req.body, optFields, (fields) => {
+                if (!req.fields)
+                    req.fields = {};
                 for (key in fields)
                     req.fields[key] = fields[key];
                 next();
