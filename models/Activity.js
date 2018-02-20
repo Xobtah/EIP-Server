@@ -22,6 +22,10 @@ let ActivitySchema = mongoose.Schema({
     date: {
         type: Date,
         default: new Date()
+    },
+    goal: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true });
 
