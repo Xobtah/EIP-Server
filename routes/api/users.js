@@ -19,7 +19,7 @@ router.get('/self', mid.checkUser, (req, res) => {
     res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
-router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password', 'bio', 'coverPic', 'profilePic' ]), (req, res) => {
+router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password', 'bio', 'coverPic', 'profilePic', 'roles' ]), (req, res) => {
     User.findById(req.token._id, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
@@ -35,7 +35,7 @@ router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', '
     });
 });
 
-router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), mid.optionalFields([ 'bio', 'coverPic', 'profilePic' ]), (req, res) => {
+router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), mid.optionalFields([ 'bio', 'coverPic', 'profilePic', 'roles' ]), (req, res) => {
     console.log('reg');
     let user = new User();
     for (key in req.fields)
