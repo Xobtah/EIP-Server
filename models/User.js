@@ -52,7 +52,8 @@ let UserSchema = mongoose.Schema({
     coverPic: {
         type: String,
         default: '/static/cover_default.jpg'
-    }
+    },
+    sportHall: mongoose.Schema.Types.ObjectId
 }, { timestamps: true });
 
 UserSchema.statics.getUserByUsername = function (username, callbalk) {
