@@ -11,11 +11,11 @@ router.get('/', mid.token, (req, res) => {
     Activity.find({ user: req.token._id }, (err, activities) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: false, message: 'OK', data: activities });
+        res.status(200).send({ success: true, message: 'OK', data: activities });
     });
 });
 
-router.post('/create', mid.token, mid.fields([ 'game', 'type', 'timeSpent' ]), (req, res) => {
+router.post('/create', mid.token, mid.fields([ 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]) (req, res) => {
     let activity = new Activity();
     for (key in req.fields)
         activity[key] = req.fields[key];
@@ -23,6 +23,22 @@ router.post('/create', mid.token, mid.fields([ 'game', 'type', 'timeSpent' ]), (
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         res.status(200).send({ success: true, message: 'Activity saved' });
+    });
+});
+
+router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date' ]), (req, res) => {
+    if (!req.params.id)
+        return (res.status(500).send({ success: false, message: 'Missing path param ID' }));
+    Activity.findOne({ _id: req.params.id }, (err, activity) => {
+        if (err)
+            return (res.status(500).send({ success: false, message: err }));
+        for (key in req.fields)
+            activity[key] = req.fields[key];
+        activity.save((err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'Activity saved' });
+        });
     });
 });
 

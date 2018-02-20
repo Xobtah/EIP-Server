@@ -9,6 +9,7 @@ let config = require('./../config');
 let saltRounds = 10;
 
 let UserSchema = mongoose.Schema({
+    roles: [ String ],
     username: {
         type: String,
         unique: true,

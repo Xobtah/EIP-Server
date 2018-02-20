@@ -18,7 +18,8 @@ let ActivitySchema = mongoose.Schema({
         type: String,
         default: 'sport'
     },
-    timeSpent: Number
+    timeSpent: Number,
+    date: Date
 }, { timestamps: true });
 
 mongoose.model('Activity', ActivitySchema);

@@ -87,7 +87,8 @@ module.exports = {
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {
-                req.fields = fields;
+                for (key in fields)
+                    req.fields[key] = fields[key];
                 next();
             }, (key) => next({ success: false, status: 403, message: 'Missing key \'' + key + '\' in body' }));
         });
@@ -95,7 +96,8 @@ module.exports = {
     optionalFields (optFields) {
         return (function (req, res, next) {
             checkFields(req.body, optFields, (fields) => {
-                req.fields = fields;
+                for (key in fields)
+                    req.fields[key] = fields[key];
                 next();
             });
         });

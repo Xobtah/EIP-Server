@@ -35,7 +35,7 @@ router.post('/edit/info', mid.token, mid.optionalFields([ 'username', 'email', '
     });
 });
 
-router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password', 'bio', 'coverPic', 'profilePic' ]), (req, res) => {
+router.post('/register', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), mid.optionalFields([ 'bio', 'coverPic', 'profilePic' ]), (req, res) => {
     console.log('reg');
     let user = new User();
     for (key in req.fields)
