@@ -58,7 +58,13 @@ You can now go to your favourite memory killer browser and go to the following a
  
 ### Untested
 
-* GET /api/user : Getting the logged user
+* GET / : Check server status
+
+* GET /api/user/self : Getting the logged user
+
+* GET /api/user : Get all users
+
+* POST /api/user/edit/info : Update all user data
 
  Data: Header { token: [JWT] }
 
@@ -85,3 +91,7 @@ You can now go to your favourite memory killer browser and go to the following a
 * DELETE /api/message/:id : Delete message of id :id
 
  Data: Header { token: [JWT] }
+
+* GET /api/activity : Get an activity
+
+* POST /api/activity/create : Post a new activity
