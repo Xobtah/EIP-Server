@@ -7,9 +7,8 @@ let express = require('express');
 let path = require('path');
 let router = express.Router();
 
-router.use('/static', express.static(path.join(__dirname, '..', 'assets')));
-
-router.use('/doc', express.static(path.join(__dirname, '..', 'doc')));
+router.use('/static', express.static(path.join(__dirname, '..', 'public', 'assets')));
+router.use('/doc', express.static(path.join(__dirname, '..', 'public', 'doc')));
 
 router.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
