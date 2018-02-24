@@ -4,9 +4,11 @@
   "description": "SportsFun EIP - Server Application",
   "main": "eip-server.js",
   "scripts": {
-    "start": "nodemon eip-server.js"
+    "start": "nodemon eip-server.js",
+    "doc": "apidoc -i ./routes/ -o ./doc/ -c ./doc/"
   },
   "dependencies": {
+    "apidoc": "^0.17.6",
     "bcrypt": "^1.0.3",
     "express": "^4.16.2",
     "express-list-endpoints": "^3.0.1",

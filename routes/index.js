@@ -9,6 +9,8 @@ let router = express.Router();
 
 router.use('/static', express.static(path.join(__dirname, '..', 'assets')));
 
+router.use('/doc', express.static(path.join(__dirname, '..', 'doc')));
+
 router.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");

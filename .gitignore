@@ -1,3 +1,7 @@
 node_modules/
 package-lock.json
 backup/
+doc/*
+!doc/Server.pdf
+!doc/Data Base Models.md
+!doc/apidoc.json
