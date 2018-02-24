@@ -43,6 +43,17 @@ function checkUserPassword(req, res, next) {
     });
 }
 
+function checkRoles(roles) {
+    if (!req.user)
+        next({ success: false, status: 500, message: 'User variable not set' });
+    if (!req.user.roles || !req.user.roles.length)
+        next({ success: false, status: 403, message: 'User has no roles' });
+    if (!roles.every((role) => { return (req.user.roles.indexOf(role) >= 0); }))
+        next({ success: false, status: 403, message: 'User not allowed' });
+    else
+        next();
+}
+
 function checkFields(body, fields, success, error) {
     let object = {};
     //let operationSuccess = false;
@@ -84,6 +95,7 @@ module.exports = {
         setTokenFromBody,
         setUserFromToken
     ],
+    roles: checkRoles,
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {
