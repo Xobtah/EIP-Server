@@ -5,3 +5,4 @@ doc/*
 !doc/Server.pdf
 !doc/Data Base Models.md
 !doc/apidoc.json
+public/doc/*

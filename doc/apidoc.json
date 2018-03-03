@@ -1,7 +1,7 @@
 {
-    "name": "eip-server",
+    "name": "EIP-Server",
     "version": "0.0.0",
-    "description": "eip-server api doc",
-    "title": "SportsFun Server Documentation",
-    "url" : "https://github.com/sportfun/EIP-Server"
+    "description": "EIP-Server API Documentation",
+    "title": "EIP-Server Doc",
+    "url" : "http://149.202.41.22:8080"
 }

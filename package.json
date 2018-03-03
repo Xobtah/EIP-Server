@@ -5,7 +5,7 @@
   "main": "eip-server.js",
   "scripts": {
     "start": "nodemon eip-server.js",
-    "doc": "rm -rf public/doc/* && apidoc -i ./routes/ -o ./public/doc/ -c ./doc/"
+    "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/"
   },
   "dependencies": {
     "apidoc": "^0.17.6",
