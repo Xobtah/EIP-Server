@@ -103,7 +103,7 @@ router.get('/self', mid.checkUser, (req, res) => {
 ** @apiSuccess {String} lastname  Lastname of the User.
 */
 
-router.put('/', mid.token, mid.optionalFields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password', 'bio', 'coverPic', 'profilePic', 'roles', 'sportHall', 'goal' ]), (req, res) => {
+router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
     User.findById(req.token._id, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
@@ -147,7 +147,7 @@ router.put('/', mid.token, mid.optionalFields([ 'username', 'email', 'firstName'
 ** @apiSuccess {String} lastname  Lastname of the User.
 */
 
-router.post('/', mid.fields([ 'username', 'email', 'firstName', 'lastName', 'birthDate', 'password' ]), mid.optionalFields([ 'bio', 'coverPic', 'profilePic', 'roles', 'sportHall', 'goal' ]), (req, res) => {
+router.post('/', mid.fieldsFromModel(User), (req, res) => {
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];

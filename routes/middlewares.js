@@ -117,5 +117,27 @@ module.exports = {
                 next();
             });
         });
+    },
+    fieldsFromModel (model) {
+        let requiredFields = [];
+        let optionalFields = [];
+
+        for (key in model.schema.paths)
+            (model.schema.paths[key].isRequired ? requiredFields : optionalFields).push(model.schema.paths[key].path);
+        return (function (req, res, next) {
+            checkFields(req.body, requiredFields, (fields) => {
+                if (!req.fields)
+                    req.fields = {};
+                for (key in fields)
+                    req.fields[key] = fields[key];
+                checkFields(req.body, optionalFields, (fields) => {
+                    if (!req.fields)
+                        req.fields = {};
+                    for (key in fields)
+                        req.fields[key] = fields[key];
+                    next();
+                });
+            }, (key) => next({ success: false, status: 403, message: 'Missing key \'' + key + '\' in body' }));
+        });
     }
 };
