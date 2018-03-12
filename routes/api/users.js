@@ -10,15 +10,15 @@ let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
 
 /**
-** @api {GET} /api/user/ Get user list
-** @apiName GetUserList
-** @apiGroup User
-**
-** @apiParam {Number} id Users unique ID.
-**
-** @apiSuccess {Boolean} success True
-** @apiSuccess {String} message Sucess message.
-** @apiSuccess {Object} data Object that contains the list.
+* @api {GET} /api/user/ Get user list
+* @apiName GetUserList
+* @apiGroup User
+*
+* @apiParam {Number} id Users unique ID.
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Sucess message.
+* @apiSuccess {Object} data Object that contains the list.
 */
 
 router.get('/', mid.checkUser, (req, res) => {
@@ -28,26 +28,26 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-** @api {GET} /api/user/:id Get user by id
-** @apiName GetUserById
-** @apiGroup User
-**
-** @apiParam {ID} id The ID of the desired user.
-**
-** @apiSuccessExample Success-Response:
-**    HTTP/1.1 200 OK
-**    {
-**        "success": true,
-**        "message": "OK",
-**        "data": [
-**          {
-**                // List
-**          }
-**        ]
-**    }
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {GET} /api/user/:id Get user by id
+* @apiName GetUserById
+* @apiGroup User
+*
+* @apiParam {ID} id The ID of the desired user.
+*
+* @apiSuccessExample Success-Response:
+*    HTTP/1.1 200 OK
+*    {
+*        "success": true,
+*        "message": "OK",
+*        "data": [
+*          {
+*                // List
+*          }
+*        ]
+*    }
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
 */
 
 router.get('/:id', mid.checkUser, (req, res) => {
@@ -59,9 +59,9 @@ router.get('/:id', mid.checkUser, (req, res) => {
 });
 
 /**
-** @api {GET} /api/user/new Get form for creating a new user
-** @apiName GetNewUserForm
-** @apiGroup User
+* @api {GET} /api/user/new Get form for creating a new user
+* @apiName GetNewUserForm
+* @apiGroup User
 */
 
 router.get('/new', (req, res) => {
@@ -69,12 +69,9 @@ router.get('/new', (req, res) => {
 });
 
 /**
-** @api {GET} /api/user/self Get current user's info
-** @apiName GetUser
-** @apiGroup User
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {GET} /api/user/self Get current user's info
+* @apiName GetUser
+* @apiGroup User
 */
 
 router.get('/self', mid.checkUser, (req, res) => {
@@ -82,25 +79,25 @@ router.get('/self', mid.checkUser, (req, res) => {
 });
 
 /**
-** @api {PUT} /api/user Update user's info
-** @apiName UpdateUser
-** @apiGroup User
-**
-** @apiParam {String} username User's unique username.
-** @apiParam {String} email User's unique email.
-** @apiParam {String} firstName User's first name.
-** @apiParam {String} lastName User's last name.
-** @apiParam {Date} birthDate User's birth date.
-** @apiParam {String} password User's password.
-** @apiParam {String} bio User's biography.
-** @apiParam {String} coverPic Absolute path to user's cover picture hosted in the server without URL.
-** @apiParam {String} profilePic Absolute path to user's profile picture hosted in the server without URL.
-** @apiParam {[String]} roles List of user's roles.
-** @apiParam {ID} sportHall User's sport hall ID.
-** @apiParam {Number} goal User's goal (in minutes).
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {PUT} /api/user Update user's info
+* @apiName UpdateUser
+* @apiGroup User
+*
+* @apiParam {String} username User's unique username.
+* @apiParam {String} email User's unique email.
+* @apiParam {String} firstName User's first name.
+* @apiParam {String} lastName User's last name.
+* @apiParam {Date} birthDate User's birth date.
+* @apiParam {String} password User's password.
+* @apiParam {String} bio User's biography.
+* @apiParam {String} coverPic Absolute path to user's cover picture hosted in the server without URL.
+* @apiParam {String} profilePic Absolute path to user's profile picture hosted in the server without URL.
+* @apiParam {[String]} roles List of user's roles.
+* @apiParam {ID} sportHall User's sport hall ID.
+* @apiParam {Number} goal User's goal (in minutes).
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
 */
 
 router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
@@ -120,31 +117,31 @@ router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
 });
 
 /**
-** @apiDefine LoginParam
-** @apiParam {String} username Your e-mail-address.
-** @apiParam {String} password Your password.
+* @apiDefine LoginParam
+* @apiParam {String} username Your e-mail-address.
+* @apiParam {String} password Your password.
 */
 
 /**
-** @api {POST} /api/user Register new user
-** @apiName Register
-** @apiGroup User
-**
-** @apiParam {String} username User's unique username.
-** @apiParam {String} email User's unique email.
-** @apiParam {String} firstName User's first name.
-** @apiParam {String} lastName User's last name.
-** @apiParam {Date} birthDate User's birth date.
-** @apiParam {String} password User's password.
-** @apiParam {String} bio User's biography.
-** @apiParam {String} coverPic Absolute path to user's cover picture hosted in the server without URL.
-** @apiParam {String} profilePic Absolute path to user's profile picture hosted in the server without URL.
-** @apiParam {[String]} roles List of user's roles.
-** @apiParam {ID} sportHall User's sport hall ID.
-** @apiParam {Number} goal User's goal (in minutes).
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {POST} /api/user Register new user
+* @apiName Register
+* @apiGroup User
+*
+* @apiParam {String} username User's unique username.
+* @apiParam {String} email User's unique email.
+* @apiParam {String} firstName User's first name.
+* @apiParam {String} lastName User's last name.
+* @apiParam {Date} birthDate User's birth date.
+* @apiParam {String} password User's password.
+* @apiParam {String} bio User's biography.
+* @apiParam {String} coverPic Absolute path to user's cover picture hosted in the server without URL.
+* @apiParam {String} profilePic Absolute path to user's profile picture hosted in the server without URL.
+* @apiParam {[String]} roles List of user's roles.
+* @apiParam {ID} sportHall User's sport hall ID.
+* @apiParam {Number} goal User's goal (in minutes).
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
 */
 
 router.post('/', mid.fieldsFromModel(User), (req, res) => {
@@ -166,15 +163,15 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
 });
 
 /**
-** @api {POST} /api/user/login Login
-** @apiName Login
-** @apiGroup User
-**
-** @apiParam {String} username User's unique username.
-** @apiParam {String} password User's password.
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {POST} /api/user/login Login
+* @apiName Login
+* @apiGroup User
+*
+* @apiParam {String} username User's unique username.
+* @apiParam {String} password User's password.
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
 */
 
 router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
@@ -212,14 +209,14 @@ router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) =
 });*/
 
 /**
-** @api {DELETE} /api/user Delete current user
-** @apiName DeleteUser
-** @apiGroup User
-**
-** @apiParam {String} password User's password.
-**
-** @apiSuccess {String} firstname Firstname of the User.
-** @apiSuccess {String} lastname  Lastname of the User.
+* @api {DELETE} /api/user Delete current user
+* @apiName DeleteUser
+* @apiGroup User
+*
+* @apiParam {String} password User's password.
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
 */
 
 router.delete('/', mid.checkLogin, (req, res) => {

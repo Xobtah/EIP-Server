@@ -7,6 +7,15 @@ let router = require('express').Router();
 let Activity = require('mongoose').model('Activity');
 let mid = require('./../middlewares');
 
+/**
+* @api {GET} /api/activity Get all the user's activity
+* @apiName GetActivities
+* @apiGroup Activity
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
+*/
+
 router.get('/', mid.token, (req, res) => {
     Activity.find({ user: req.token._id }, (err, activities) => {
         if (err)
@@ -15,7 +24,21 @@ router.get('/', mid.token, (req, res) => {
     });
 });
 
-router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]), (req, res) => {
+/**
+* @api {POST} /api/activity Post a new activity
+* @apiName PostActivity
+* @apiGroup Activity
+*
+* @apiParam {Number} user The targeted user's ID.
+* @apiParam {Number} game If you read this line stp envoie-moi un message et dis moi ce que c'est cette variable.
+* @apiParam {Number} type The type of the exercice.
+* @apiParam {Number} timeSpent The amount of time spent on the exercice.
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
+*/
+
+router.post('/', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]), (req, res) => {
     let activity = new Activity();
     for (key in req.fields)
         activity[key] = req.fields[key];
@@ -25,6 +48,20 @@ router.post('/create', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpen
         res.status(200).send({ success: true, message: 'Activity saved' });
     });
 });
+
+/**
+* @api {PUT} /api/activity/:id Update an activity by id
+* @apiName UpdateActivity
+* @apiGroup Activity
+*
+* @apiParam {Number} user The targeted user's ID.
+* @apiParam {Number} game If you read this line stp envoie-moi un message et dis moi ce que c'est cette variable.
+* @apiParam {Number} type The type of the exercice.
+* @apiParam {Number} timeSpent The amount of time spent on the exercice.
+*
+* @apiSuccess {String} firstname Firstname of the User.
+* @apiSuccess {String} lastname  Lastname of the User.
+*/
 
 router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date' ]), (req, res) => {
     if (!req.params.id)
