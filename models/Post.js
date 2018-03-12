@@ -7,10 +7,6 @@ let mongoose = require('mongoose');
 
 let PostSchema = mongoose.Schema({
     parent: mongoose.Schema.Types.ObjectId,
-    creationDate: {
-        type: Date,
-        required: true
-    },
     likes: [ mongoose.Schema.Types.ObjectId ],
     content: {
         type: Object,
@@ -20,16 +16,7 @@ let PostSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    type: String,
-    lastModified: {
-        type: Date,
-        required: true
-    }
+    type: String
 }, { timestamps: true });
-
-PostSchema.pre('save', function (next) {
-    this.lastModified = new Date();
-    next();
-});
 
 mongoose.model('Post', PostSchema);
