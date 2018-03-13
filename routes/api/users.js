@@ -16,8 +16,24 @@ let mid = require('./../middlewares');
 *
 * @apiParam {Number} id Users unique ID.
 *
+* @apiSuccessExample Success-Response:
+*    HTTP/1.1 200 OK
+*    {
+*        "success": true,
+*        "message": "OK",
+*        "data": [
+*          {
+*                // User 1 data
+*          },
+*          {
+*                // User 2 data
+*          },
+*          ...
+*        ]
+*    }
+*
 * @apiSuccess {Boolean} success True
-* @apiSuccess {String} message Sucess message.
+* @apiSuccess {String} message Success message.
 * @apiSuccess {Object} data Object that contains the list.
 */
 
@@ -39,15 +55,20 @@ router.get('/', mid.checkUser, (req, res) => {
 *    {
 *        "success": true,
 *        "message": "OK",
-*        "data": [
-*          {
-*                // List
-*          }
-*        ]
+*        "data": {
+*           username: 'GotoMars',
+*           firstName: 'Elon',
+*           lastName: 'Musk',
+*           otherFields: []
+*        }
 *    }
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object that contains the user.
+*
+* @apiError UserNotFound No user found with this id.
+* @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
 router.get('/:id', mid.checkUser, (req, res) => {
@@ -62,16 +83,36 @@ router.get('/:id', mid.checkUser, (req, res) => {
 * @api {GET} /api/user/new Get form for creating a new user
 * @apiName GetNewUserForm
 * @apiGroup User
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object that contains the variables.
 */
 
 router.get('/new', (req, res) => {
-    res.status(200).send(User.schema.paths);
+    res.status(200).send({ success: true, message: 'OK', data: User.schema.paths });
 });
 
 /**
 * @api {GET} /api/user/self Get current user's info
 * @apiName GetUser
 * @apiGroup User
+*
+* @apiSuccessExample Success-Response:
+*    HTTP/1.1 200 OK
+*    {
+*        "success": true,
+*        "message": "OK",
+*        "data": {
+*           username: 'GotoMars',
+*           firstName: 'Elon',
+*           lastName: 'Musk'
+*        }
+*    }
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object that contains the user.
 */
 
 router.get('/self', mid.checkUser, (req, res) => {
@@ -96,8 +137,10 @@ router.get('/self', mid.checkUser, (req, res) => {
 * @apiParam {ID} sportHall User's sport hall ID.
 * @apiParam {Number} goal User's goal (in minutes).
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError UsernameExists The username already exists.
 */
 
 router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
@@ -117,12 +160,6 @@ router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
 });
 
 /**
-* @apiDefine LoginParam
-* @apiParam {String} username Your e-mail-address.
-* @apiParam {String} password Your password.
-*/
-
-/**
 * @api {POST} /api/user Register new user
 * @apiName Register
 * @apiGroup User
@@ -140,8 +177,10 @@ router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
 * @apiParam {ID} sportHall User's sport hall ID.
 * @apiParam {Number} goal User's goal (in minutes).
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError UsernameExists The username already exists.
 */
 
 router.post('/', mid.fieldsFromModel(User), (req, res) => {
@@ -170,8 +209,12 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
 * @apiParam {String} username User's unique username.
 * @apiParam {String} password User's password.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the login token.
+*
+* @apiError IncorrectPassword The password is incorrect.
+* @apiError UserDoesNotExist The user doesn't exist.
 */
 
 router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
@@ -215,8 +258,10 @@ router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) =
 *
 * @apiParam {String} password User's password.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError IncorrectPassword The password is incorrect.
 */
 
 router.delete('/', mid.checkLogin, (req, res) => {

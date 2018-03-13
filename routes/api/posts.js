@@ -14,8 +14,11 @@ let mid = require('./../middlewares');
 *
 * @apiParam {Number} id Post's ID.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the post.
+*
+* @apiError PostNotFound The post was not found.
 */
 
 router.get('/:id', (req, res) => {
@@ -33,8 +36,10 @@ router.get('/:id', (req, res) => {
 *
 * @apiParam {String} content Post's content.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError FieldMissing One field is missing (probably 'content').
 */
 
 router.post('/', mid.token, mid.fields([ 'content' ]), (req, res) => {
@@ -55,8 +60,11 @@ router.post('/', mid.token, mid.fields([ 'content' ]), (req, res) => {
 *
 * @apiParam {Number} id The ID of the post to delete.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError PostNotFound The post was not found.
+* @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
 router.delete('/:id', (req, res) => {

@@ -12,8 +12,9 @@ let mid = require('./../middlewares');
 * @apiName GetActivities
 * @apiGroup Activity
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the list of the activities.
 */
 
 router.get('/', mid.token, (req, res) => {
@@ -34,8 +35,10 @@ router.get('/', mid.token, (req, res) => {
 * @apiParam {Number} type The type of the exercice.
 * @apiParam {Number} timeSpent The amount of time spent on the exercice.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError FieldMissing Missing a field.
 */
 
 router.post('/', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]), mid.optionalFields([ 'date' ]), (req, res) => {
@@ -59,8 +62,12 @@ router.post('/', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent' ]),
 * @apiParam {Number} type The type of the exercice.
 * @apiParam {Number} timeSpent The amount of time spent on the exercice.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the list of the messages.
+*
+* @apiError ActivityNotFound Activity not found with the id provided.
+* @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
 router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date' ]), (req, res) => {

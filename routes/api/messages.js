@@ -12,8 +12,9 @@ let mid = require('./../middlewares');
 * @apiName GetMessageSnapshots
 * @apiGroup Message
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the list of the latest messages.
 */
 
 router.get('/', mid.checkUser, (req, res) => {
@@ -28,14 +29,18 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/message/:id Get message by id
-* @apiName GetMessage
+* @api {GET} /api/message/:id Get messages by receiver id
+* @apiName GetMessageTo
 * @apiGroup Message
 *
-* @apiParam {Number} id The ID of the message to get.
+* @apiParam {Number} id The ID of the receiver.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the list of the messages.
+*
+* @apiError UserNotFound User not found with the id provided.
+* @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
 router.get('/:id', mid.token, mid.checkUser, (req, res) => {
@@ -54,10 +59,13 @@ router.get('/:id', mid.token, mid.checkUser, (req, res) => {
 * @apiGroup Message
 *
 * @apiParam {String} content The content of the message.
-* @apiParam {Number} content The ID of the user that's going to get the message.
+* @apiParam {Number} to The ID of the user that's going to get the message.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError FieldMissing Missing a field.
+* @apiError UserNotFound User not find with provided id.
 */
 
 router.post('/', mid.checkUser, mid.fields([ 'content', 'to' ]), (req, res) => {
@@ -79,8 +87,10 @@ router.post('/', mid.checkUser, mid.fields([ 'content', 'to' ]), (req, res) => {
 *
 * @apiParam {Number} id The ID of the message to delete.
 *
-* @apiSuccess {String} firstname Firstname of the User.
-* @apiSuccess {String} lastname  Lastname of the User.
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError UserNotFound User not found with the id provided.
 */
 
 router.delete('/:id', mid.checkUser, (req, res) => {
