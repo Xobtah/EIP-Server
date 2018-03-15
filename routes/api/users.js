@@ -67,13 +67,37 @@ router.get('/', mid.checkUser, (req, res) => {
 
 router.get('/:id', mid.checkUser, (req, res) => {
     if (!req.params.id)
-        res.status(403).send({ success: false, message: 'Path param :id is empty' });
+        return (res.status(403).send({ success: false, message: 'Path param :id is empty' }));
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
         if (!user)
             return (res.status(403).send({ success: false, message: 'User not found' }));
         res.status(200).send({ success:true, message: 'OK', data: user });
+    });
+});
+
+/**
+* @api {GET} /api/user/q/:pattern Get list of users by pattern
+* @apiName GetUserByPattern
+* @apiGroup User
+*
+* @apiParam {String} pattern The pattern that is contained in the username, the first name or the last name of the user.
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data List of users, or empty list.
+*/
+
+router.get('/q/:pattern', mid.checkUser, (req, res) => {
+    if (!req.params.pattern)
+        return (res.status(403).send({ success: false, message: 'Path param :pattern is empty' }));
+    User.find({ $or: [ { username: /req.params.pattern/i }, { firstName: /req.params.pattern/i }, { lastName: /req.params.pattern/i } ] }, (err, users) => {
+        if (err)
+            return (res.status(403).send({ success: false, message: err }));
+        if (!user)
+            return (res.status(403).send({ success: false, message: 'Users not found' }));
+        res.status(200).send({ success:true, message: 'OK', data: users });
     });
 });
 
