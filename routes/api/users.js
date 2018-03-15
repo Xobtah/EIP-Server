@@ -10,37 +10,31 @@ let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
 
 /**
-* @api {GET} /api/user/ Get user list
-* @apiName GetUserList
+* @api {GET} /api/user Get current user's info
+* @apiName GetUser
 * @apiGroup User
-*
-* @apiParam {Number} id Users unique ID.
 *
 * @apiSuccessExample Success-Response:
 *    HTTP/1.1 200 OK
 *    {
 *        "success": true,
 *        "message": "OK",
-*        "data": [
-*          {
-*                // User 1 data
-*          },
-*          {
-*                // User 2 data
-*          },
-*          ...
-*        ]
+*        "data": {
+*           username: 'GotoMars',
+*           firstName: 'Elon',
+*           lastName: 'Musk'
+*        }
 *    }
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
-* @apiSuccess {Object} data Object that contains the list.
+* @apiSuccess {Object} data Object that contains the user.
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    User.find({}, (err, users) => {
-        res.status(200).send(users);
-    });
+    if (!req.user)
+        return (res.status(403).send({ success: false, message: 'User not found' }));
+    res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
 /**
@@ -75,11 +69,15 @@ router.get('/:id', mid.checkUser, (req, res) => {
     if (!req.params.id)
         res.status(403).send({ success: false, message: 'Path param :id is empty' });
     User.findOne({ _id: req.params.id }, (err, user) => {
+        if (err)
+            return (res.status(403).send({ success: false, message: err }));
+        if (!user)
+            return (res.status(403).send({ success: false, message: 'User not found' }));
         res.status(200).send({ success:true, message: 'OK', data: user });
     });
 });
 
-/**
+/*
 * @api {GET} /api/user/new Get form for creating a new user
 * @apiName GetNewUserForm
 * @apiGroup User
@@ -89,35 +87,9 @@ router.get('/:id', mid.checkUser, (req, res) => {
 * @apiSuccess {Object} data Object that contains the variables.
 */
 
-router.get('/new', (req, res) => {
-    res.status(200).send({ success: true, message: 'OK', data: User.schema.paths });
-});
-
-/**
-* @api {GET} /api/user/self Get current user's info
-* @apiName GetUser
-* @apiGroup User
-*
-* @apiSuccessExample Success-Response:
-*    HTTP/1.1 200 OK
-*    {
-*        "success": true,
-*        "message": "OK",
-*        "data": {
-*           username: 'GotoMars',
-*           firstName: 'Elon',
-*           lastName: 'Musk'
-*        }
-*    }
-*
-* @apiSuccess {Boolean} success True
-* @apiSuccess {String} message Success message.
-* @apiSuccess {Object} data Object that contains the user.
-*/
-
-router.get('/self', mid.checkUser, (req, res) => {
-    res.status(200).send({ success: true, message: 'OK', data: req.user });
-});
+// router.get('/new', (req, res) => {
+//     res.status(200).send({ success: true, message: 'OK', data: User.schema.paths });
+// });
 
 /**
 * @api {PUT} /api/user Update user's info
@@ -235,25 +207,25 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
     });
 });
 
-/*router.post('/edit/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res) => {
-    req.user.setPassword(req.fields.newPassword, (err) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'Password has been changed' });
-    });
-});
-
-router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) => {
-    req.user.updateEmail(req.fields.email, (err) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'Email has been changed' });
-    });
-});*/
+// router.post('/edit/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res) => {
+//     req.user.setPassword(req.fields.newPassword, (err) => {
+//         if (err)
+//             return (res.status(500).send({ success: false, message: err }));
+//         res.status(200).send({ success: true, message: 'Password has been changed' });
+//     });
+// });
+//
+// router.post('/edit/email', mid.checkLogin, mid.fields([ 'email' ]), (req, res) => {
+//     req.user.updateEmail(req.fields.email, (err) => {
+//         if (err)
+//             return (res.status(500).send({ success: false, message: err }));
+//         res.status(200).send({ success: true, message: 'Email has been changed' });
+//     });
+// });
 
 /**
-* @api {DELETE} /api/user Delete current user
-* @apiName DeleteUser
+* @api {DELETE} /api/user Delete current user (self)
+* @apiName DeleteSelf
 * @apiGroup User
 *
 * @apiParam {String} password User's password.
@@ -269,6 +241,33 @@ router.delete('/', mid.checkLogin, (req, res) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been deleted' });
+    });
+});
+
+/**
+* @api {DELETE} /api/user/:id Delete user by id
+* @apiName DeleteUserById
+* @apiGroup User
+*
+* @apiParam {String} password Current user's password (the password of the one who deletes).
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError IncorrectPassword The password is incorrect.
+*/
+
+router.delete('/:id', mid.checkLogin, (req, res) => {
+    if (!req.params.id)
+        return (res.status(500).send({ success: false, message: 'No params provided' }));
+    User.findById(req.params.id, (err, user) => {
+        if (err)
+            return (res.status(500).send({ success: false, message: err }));
+        user.remove((err, user) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been deleted' });
+        });
     });
 });
 
