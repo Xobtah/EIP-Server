@@ -40,7 +40,7 @@ let UserSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    friends: [ mongoose.Schema.Types.ObjectId ],
+    links: [ mongoose.Schema.Types.ObjectId ],
     bio: {
         type: String,
         default: ''
