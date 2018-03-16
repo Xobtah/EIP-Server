@@ -92,7 +92,16 @@ router.get('/:id', mid.checkUser, (req, res) => {
 router.get('/p/:pattern', mid.checkUser, (req, res) => {
     if (!req.params.pattern)
         return (res.status(403).send({ success: false, message: 'Path param :pattern is empty' }));
-    User.find({ $or: [ { username: /req.params.pattern/i }, { firstName: /req.params.pattern/i }, { lastName: /req.params.pattern/i } ] }, (err, users) => {
+    // User.find({ $or: [ { username: /req.params.pattern/i }, { firstName: /req.params.pattern/i }, { lastName: /req.params.pattern/i } ] }, (err, users) => {
+    //     if (err)
+    //         return (res.status(403).send({ success: false, message: err }));
+    //     if (!users)
+    //         return (res.status(403).send({ success: false, message: 'Users not found' }));
+    //     res.status(200).send({ success: true, message: 'OK', data: users });
+    // });
+    let regexp = { $regex: req.params.pattern, $options: 'i' };
+
+    User.find({ $or: [ { username: regexp }, { firstName: regexp }, { lastName: regexp } ] }, (err, users) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
         if (!users)
