@@ -139,7 +139,7 @@ router.get('/q/:pattern', mid.checkUser, (req, res) => {
 * @apiError UsernameExists The username already exists.
 */
 
-router.put('/', mid.token, mid.fieldsFromModel(User), (req, res) => {
+router.put('/', mid.token, mid.fieldsFromModelAllOptional(User), (req, res) => {
     User.findById(req.token._id, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));

@@ -139,5 +139,20 @@ module.exports = {
                 });
             }, (key) => next({ success: false, status: 403, message: 'Missing key \'' + key + '\' in body' }));
         });
+    },
+    fieldsFromModelAllOptional (model) {
+        let картошка = [];
+
+        for (key in model.schema.paths)
+            картошка.push(model.schema.paths[key].path);
+        return (function (req, res, next) {
+            checkFields(req.body, картошка, (fields) => {
+                if (!req.fields)
+                    req.fields = {};
+                for (key in fields)
+                    req.fields[key] = fields[key];
+                next();
+            });
+        });
     }
 };
