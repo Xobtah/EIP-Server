@@ -10,6 +10,26 @@ let JWT = require('jsonwebtoken');
 let mid = require('./../middlewares');
 
 /**
+* @api {GET} /api/user/debug Get all the users
+* @apiName GetAllUsers
+* @apiGroup User
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object that contains the users.
+*/
+
+router.get('/debug', mid.checkUser, (req, res) => {
+    User.find({}, (err, users) => {
+        if (err)
+            return (res.status(403).send({ success: false, message: err }));
+        if (!users)
+            return (res.status(403).send({ success: false, message: 'User not found' }));
+        res.status(200).send({ success:true, message: 'OK', data: users });
+    });
+});
+
+/**
 * @api {GET} /api/user Get current user's info
 * @apiName GetUser
 * @apiGroup User
