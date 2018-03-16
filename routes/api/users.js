@@ -78,7 +78,7 @@ router.get('/:id', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/user/q/:pattern Get list of users by pattern
+* @api {GET} /api/user/p/:pattern Get list of users by pattern
 * @apiName GetUserByPattern
 * @apiGroup User
 *
@@ -89,15 +89,39 @@ router.get('/:id', mid.checkUser, (req, res) => {
 * @apiSuccess {Object} data List of users, or empty list.
 */
 
-router.get('/q/:pattern', mid.checkUser, (req, res) => {
+router.get('/p/:pattern', mid.checkUser, (req, res) => {
     if (!req.params.pattern)
         return (res.status(403).send({ success: false, message: 'Path param :pattern is empty' }));
     User.find({ $or: [ { username: /req.params.pattern/i }, { firstName: /req.params.pattern/i }, { lastName: /req.params.pattern/i } ] }, (err, users) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
-        if (!user)
+        if (!users)
             return (res.status(403).send({ success: false, message: 'Users not found' }));
-        res.status(200).send({ success:true, message: 'OK', data: users });
+        res.status(200).send({ success: true, message: 'OK', data: users });
+    });
+});
+
+/**
+* @api {GET} /api/user/q/:query Get user by username
+* @apiName GetUserByUsername
+* @apiGroup User
+*
+* @apiParam {String} query The desired user's username.
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data The user, or empty object.
+*/
+
+router.get('/q/:query', mid.checkUser, (req, res) => {
+    if (!req.params.query)
+        return (res.status(403).send({ success: false, message: 'Path param :query is empty' }));
+    User.getUserByUsername(req.params.query, (err, user) => {
+        if (err)
+            return (res.status(403).send({ success: false, message: err }));
+        if (!user)
+            return (res.status(403).send({ success: false, message: 'User ' + req.params.query + ' not found' }));
+        res.status(200).send({ success: true, message: 'OK', data: user });
     });
 });
 
