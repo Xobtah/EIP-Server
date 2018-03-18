@@ -7,3 +7,5 @@ require('./User');
 require('./Post');
 require('./Message');
 require('./Activity');
+require('./SportsHall');
+require('./Notification');
