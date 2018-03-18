@@ -20,7 +20,7 @@ let mid = require('./../middlewares');
 */
 
 router.get('/debug', mid.checkUser, (req, res) => {
-    User.find({}, (err, users) => {
+    User.find({}, req.body, (err, users) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
         if (!users)
@@ -63,6 +63,8 @@ router.get('/', mid.checkUser, (req, res) => {
 * @apiGroup User
 *
 * @apiParam {ID} id The ID of the desired user.
+* @apiParam {Object} fields The keys of the fields contained in this object will be the fields returned. Each value must be 'true'.
+* @apiParam {Object} friendFields The keys of the fields contained in this object will be the fields returned in the friend list. Each value must be 'true'.
 *
 * @apiSuccessExample Success-Response:
 *    HTTP/1.1 200 OK
@@ -85,14 +87,21 @@ router.get('/', mid.checkUser, (req, res) => {
 * @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
-router.get('/:id', mid.checkUser, (req, res) => {
+router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields', 'friendFields' ]), (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Path param :id is empty' }));
-    User.findOne({ _id: req.params.id }, (err, user) => {
+    User.findOne({ _id: req.params.id }, req.body.fields || {}, (err, user) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
         if (!user)
             return (res.status(403).send({ success: false, message: 'User not found' }));
+        if (req.body.friendFields)
+            user.links.forEach((link, index) => {
+                User.findById(link, req.body.friendFields, (err, user) => {
+                    if (!err)
+                        user.links[index] = user;
+                });
+            });
         res.status(200).send({ success:true, message: 'OK', data: user });
     });
 });
@@ -236,9 +245,6 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];
-    user.friends = [];
-    if (req.body.bio)
-        user.bio = req.body.bio;
     user.setPassword(user.password, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));

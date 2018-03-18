@@ -41,6 +41,7 @@ let UserSchema = mongoose.Schema({
         required: true
     },
     links: [ mongoose.Schema.Types.ObjectId ],
+    activities: [ mongoose.Schema.Types.ObjectId ],
     bio: {
         type: String,
         default: ''
@@ -82,7 +83,9 @@ UserSchema.methods.updateEmail = function (email, callback) {
     this.save(callback);
 }
 
-/*UserSchema.pre('save', function (next) {
-});*/
+UserSchema.pre('save', function (next) {
+    if (!this.links)
+        this.links = [];
+});
 
 mongoose.model('User', UserSchema);
