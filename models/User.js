@@ -74,7 +74,7 @@ UserSchema.methods.setPassword = function (password, callback) {
         if (err)
             return (callback('Failed to hash password'));
         this.password = hash;
-        this.save(callback);
+        callback();
     }));
 }
 
@@ -86,6 +86,7 @@ UserSchema.methods.updateEmail = function (email, callback) {
 UserSchema.pre('save', function (next) {
     if (!this.links)
         this.links = [];
+    next();
 });
 
 mongoose.model('User', UserSchema);
