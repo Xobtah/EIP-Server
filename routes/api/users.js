@@ -187,7 +187,6 @@ router.get('/q/:query', mid.checkUser, (req, res) => {
 * @apiParam {String} firstName User's first name.
 * @apiParam {String} lastName User's last name.
 * @apiParam {Date} birthDate User's birth date.
-* @apiParam {String} password User's password.
 * @apiParam {String} bio User's biography.
 * @apiParam {String} coverPic Absolute path to user's cover picture hosted in the server without URL.
 * @apiParam {String} profilePic Absolute path to user's profile picture hosted in the server without URL.
@@ -205,14 +204,43 @@ router.put('/', mid.token, mid.fieldsFromModelAllOptional(User), (req, res) => {
     User.findById(req.token._id, (err, user) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
+        if (!user)
+            return (res.status(500).send({ success: false, message: 'Can not find user' }));
         for (key in req.fields)
-            user[key] = req.fields[key];
-        if (req.fields.password)
-            user.setPassword(req.fields.password);
+            if (key !== 'password')
+                user[key] = req.fields[key];
+        // if (req.fields.password)
+        //     user.setPassword(req.fields.password);
         user.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'User ' + user.username + ' has been updated' });
+        });
+    });
+});
+
+/**
+* @api {PUT} /api/user Update user's password
+* @apiName UpdateUserPassword
+* @apiGroup User
+*
+* @apiParam {String} password User's password.
+* @apiParam {String} newPassword User's new password.
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError IncorrectPasword The password provided is incorrect.
+*/
+
+router.put('/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res) => {
+    req.user.setPassword(req.fields.newPassword, (err) => {
+        if (err)
+            return (res.status(500).send({ success: false, message: err }));
+        req.user.save((err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'User ' + req.user.firstName + ' ' + req.user.lastName + '\' password has been updated' });
         });
     });
 });

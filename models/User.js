@@ -71,10 +71,11 @@ UserSchema.methods.tryPassword = function (password, callback) {
 
 UserSchema.methods.setPassword = function (password, callback) {
     return (bcrypt.hash(password, config.saltRounds || saltRounds, (err, hash) => {
-        if (err)
+        if (err && callback)
             return (callback('Failed to hash password'));
         this.password = hash;
-        callback();
+        if (callback)
+            callback();
     }));
 }
 
