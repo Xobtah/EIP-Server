@@ -240,7 +240,7 @@ router.put('/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res
         req.user.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'User ' + req.user.firstName + ' ' + req.user.lastName + '\' password has been updated' });
+            res.status(200).send({ success: true, message: 'User ' + req.user.firstName + ' ' + req.user.lastName + '\'s password has been updated' });
         });
     });
 });
