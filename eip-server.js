@@ -11,9 +11,6 @@ let express = require('express');
 let app = express();
 let httpServer = require('http').createServer(app);
 
-// ws routing
-let io = require('socket.io')(httpServer);
-
 // middlewares
 let bodyParser = require('body-parser');
 let Morgan = require('morgan');
@@ -31,7 +28,7 @@ require('./models');
 
 // routing
 app.use(require('./routes'));
-io.on('connection', require('./routes/websocket'));
+require('./websocket');
 
 // connect to mongo & run the app
 mongoose.connect(config.mongoURL || 'mongodb://localhost:27017/sportsfun')
