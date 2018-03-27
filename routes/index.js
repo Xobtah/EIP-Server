@@ -18,6 +18,10 @@ router.use((req, res, next) => {
     next();
 });
 
+router.get('/socket', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'test', 'Websocket.html'));
+});
+
 router.use('/api', require('./api'));
 
 router.get('/', (req, res) => {
