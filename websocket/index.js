@@ -10,6 +10,8 @@ let links = new Map();
 let commands = require('./commands');
 
 module.exports = function (httpServer) {
+    if (!httpServer)
+        throw new Error('Empty httpServer!');
     let io = SovietIO(httpServer);
 
     io.on('connection', (socket) => {

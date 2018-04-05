@@ -28,7 +28,7 @@ require('./models');
 
 // routing
 app.use(require('./routes'));
-require('./websocket');
+require('./websocket')(httpServer);
 
 // connect to mongo & run the app
 mongoose.connect(config.mongoURL || 'mongodb://localhost:27017/sportsfun')
