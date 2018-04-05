@@ -19,7 +19,7 @@ module.exports = function (httpServer) {
         let link_id = null;
 
         socket.emit('info', 'You are connected to the server');
-        socket.on('data', require('./data'));
+        socket.on('data', (data) => require('./data')(data, links, socket));
 
         socket.on('command', (data) => {
             if (commands[data.body.command])
