@@ -8,6 +8,30 @@ let Post = require('mongoose').model('Post');
 let mid = require('./../middlewares');
 
 /**
+* @api {GET} /api/post Get user's post feed
+* @apiName GetPostFeed
+* @apiGroup Post
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the post list.
+*/
+
+router.get('/', mid.checkUser, (req, res) => {
+    let postList = [];
+
+    Post.find({ author: req.user._id }).then((data) => {
+        data.forEach(postList.push);
+        req.user.links.forEach((link) => {
+            Post.find({ author: link }).then((data) => {
+                data.forEach(postList.push);
+                res.status(200).send({ success: true, message: 'OK', data: postList });
+            }).catch((err) => res.status(500).send({ success: false, message: err }));
+        });
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
+});
+
+/**
 * @api {GET} /api/post/:id Get post by id
 * @apiName GetPost
 * @apiGroup Post
