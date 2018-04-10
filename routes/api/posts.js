@@ -114,7 +114,7 @@ router.put('/like/:id', mid.checkUser, (req, res) => {
     Post.findById(req.params.id, (err, post) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        post.likes = _.union(post.likes, [ req.user._id ]);
+        post.likes = _.uniq(_.union(post.likes, [ req.user._id ]));
         post.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
