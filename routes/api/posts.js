@@ -20,6 +20,7 @@ let _ = require('lodash');
 
 router.get('/', mid.checkUser, (req, res) => {
     Post.find({ author: { $in: _.union(req.user.links, [ req.user._id ]) } }).then((data) => {
+        data.forEach((post) => Post.count({ parent: post._id }).then((nb) => post.commentNumber = nb));
         res.status(200).send({ success: true, message: 'OK', data: data });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
