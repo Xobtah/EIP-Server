@@ -18,16 +18,10 @@ let mid = require('./../middlewares');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    let postList = [];
-
-    Post.find({ author: req.user._id }).then((data) => {
-        data.forEach(postList.push);
-        req.user.links.forEach((link) => {
-            Post.find({ author: link }).then((data) => {
-                data.forEach(postList.push);
-                res.status(200).send({ success: true, message: 'OK', data: postList });
-            }).catch((err) => res.status(500).send({ success: false, message: err }));
-        });
+    let postListAuthorId = req.user.links;
+    postListAuthorId.push(req.user._id);
+    Post.find({ author: { $in: postListAuthorId } }).then((data) => {
+        res.status(200).send({ success: true, message: 'OK', data: data });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
