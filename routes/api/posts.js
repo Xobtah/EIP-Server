@@ -19,7 +19,7 @@ let _ = require('lodash');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    Post.find({ author: { $in: _.union(req.user.links, [ req.user._id ], _.isEqual) } }).then((data) => {
+    Post.find({ author: { $in: _.union(req.user.links, [ req.user._id ]) } }).then((data) => {
         res.status(200).send({ success: true, message: 'OK', data: data });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
@@ -114,11 +114,14 @@ router.put('/like/:id', mid.checkUser, (req, res) => {
     Post.findById(req.params.id, (err, post) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        post.likes = _.union(post.likes, [ req.user._id ], _.isEqual);
+        if (post.likes.indexOf(req.user._id) < 0)
+            post.likes.push(req.user._id);
+        else
+            post.likes.splice(post.likes.indexOf(req.user._id));
         post.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'Post has been liked' });
+            res.status(200).send({ success: true, message: 'OK' });
         });
     });
 });
