@@ -382,7 +382,7 @@ router.delete('/:id', mid.checkLogin, (req, res) => {
     });
 });
 
-/*
+/**
 * @api {PUT} /api/user/link/:id Follow/Unfollow user
 * @apiName FollowUser
 * @apiGroup User
