@@ -58,11 +58,16 @@ router.get('/', mid.checkUser, (req, res) => {
 */
 
 router.get('/:id', (req, res) => {
-    Post.findById(req.params.id, (err, post) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send(post);
-    });
+    Post.findById(req.params.id).lean().then((post) => {
+        Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
+            post.comments = _.map(idArray, '_id');
+            User.findOne({ _id: post.author }, { username: true }).then((user) => {
+                if (user)
+                    post.author = user;
+                res.status(200).send({ success: true, message: 'OK', data: post });
+            });
+        });
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
