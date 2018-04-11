@@ -117,7 +117,7 @@ router.delete('/:id', (req, res) => {
 });
 
 /**
-* @api {PUT} /api/post/like/:id Like a post
+* @api {PUT} /api/post/like/:id Like/Unlike a post
 * @apiName LikePost
 * @apiGroup Post
 *
