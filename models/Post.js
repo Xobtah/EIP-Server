@@ -6,7 +6,10 @@
 let mongoose = require('mongoose');
 
 let PostSchema = mongoose.Schema({
-    parent: mongoose.Schema.Types.ObjectId,
+    parent: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
+    },
     likes: [ mongoose.Schema.Types.ObjectId ],
     content: {
         type: Object,

@@ -5,8 +5,10 @@
 
 let router = require('express').Router();
 let Post = require('mongoose').model('Post');
+let User = require('mongoose').model('User');
 let mid = require('./../middlewares');
 let _ = require('lodash');
+let async = require('async');
 
 /**
 * @api {GET} /api/post Get user's post feed
@@ -19,9 +21,25 @@ let _ = require('lodash');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    Post.find({ author: { $in: _.union(req.user.links, [ req.user._id ]) } }).then((data) => {
-        data.forEach((post) => Post.count({ parent: post._id }).then((nb) => post.commentNumber = nb));
-        res.status(200).send({ success: true, message: 'OK', data: data });
+    Post.find({ author: { $in: _.union(req.user.links, [ req.user._id ]) }, parent: null }).lean().then((data) => {
+        let func = [];
+        data.forEach((post) => {
+            func.push(function (callback) {
+                Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
+                    post.comments = _.map(idArray, '_id');
+                    User.findOne({ _id: post.author }, { username: true }).then((user) => {
+                        if (user)
+                            post.author = user;
+                        callback();
+                    }).catch(callback);
+                }).catch(callback);
+            });
+        });
+        async.parallel(func, (err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'OK', data });
+        });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
@@ -60,9 +78,10 @@ router.get('/:id', (req, res) => {
 * @apiError FieldMissing One field is missing (probably 'content').
 */
 
-router.post('/', mid.token, mid.fields([ 'content' ]), (req, res) => {
+router.post('/', mid.token, mid.fields([ 'content' ]), mid.optionalFields([ 'parent' ]), (req, res) => {
     let post = new Post();
     post.content = req.fields.content;
+    post.parent = req.fields.parent;
     post.author = req.token._id;
     post.save((err) => {
         if (err)
