@@ -9,3 +9,4 @@ require('./Message');
 require('./Activity');
 require('./SportsHall');
 require('./Notification');
+require('./Training');
