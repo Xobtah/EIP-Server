@@ -13,7 +13,7 @@ let mid = require('./../middlewares');
 * @apiName AddCoachActivities
 * @apiGroup Coach
 *
-* @apiParam {[ ID ]} activities An array of activities ID
+* @apiParam {[ID]} activities An array of activities ID
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
