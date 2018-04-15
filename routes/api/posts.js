@@ -27,7 +27,7 @@ router.get('/', mid.checkUser, (req, res) => {
             func.push(function (callback) {
                 Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
                     post.comments = _.map(idArray, '_id');
-                    User.findOne({ _id: post.author }, { username: true }).then((user) => {
+                    User.findOne({ _id: post.author }, { firstName: true, lastName: true, profilePic: true }).then((user) => {
                         if (user)
                             post.author = user;
                         callback();
@@ -61,7 +61,7 @@ router.get('/:id', (req, res) => {
     Post.findById(req.params.id).lean().then((post) => {
         Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
             post.comments = _.map(idArray, '_id');
-            User.findOne({ _id: post.author }, { username: true }).then((user) => {
+            User.findOne({ _id: post.author }, { firstName: true, lastName: true, profilePic: true }).then((user) => {
                 if (user)
                     post.author = user;
                 res.status(200).send({ success: true, message: 'OK', data: post });
