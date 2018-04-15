@@ -10,6 +10,12 @@ let mid = require('./../middlewares');
 let _ = require('lodash');
 let async = require('async');
 
+let postAuthorData = {
+    firstName: true,
+    lastName: true,
+    profilePic: true
+};
+
 /**
 * @api {GET} /api/post Get user's post feed
 * @apiName GetPostFeed
@@ -27,7 +33,7 @@ router.get('/', mid.checkUser, (req, res) => {
             func.push(function (callback) {
                 Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
                     post.comments = _.map(idArray, '_id');
-                    User.findOne({ _id: post.author }, { firstName: true, lastName: true, profilePic: true }).then((user) => {
+                    User.findOne({ _id: post.author }, postAuthorData).then((user) => {
                         if (user)
                             post.author = user;
                         callback();
@@ -61,7 +67,7 @@ router.get('/:id', (req, res) => {
     Post.findById(req.params.id).lean().then((post) => {
         Post.find({ parent: post._id }, { _id: true }).then((idArray) => {
             post.comments = _.map(idArray, '_id');
-            User.findOne({ _id: post.author }, { firstName: true, lastName: true, profilePic: true }).then((user) => {
+            User.findOne({ _id: post.author }, postAuthorData).then((user) => {
                 if (user)
                     post.author = user;
                 res.status(200).send({ success: true, message: 'OK', data: post });
@@ -149,6 +155,43 @@ router.put('/like/:id', mid.checkUser, (req, res) => {
             res.status(200).send({ success: true, message: 'OK' });
         });
     });
+});
+
+/**
+* @api {GET} /api/post/comments/:id Get all the comments of a given post
+* @apiName PostComments
+* @apiGroup Post
+*
+* @apiParam {Number} id The ID of the post.
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Array containing the comments.
+*
+* @apiError PostNotFound The post was not found.
+* @apiError NoPathParamProvided Path param id wasn't provided.
+*/
+
+router.get('/comments/:id', (req, res) => {
+    if (!req.params.id)
+        return (res.status(400).send({ success: false, message: 'Missing path param id' }));
+    Post.find({ parent: req.params.id }).lean().then((posts) => {
+        let func = [];
+        posts.forEach((post) => {
+            func.push(function (callback) {
+                User.findById(post.author).then((user) => {
+                    if (user)
+                        post.author = user;
+                    callback();
+                }).catch(callback);
+            });
+        });
+        async.parallel(func, (err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'OK', data });
+        });
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 module.exports = router;
