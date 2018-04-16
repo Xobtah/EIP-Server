@@ -4,11 +4,10 @@
 */
 
 let router = require('express').Router();
-let config = require('./../../config');
+let config = require('./../../../config');
 let User = require('mongoose').model('User');
-let Training = require('mongoose').model('Training');
 let JWT = require('jsonwebtoken');
-let mid = require('./../middlewares');
+let mid = require('./../../middlewares');
 
 /**
 * @api {GET} /api/user/debug Get all the users
@@ -420,33 +419,6 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
         });
 });
 
-/**
-* @api {POST} /api/user/train Add a training session for a user
-* @apiName TrainUser
-* @apiGroup User
-*
-* @apiParam {String} name Name of training
-* @apiParam {String} description Description of training
-* @apiParam {[Object]} sequences Array containing the sequences
-*
-* @apiSuccess {Boolean} success True
-* @apiSuccess {String} message Success message.
-*
-* @apiError ServerError The server encountered an unexpected error.
-*/
-
-router.post('/train', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
-    let training = new Training(req.fields);
-    training.save((err, training) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        req.user.activities.push(training._id);
-        req.user.save((err) => {
-            if (err)
-                return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'Training added to user' });
-        });
-    });
-});
+router.use('/training', require('./trainings'));
 
 module.exports = router;

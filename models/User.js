@@ -42,6 +42,7 @@ let UserSchema = mongoose.Schema({
     },
     links: [ mongoose.Schema.Types.ObjectId ],
     activities: [ mongoose.Schema.Types.ObjectId ],
+    trainings: [ mongoose.Schema.Types.ObjectId ],
     bio: {
         type: String,
         default: ''
