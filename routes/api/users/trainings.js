@@ -10,7 +10,7 @@ let mid = require('./../../middlewares');
 /**
 * @api {GET} /api/user/training Get all training sessions for a user
 * @apiName GetTraining
-* @apiGroup User
+* @apiGroup Training
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
@@ -23,9 +23,31 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
+* @api {GET} /api/user/training/:id Get training sessions for a user by id
+* @apiName GetTrainingById
+* @apiGroup Training
+*
+* @apiParam {Number} id The id
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError TrainingNotFound No training found with this id.
+* @apiError NoPathParamProvided Path param id wasn't provided.
+*/
+
+router.get('/:id', mid.checkUser, (req, res) => {
+    if (!req.params.id)
+        return (res.status(400).send({ success: false, message: 'Path param id not provided' }));
+    Training.findOne({ _id: req.params.id })
+        .then((training) => res.status(200).send({ success: true, message: 'OK', data: training }))
+        .catch((err) => res.status(500).send({ success: false, message: err }));
+});
+
+/**
 * @api {POST} /api/user/training Add a training session for a user
 * @apiName TrainUser
-* @apiGroup User
+* @apiGroup Training
 *
 * @apiParam {String} name Name of training
 * @apiParam {String} description Description of training
@@ -52,9 +74,9 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
 });
 
 /**
-* @api {GET} /api/user/training/:id Get training sessions for a user by id
-* @apiName GetTrainingById
-* @apiGroup User
+* @api {PUT} /api/user/training/:id Update training sessions for a user by id
+* @apiName UpdateTraining
+* @apiGroup Training
 *
 * @apiParam {Number} id The id
 *
@@ -65,11 +87,19 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
 * @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
-router.get('/:id', mid.checkUser, (req, res) => {
+router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Training), (req, res) => {
     if (!req.params.id)
         return (res.status(400).send({ success: false, message: 'Path param id not provided' }));
-    Training.findOne({ _id: req.params.id })
-        .then((training) => res.status(200).send({ success: true, message: 'OK', data: training }))
+    Training.findOne({ _id: req.params.id }).lean()
+        .then((training) => {
+            for (key in req.fields)
+                training[key] = req.fields[key];
+            training.save((err, training) => {
+                if (!req.params.id)
+                    return (res.status(500).send({ success: false, message: err }));
+                res.status(200).send({ success: true, message: 'Training updated', data: training });
+            });
+        })
         .catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
