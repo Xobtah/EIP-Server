@@ -90,16 +90,8 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
 router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Training), (req, res) => {
     if (!req.params.id)
         return (res.status(400).send({ success: false, message: 'Path param id not provided' }));
-    Training.findOne({ _id: req.params.id }).lean()
-        .then((training) => {
-            for (key in req.fields)
-                training[key] = req.fields[key];
-            training.save((err, training) => {
-                if (err)
-                    return (res.status(500).send({ success: false, message: err }));
-                res.status(200).send({ success: true, message: 'Training updated', data: training });
-            });
-        })
+    Training.update({ _id: req.params.id }, req.fields)
+        .then(() => res.status(200).send({ success: true, message: 'Training updated' }))
         .catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
