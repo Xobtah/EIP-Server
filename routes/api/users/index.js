@@ -437,7 +437,7 @@ router.put('/training', mid.checkUser, mid.fields([ 'id', 'username' ]), (req, r
     User.getUserByUsername(req.fields.username).then((user) => {
         if (!user)
             return (res.status(500).send({ success: false, message: 'User not found' }));
-        user.trainings = _.union(req.user.trainings, req.fields.id);
+        req.fields.id.forEach((id) => user.trainings.push(id));
         user.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
