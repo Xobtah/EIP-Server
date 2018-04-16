@@ -17,6 +17,7 @@ let mid = require('./../../middlewares');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
+    req.user.trainings.forEach((training, i) => req.user.trainings[i] = mongoose.Types.ObjectId(training));
     Training.find({ _id: { $in: req.user.trainings } })
         .then((trainings) => res.status(500).send({ success: true, message: 'OK', data: trainings }))
         .catch((err) => res.status(500).send({ success: false, message: err }));
