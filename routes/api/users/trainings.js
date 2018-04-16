@@ -95,7 +95,7 @@ router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Training), (req
             for (key in req.fields)
                 training[key] = req.fields[key];
             training.save((err, training) => {
-                if (!req.params.id)
+                if (err)
                     return (res.status(500).send({ success: false, message: err }));
                 res.status(200).send({ success: true, message: 'Training updated', data: training });
             });
