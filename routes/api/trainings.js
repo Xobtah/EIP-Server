@@ -5,7 +5,7 @@
 
 let router = require('express').Router();
 let Training = require('mongoose').model('Training');
-let mid = require('./../../middlewares');
+let mid = require('./../middlewares');
 
 /**
 * @api {GET} /api/training Get all training sessions
