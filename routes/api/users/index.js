@@ -9,6 +9,8 @@ let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
 
+router.use('/training', require('./trainings'));
+
 /**
 * @api {GET} /api/user/debug Get all the users
 * @apiName GetAllUsers
@@ -418,7 +420,5 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
             });
         });
 });
-
-router.use('/training', require('./trainings'));
 
 module.exports = router;
