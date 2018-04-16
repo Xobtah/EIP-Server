@@ -425,10 +425,9 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
 * @apiName TrainUser
 * @apiGroup User
 *
-* @apiParam {ID} activity The ID of the corresponding activity
-* @apiParam {ID} game The ID of the corresponding game
-* @apiParam {String} type Type of training
-* @apiParam {Number} timeSpent Time spent on the training
+* @apiParam {String} name Name of training
+* @apiParam {String} description Description of training
+* @apiParam {[Object]} sequences Array containing the sequences
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.

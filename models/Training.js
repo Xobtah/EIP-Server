@@ -6,23 +6,28 @@
 let mongoose = require('mongoose');
 
 let TrainingSchema = mongoose.Schema({
-    game: {
-        type: mongoose.Schema.Types.ObjectId,
+    name: {
+        type: String,
         required: true
     },
-    type: {
+    description: {
         type: String,
         default: 'sport'
     },
-    timeSpent: Number,
-    date: {
-        type: Date,
-        default: new Date()
-    },
-    activity: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    }
+    sequences: [ {
+        type: {
+            type: String,
+            required: true
+        },
+        totalLength: {
+            type: Number,
+            required: true
+        },
+        effortLength: Number,
+        restLength: Number,
+        iteration: Number
+
+    } ]
 }, { timestamps: true });
 
 mongoose.model('Training', TrainingSchema);
