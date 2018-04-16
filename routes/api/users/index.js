@@ -8,6 +8,7 @@ let config = require('./../../../config');
 let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
+let _ = require('lodash');
 
 /**
 * @api {GET} /api/user/debug Get all the users
