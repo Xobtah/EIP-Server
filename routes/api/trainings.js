@@ -8,7 +8,7 @@ let Training = require('mongoose').model('Training');
 let mid = require('./../../middlewares');
 
 /**
-* @api {GET} /api/user/training Get all training sessions for a user
+* @api {GET} /api/training Get all training sessions
 * @apiName GetTraining
 * @apiGroup Training
 *
@@ -23,7 +23,7 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/user/training/:id Get training sessions for a user by id
+* @api {GET} /api/training/:id Get training sessions by id
 * @apiName GetTrainingById
 * @apiGroup Training
 *
@@ -45,8 +45,8 @@ router.get('/:id', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {POST} /api/user/training Add a training session for a user
-* @apiName TrainUser
+* @api {POST} /api/training Add a training session
+* @apiName PostTraining
 * @apiGroup Training
 *
 * @apiParam {String} name Name of training
@@ -74,7 +74,7 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
 });
 
 /**
-* @api {PUT} /api/user/training/:id Update training sessions for a user by id
+* @api {PUT} /api/training/:id Update training sessions by id
 * @apiName UpdateTraining
 * @apiGroup Training
 *

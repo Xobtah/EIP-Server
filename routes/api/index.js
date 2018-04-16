@@ -11,5 +11,6 @@ router.use('/post', require('./posts'));
 router.use('/message', require('./messages'));
 router.use('/activity', require('./activities'));
 router.use('/notif', require('./notifications'));
+router.use('/training', require('./trainings'));
 
 module.exports = router;

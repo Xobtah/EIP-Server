@@ -9,8 +9,6 @@ let User = require('mongoose').model('User');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
 
-router.use('/training', require('./trainings'));
-
 /**
 * @api {GET} /api/user/debug Get all the users
 * @apiName GetAllUsers
@@ -419,6 +417,26 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
                 res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been inserted' });
             });
         });
+});
+
+/**
+* @api {PUT} /api/user/training Add training to user
+* @apiName UserTraining
+* @apiGroup User
+*
+* @apiParam {[ID]} id Array of training id to add
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*/
+
+router.put('/training', mid.checkUser, mid.fields([ 'id' ]), (req, res) => {
+    req.user.trainings = _.union(req.user.trainings, req.fields.id);
+    req.user.save((err) => {
+        if (err)
+            return (res.status(500).send({ success: false, message: err }));
+        res.status(200).send({ success: true, message: 'User trainings added' });
+    });
 });
 
 module.exports = router;
