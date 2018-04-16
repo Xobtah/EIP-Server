@@ -429,15 +429,21 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
+*
+* @apiError UserNotFound The user have not been found.
 */
 
-router.put('/training', mid.checkUser, mid.fields([ 'id' ]), (req, res) => {
-    req.user.trainings = _.union(req.user.trainings, req.fields.id);
-    req.user.save((err) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'User trainings added' });
-    });
+router.put('/training', mid.checkUser, mid.fields([ 'id', 'username' ]), (req, res) => {
+    User.getUserByUsername(req.fields.username).then((user) => {
+        if (!user)
+            return (res.status(500).send({ success: false, message: 'User not found' }));
+        user.trainings = _.union(req.user.trainings, req.fields.id);
+        user.save((err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'User trainings added' });
+        });
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 module.exports = router;

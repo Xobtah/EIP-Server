@@ -63,7 +63,7 @@ let UserSchema = mongoose.Schema({
 }, { timestamps: true });
 
 UserSchema.statics.getUserByUsername = function (username, callbalk) {
-    this.model('User').findOne({ username: username }, callbalk);
+    return (this.model('User').findOne({ username: username }, callbalk));
 };
 
 UserSchema.methods.tryPassword = function (password, callback) {
