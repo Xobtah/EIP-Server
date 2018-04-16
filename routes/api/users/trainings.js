@@ -9,7 +9,7 @@ let mid = require('./../../middlewares');
 
 /**
 * @api {GET} /api/user/training Get all training sessions for a user
-* @apiName GetUserTraining
+* @apiName GetTraining
 * @apiGroup User
 *
 * @apiSuccess {Boolean} success True
@@ -49,6 +49,28 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
             res.status(200).send({ success: true, message: 'Training added to user' });
         });
     });
+});
+
+/**
+* @api {GET} /api/user/training/:id Get training sessions for a user by id
+* @apiName GetTrainingById
+* @apiGroup User
+*
+* @apiParam {Number} id The id
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError TrainingNotFound No training found with this id.
+* @apiError NoPathParamProvided Path param id wasn't provided.
+*/
+
+router.get('/:id', mid.checkUser, (req, res) => {
+    if (!req.params.id)
+        return (res.status(400).send({ success: false, message: 'Path param id not provided' }));
+    Training.findOne({ _id: req.params.id })
+        .then((training) => res.status(200).send({ success: true, message: 'OK', data: training }))
+        .catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 module.exports = router;
