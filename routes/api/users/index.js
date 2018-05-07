@@ -6,6 +6,7 @@
 let router = require('express').Router();
 let config = require('./../../../config');
 let User = require('mongoose').model('User');
+let Training = require('mongoose').model('Training');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
 let _ = require('lodash');
@@ -55,6 +56,7 @@ router.get('/debug', mid.checkUser, (req, res) => {
 router.get('/', mid.checkUser, (req, res) => {
     if (!req.user)
         return (res.status(403).send({ success: false, message: 'User not found' }));
+    res.user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => req.user.trainings[i] = training));
     res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
@@ -422,7 +424,7 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
 
 /**
 * @api {PUT} /api/user/training Add training to user
-* @apiName UserTraining
+* @apiName AddUserTraining
 * @apiGroup User
 *
 * @apiParam {[ID]} id Array of training id to add
@@ -443,6 +445,30 @@ router.put('/training', mid.checkUser, mid.fields([ 'id', 'username' ]), (req, r
                 return (res.status(500).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'User trainings added' });
         });
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
+});
+
+/**
+* @api {GET} /api/user/t/:id Get user's training by user id
+* @apiName GetUserTraining
+* @apiGroup User
+*
+* @apiParam {ID} id User ID
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*
+* @apiError UserNotFound The user have not been found.
+*/
+
+router.get('/t/:id', (req, res) => {
+    if (!req.params.id)
+        return (res.status(400).send({ success: false, message: 'Missing param id' }));
+    User.findById(req.params.id).then((user) => {
+        if (!user)
+            return (res.status(400).send({ success: false, message: 'User not found' }));
+        user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => user.trainings[i] = training));
+        res.status(200).send({ success: true, message: 'OK', data: user.trainings });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 

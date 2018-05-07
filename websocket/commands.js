@@ -25,15 +25,19 @@ module.exports = {
     start_game (data, links, socket) {
         if (links.has(data.link_id))
             links.get(data.link_id).forEach((link) => {
-                if (link.socket !== socket)
+                if (link.socket !== socket) {
                     link.socket.emit('command', { link_id: data.link_id, body: { command: 'start_game' } });
+                    console.log('LOG: A game started');
+                }
             });
     },
     end_game (data, links, socket) {
         if (links.has(data.link_id))
             links.get(data.link_id).forEach((link) => {
-                if (link.socket !== socket)
+                if (link.socket !== socket) {
                     link.socket.emit('command', { link_id: data.link_id, body: { command: 'end_game' } });
+                    console.log('LOG: A game ended');
+                }
             });
     }
 };

@@ -8,7 +8,8 @@ let mongoose = require('mongoose');
 let TrainingSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String,
@@ -16,7 +17,7 @@ let TrainingSchema = mongoose.Schema({
     },
     sequences: [ {
         type: {
-            type: String,
+            type: Number,
             required: true
         },
         totalLength: {
