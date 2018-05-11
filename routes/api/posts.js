@@ -176,21 +176,28 @@ router.get('/comments/:id', (req, res) => {
     if (!req.params.id)
         return (res.status(400).send({ success: false, message: 'Missing path param id' }));
     Post.find({ parent: req.params.id }).lean().then((posts) => {
-        let func = [];
+        // let func = [];
+        // posts.forEach((post) => {
+        //     func.push(function (callback) {
+        //         User.findById(post.author).then((user) => {
+        //             if (user)
+        //                 post.author = user;
+        //             callback();
+        //         }).catch(callback);
+        //     });
+        // });
+        // async.parallel(func, (err) => {
+        //     if (err)
+        //         return (res.status(500).send({ success: false, message: err }));
+        //     res.status(200).send({ success: true, message: 'OK', data: posts });
+        // });
         posts.forEach((post) => {
-            func.push(function (callback) {
-                User.findById(post.author).then((user) => {
-                    if (user)
-                        post.author = user;
-                    callback();
-                }).catch(callback);
+            User.findById(post.author).then((user) => {
+                if (user)
+                    post.author = user;
             });
         });
-        async.parallel(func, (err) => {
-            if (err)
-                return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'OK', data });
-        });
+        res.status(200).send({ success: true, message: 'OK', data: posts });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
