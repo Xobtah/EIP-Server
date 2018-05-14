@@ -191,10 +191,10 @@ router.get('/comments/:id', (req, res) => {
         //         return (res.status(500).send({ success: false, message: err }));
         //     res.status(200).send({ success: true, message: 'OK', data: posts });
         // });
-        posts.forEach((post) => {
-            User.findById(post.author).then((user) => {
+        posts.forEach((post, i) => {
+            User.findById(post.author, postAuthorData).then((user) => {
                 if (user)
-                    post.author = user;
+                    posts[i].author = user;
             });
         });
         res.status(200).send({ success: true, message: 'OK', data: posts });

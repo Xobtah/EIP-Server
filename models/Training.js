@@ -13,7 +13,7 @@ let TrainingSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        default: 'sport'
+        default: ''
     },
     sequences: [ {
         type: {

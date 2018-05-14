@@ -6,6 +6,7 @@
 let router = require('express').Router();
 let Training = require('mongoose').model('Training');
 let mid = require('./../middlewares');
+let _ = require('lodash');
 
 /**
 * @api {GET} /api/training Get all training sessions
@@ -93,6 +94,23 @@ router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Training), (req
     Training.update({ _id: req.params.id }, req.fields)
         .then(() => res.status(200).send({ success: true, message: 'Training updated' }))
         .catch((err) => res.status(500).send({ success: false, message: err }));
+});
+
+/**
+* @api {DELETE} /api/training Remove trainings
+* @apiName RemoveTraining
+* @apiGroup Training
+*
+* @apiParam {[ID]} id Array of id
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*/
+
+router.delete('/', mid.checkUser, mid.fields('id'), (req, res) => {
+    req.user.trainings = _.difference(req.user.trainings, req.fields.id);
+    Training.find({ _id: { $in: req.fields.id } }).remove().exec();
+    res.status(200).send({ success: true, message: 'OK' });
 });
 
 module.exports = router;
