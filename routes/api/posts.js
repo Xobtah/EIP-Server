@@ -176,32 +176,28 @@ router.get('/comments/:id', (req, res) => {
     if (!req.params.id)
         return (res.status(400).send({ success: false, message: 'Missing path param id' }));
     Post.find({ parent: req.params.id }).lean().then((posts) => {
-        // let func = [];
-        // posts.forEach((post) => {
-        //     func.push(function (callback) {
-        //         User.findById(post.author).then((user) => {
-        //             if (user)
-        //                 post.author = user;
-        //             callback();
-        //         }).catch(callback);
-        //     });
-        // });
-        // async.parallel(func, (err) => {
-        //     if (err)
-        //         return (res.status(500).send({ success: false, message: err }));
-        //     res.status(200).send({ success: true, message: 'OK', data: posts });
-        // });
-        posts.forEach((post, i) => {
-<<<<<<< HEAD
-            User.findById(post.author).then((user) => {
-=======
-            User.findById(post.author, postAuthorData).then((user) => {
->>>>>>> 1e4de0a46aa96ecf77b8fe93adccd3d14e29545b
-                if (user)
-                    posts[i].author = user;
+        let func = [];
+        posts.forEach((post) => {
+            func.push(function (callback) {
+                User.findById(post.author, postAuthorData).then((user) => {
+                    if (user)
+                        post.author = user;
+                    callback();
+                }).catch(callback);
             });
         });
-        res.status(200).send({ success: true, message: 'OK', data: posts });
+        async.parallel(func, (err) => {
+            if (err)
+                return (res.status(500).send({ success: false, message: err }));
+            res.status(200).send({ success: true, message: 'OK', data: posts });
+        });
+        // posts.forEach((post) => {
+        //     User.findById(post.author, postAuthorData).then((user) => {
+        //         if (user)
+        //             post.author = user;
+        //     }).catch((err) => post.author = "User not found");
+        // });
+        // res.status(200).send({ success: true, message: 'OK', data: posts });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
