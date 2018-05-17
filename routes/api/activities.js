@@ -86,4 +86,21 @@ router.put('/:id', mid.optionalFields([ 'game', 'type', 'timeSpent', 'date' ]), 
     });
 });
 
+/**
+* @api {DELETE} /api/activity Remove activities
+* @apiName RemoveActivities
+* @apiGroup Activity
+*
+* @apiParam {[ID]} id Array of id
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*/
+
+router.delete('/', mid.checkUser, mid.fields('id'), (req, res) => {
+    req.user.activities = _.difference(req.user.activities, req.fields.id);
+    Activity.find({ _id: { $in: req.fields.id } }).remove().exec();
+    res.status(200).send({ success: true, message: 'OK' });
+});
+
 module.exports = router;
