@@ -44,7 +44,7 @@
 					"raw": "{\n\t\"username\": \"Notch\",\n\t\"password\": \"ididnotcreateminecraft\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/register",
+					"raw": "149.202.41.22:8080/api/user",
 					"host": [
 						"149",
 						"202",
@@ -54,8 +54,7 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"user",
-						"register"
+						"user"
 					]
 				}
 			},
@@ -98,7 +97,7 @@
 					"raw": "{\n\t\"username\": \"Notch\",\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"firstName\": \"Markus\",\n\t\"lastName\": \"Person\",\n\t\"birthDate\": \"Sat Feb 10 2018 14:54:40 GMT-0500 (EST)\",\n\t\"email\": \"notch@mojang.com\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/register",
+					"raw": "149.202.41.22:8080/api/user",
 					"host": [
 						"149",
 						"202",
@@ -108,8 +107,7 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"user",
-						"register"
+						"user"
 					]
 				}
 			},
@@ -121,12 +119,12 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3d2f696f-e7b0-434c-a08d-1b64ad9d7792",
+						"id": "496a34b4-0ca7-4042-9795-fe819f533e87",
 						"type": "text/javascript",
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
 							"",
-							"//postman.setGlobalVariable('token', jsonData.data.token);",
+							"//postman.setEnvironmentVariable(\"token\", jsonData.data.token);",
 							"pm.globals.set('token', jsonData.data.token);",
 							"",
 							"pm.test('Status code is 200', function () {",
@@ -209,7 +207,7 @@
 				}
 			],
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -222,10 +220,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"password\": \"thecakeisalie\",\n\t\"newPassword\": \"stillalive\"\n}"
+					"raw": "{\n\t\"password\": \"stillalive\",\n\t\"newPassword\": \"stillalive\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/edit/password",
+					"raw": "149.202.41.22:8080/api/user/password",
 					"host": [
 						"149",
 						"202",
@@ -236,7 +234,6 @@
 					"path": [
 						"api",
 						"user",
-						"edit",
 						"password"
 					]
 				},
@@ -260,7 +257,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "64c9e4ec-c26e-437e-92a3-8126260eb4e5",
+						"id": "491ddbf5-ec55-46b6-a942-90e67068a00f",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test('Status code is 200', function () {",
@@ -268,7 +265,80 @@
 							"});",
 							"",
 							"pm.test('Correct response error', function () {",
-							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Password has been changed');",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User Markus Person\\'s password has been updated');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"newPassword\": \"icreatedminecraft\"\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/password",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"password"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create new post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "51cf0175-9356-4ed2-9450-607a6f455076",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.globals.set('postId', jsonData.data._id);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Good response', function () {",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Post has been inserted');",
 							"});",
 							"",
 							"pm.test('Success is true', function () {",
@@ -292,10 +362,497 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"password\": \"ididnotcreateminecraft\",\n\t\"newPassword\": \"icreatedminecraft\"\n}"
+					"raw": "{\n\t\"content\": \"Hello World from test runner!\"\n}"
 				},
 				"url": {
-					"raw": "149.202.41.22:8080/api/user/edit/password",
+					"raw": "149.202.41.22:8080/api/post",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get created post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8b426c9c-17ca-48d8-8527-68cd97a48c8d",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});",
+							"",
+							"pm.test('Good content', function () {",
+							"    pm.expect(JSON.parse(responseBody).data.content).to.be.equal('Hello World from test runner!');",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"content\": \"Hello World from test runner!\"\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post/{{postId}}",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"{{postId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Liking a post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "386e157d-3d8c-4628-b599-3baef254ba75",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post/like/{{postId}}",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"like",
+						"{{postId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Liking a post copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "386e157d-3d8c-4628-b599-3baef254ba75",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post/like/{{postId}}",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"like",
+						"{{postId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Comment on post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "68108e49-143f-44be-a688-4057c71d8caa",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.globals.set('commentId', jsonData.data._id);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Good response', function () {",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Post has been inserted');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"content\": \"Comment from test runner!\",\n\t\"parent\": \"{{postId}}\"\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get post comments",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e50f9a03-998b-45d5-add8-ce6b3fbd72c9",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"content\": \"Comment from test runner!\",\n\t\"parent\": {{postId}}\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post/comments/{{postId}}",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"comments",
+						"{{postId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "15118d62-b97d-4164-89c1-eadb29dec638",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Good response', function () {",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('Post has been deleted');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/post/{{postId}}",
+					"host": [
+						"149",
+						"202",
+						"41",
+						"22"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"post",
+						"{{postId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Add training to user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dd05c6-599e-43f1-9bb7-33ec24fd49ef",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('token', postman.getGlobalVariable('token'));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f36ed4c9-b2d5-4183-85f7-46146d293d1a",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.expect(pm.response.code).to.be.equal(200);",
+							"});",
+							"",
+							"pm.test('Good response', function () {",
+							"    pm.expect(JSON.parse(responseBody).message).to.be.equal('User trainings added');",
+							"});",
+							"",
+							"pm.test('Success is true', function () {",
+							"    pm.expect(JSON.parse(responseBody).success).to.be.equal(true);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": [ \"{{postId}}\" ],\n\t\"username\": \"Notch\"\n}"
+				},
+				"url": {
+					"raw": "149.202.41.22:8080/api/user/training",
 					"host": [
 						"149",
 						"202",
@@ -306,8 +863,7 @@
 					"path": [
 						"api",
 						"user",
-						"edit",
-						"password"
+						"training"
 					]
 				},
 				"description": ""
