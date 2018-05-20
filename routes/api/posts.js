@@ -94,10 +94,10 @@ router.post('/', mid.token, mid.fields([ 'content' ]), mid.optionalFields([ 'par
     post.content = req.fields.content;
     post.parent = req.fields.parent;
     post.author = req.token._id;
-    post.save((err) => {
+    post.save((err, post) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'Post has been inserted' });
+        res.status(200).send({ success: true, message: 'Post has been inserted', data: { _id: post._id } });
     });
 });
 
