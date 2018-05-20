@@ -23,11 +23,13 @@ module.exports = function (httpServer) {
 
         socket.on('command', (data) => {
 	    console.log('Received packet on channel "command": ' + JSON.stringify(data));
-	    if (!data) socket.emit('error', 'Missing data');
-	    if (!data.body) socket.emit('error', 'Missing body in data');
-	    if (!data.body.command) socket.emit('error', 'Missing command in body in data');
-            if (data && data.body && commands[data.body.command])
+	    if (!data) return (socket.emit('error', 'Missing data'));
+	    if (!data.body) return (socket.emit('error', 'Missing body in data'));
+	    if (!data.body.command) return (socket.emit('error', 'Missing command in body in data'));
+            if (commands[data.body.command])
                 commands[data.body.command](data, links, socket);
+	    else
+		socket.emit('error', 'Unknown command: ' + data.body.command);
         });
 
         socket.on('error', () => console.log('Received event on channel error'));

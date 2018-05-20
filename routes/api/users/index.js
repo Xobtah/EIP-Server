@@ -223,7 +223,7 @@ router.put('/', mid.token, mid.fieldsFromModelAllOptional(User), (req, res) => {
 });
 
 /**
-* @api {PUT} /api/user Update user's password
+* @api {PUT} /api/user/password Update user's password
 * @apiName UpdateUserPassword
 * @apiGroup User
 *
