@@ -428,6 +428,7 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
 * @apiGroup User
 *
 * @apiParam {[ID]} id Array of training id to add
+* @apiParam {String} username The username of the user to add the training
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
