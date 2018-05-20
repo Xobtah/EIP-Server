@@ -4,7 +4,7 @@ SportsFun EIP's server application
 ## How to use
 First, you must install NodeJS (v8.2.1) & g++ (we're using ES6).
 For instance, with a Linux OS using apt-get :
-> sudo apt-get install nodejs g++
+> sudo apt-get install nodejs build-essential
 
 > sudo npm i -g n
 
