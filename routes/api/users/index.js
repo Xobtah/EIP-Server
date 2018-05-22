@@ -56,7 +56,7 @@ router.get('/debug', mid.checkUser, (req, res) => {
 router.get('/', mid.checkUser, (req, res) => {
     if (!req.user)
         return (res.status(403).send({ success: false, message: 'User not found' }));
-    req.user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => req.user.trainings[i] = training));
+    req.user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => req.user.trainings[index] = training));
     res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
