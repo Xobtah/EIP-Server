@@ -22,6 +22,7 @@ module.exports = function (httpServer) {
         socket.on('data', (data) => require('./data')(data, links, socket));
 
         socket.on('command', (data) => {
+	    if (typeof(data) === "string") data = JSON.parse(data);
 	    console.log('Received packet on channel "command": ' + JSON.stringify(data));
 	    if (!data) return (socket.emit('error', 'Missing data'));
 	    if (!data.body) return (socket.emit('error', 'Missing body in data'));
