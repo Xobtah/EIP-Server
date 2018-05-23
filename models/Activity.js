@@ -11,7 +11,7 @@ let ActivitySchema = mongoose.Schema({
         required: true
     },
     game: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         required: true
     },
     type: {
