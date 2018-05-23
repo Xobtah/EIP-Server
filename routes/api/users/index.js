@@ -92,9 +92,7 @@ router.get('/', mid.checkUser, (req, res) => {
 router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Path param :id is empty' }));
-    User.findOne({ _id: req.params.id }, req.body.fields || {}, (err, user) => {
-        if (err)
-            return (res.status(403).send({ success: false, message: err }));
+    User.findOne({ _id: req.params.id }, req.body.fields || {}).lean().then((user) => {
         if (!user)
             return (res.status(403).send({ success: false, message: 'User not found' }));
         if (Object.keys(req.query).length)
@@ -105,7 +103,7 @@ router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) =
                 });
             });
         res.status(200).send({ success:true, message: 'OK', data: user });
-    });
+    }).catch((err) => res.status(403).send({ success: false, message: err }));
 });
 
 /**
