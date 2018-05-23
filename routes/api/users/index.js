@@ -10,6 +10,7 @@ let Training = require('mongoose').model('Training');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
 let _ = require('lodash');
+let async = require('async');
 
 /**
 * @api {GET} /api/user/debug Get all the users
@@ -92,17 +93,32 @@ router.get('/', mid.checkUser, (req, res) => {
 router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Path param :id is empty' }));
-    User.findOne({ _id: req.params.id }, req.body.fields || {}).lean().then((user) => {
+    User.findOne({ _id: req.params.id }).lean().then((user) => {
         if (!user)
             return (res.status(403).send({ success: false, message: 'User not found' }));
-        if (Object.keys(req.query).length)
-            user.links.forEach((link, index) => {
-                User.findById(link, req.query, (err, user) => {
-                    if (!err)
-                        user.links[index] = user;
+        // if (Object.keys(req.query).length && user.links)
+        //     user.links.forEach((link, i) => {
+        //         User.findById(link, req.query, (err, user2) => {
+        //             if (!err)
+        //                 user.links[i] = user2;
+        //         });
+        //     });
+        if (Object.keys(req.query).length && user.links) {
+            let funcs = [];
+            user.links.forEach((link, i) => {
+                funcs.push(function (callback) {
+                    User.findById(link, req.query, (err, user2) => {
+                        if (!err)
+                            user.links[i] = user2;
+                        callback();
+                    }).catch(callback);
                 });
             });
-        res.status(200).send({ success:true, message: 'OK', data: user });
+            async.parallel(funcs, (err) => {
+                res.status(200).send({ success:true, message: 'OK', data: user });
+            });
+        }
+        // res.status(200).send({ success:true, message: 'OK', data: user });
     }).catch((err) => res.status(403).send({ success: false, message: err }));
 });
 
@@ -414,7 +430,7 @@ router.put('/link/:id', mid.checkUser, (req, res) => {
             req.user.save((err) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been inserted' });
+                res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been followed' });
             });
         });
 });
