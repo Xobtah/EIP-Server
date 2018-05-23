@@ -67,7 +67,6 @@ router.get('/', mid.checkUser, (req, res) => {
 *
 * @apiParam {ID} id The ID of the desired user.
 * @apiParam {Object} fields The keys of the fields contained in this object will be the fields returned. Each value must be 'true'.
-* @apiParam {Object} friendFields The keys of the fields contained in this object will be the fields returned in the friend list. Each value must be 'true'.
 *
 * @apiSuccessExample Success-Response:
 *    HTTP/1.1 200 OK
@@ -90,7 +89,7 @@ router.get('/', mid.checkUser, (req, res) => {
 * @apiError NoPathParamProvided Path param id wasn't provided.
 */
 
-router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields', 'friendFields' ]), (req, res) => {
+router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Path param :id is empty' }));
     User.findOne({ _id: req.params.id }, req.body.fields || {}, (err, user) => {
@@ -98,9 +97,9 @@ router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields', 'friendFields' 
             return (res.status(403).send({ success: false, message: err }));
         if (!user)
             return (res.status(403).send({ success: false, message: 'User not found' }));
-        if (req.body.friendFields)
+        if (Object.keys(req.query).length)
             user.links.forEach((link, index) => {
-                User.findById(link, req.body.friendFields, (err, user) => {
+                User.findById(link, req.query, (err, user) => {
                     if (!err)
                         user.links[index] = user;
                 });

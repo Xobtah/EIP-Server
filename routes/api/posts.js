@@ -82,6 +82,7 @@ router.get('/:id', (req, res) => {
 * @apiGroup Post
 *
 * @apiParam {String} content Post's content.
+* @apiParam {ID} parent Post's parent (for posting comments).
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
