@@ -28,7 +28,7 @@ router.get('/', mid.checkUser, (req, res) => {
 * @apiName GetTrainingById
 * @apiGroup Training
 *
-* @apiParam {Number} id The id
+* @apiParam {Number} id The training's id
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
@@ -79,7 +79,7 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Training), (req, res) => {
 * @apiName UpdateTraining
 * @apiGroup Training
 *
-* @apiParam {Number} id The id
+* @apiParam {Number} id The training's id
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
