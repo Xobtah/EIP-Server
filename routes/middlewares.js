@@ -43,12 +43,26 @@ function checkUserPassword(req, res, next) {
     });
 }
 
-function checkRoles(roles) {
-    if (!req.user)
+function checkAllRoles(user, roles, next) {
+    if (!user)
         next({ success: false, status: 500, message: 'User variable not set' });
-    if (!req.user.roles || !req.user.roles.length)
+    if (!user.roles || !user.roles.length)
         next({ success: false, status: 403, message: 'User has no roles' });
-    if (!roles.every((role) => { return (req.user.roles.indexOf(role) >= 0); }))
+    if (!roles.every((role) => { return (user.roles.indexOf(role) >= 0); }))
+        next({ success: false, status: 403, message: 'User not allowed' });
+    else
+        next();
+}
+
+function checkOneRole(user, roles, next) {
+    let isOk = false;
+
+    if (!user)
+        next({ success: false, status: 500, message: 'User variable not set' });
+    if (!user.roles || !user.roles.length)
+        next({ success: false, status: 403, message: 'User has no roles' });
+    roles.forEach((role) => { if (user.roles.indexOf(role) >= 0) isOk = true; });
+    if (!isOk)
         next({ success: false, status: 403, message: 'User not allowed' });
     else
         next();
@@ -95,7 +109,16 @@ module.exports = {
         setTokenFromBody,
         setUserFromToken
     ],
-    roles: checkRoles,
+    allRoles (roles) {
+        return ([ setTokenFromBody, setUserFromToken, function (req, res, next) {
+            checkAllRoles(req.user, roles, next);
+        } ]);
+    },
+    oneRole (roles) {
+        return ([ setTokenFromBody, setUserFromToken, function (req, res, next) {
+            checkOneRole(req.user, roles, next);
+        } ]);
+    },
     fields (neededFields) {
         return (function (req, res, next) {
             checkFields(req.body, neededFields, (fields) => {

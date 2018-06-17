@@ -194,6 +194,7 @@ router.delete('/', mid.checkLogin, (req, res) => {
 * @api {DELETE} /api/user/:id Delete user by id
 * @apiName DeleteUserById
 * @apiGroup User
+* @apiDescription User must have at least one of the following roles: [ 'admin' ]
 *
 * @apiParam {String} password Current user's password (the password of the one who deletes).
 *
@@ -203,7 +204,7 @@ router.delete('/', mid.checkLogin, (req, res) => {
 * @apiError IncorrectPassword The password is incorrect.
 */
 
-router.delete('/:id', mid.checkLogin, (req, res) => {
+router.delete('/:id', mid.oneRole([ 'admin' ]), mid.checkLogin, (req, res) => {
     if (!req.params.id)
         return (res.status(500).send({ success: false, message: 'No params provided' }));
     User.findById(req.params.id, (err, user) => {
@@ -212,7 +213,7 @@ router.delete('/:id', mid.checkLogin, (req, res) => {
         user.remove((err, user) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been deleted' });
+            res.status(200).send({ success: true, message: 'User has been deleted' });
         });
     });
 });

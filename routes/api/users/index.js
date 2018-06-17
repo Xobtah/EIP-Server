@@ -16,7 +16,7 @@ router.use('/', require('./crud'));
 router.use('/training', require('./training'));
 router.use('/link', require('./link'));
 
-/**
+/*
 * @api {GET} /api/user/debug Get all the users
 * @apiName GetAllUsers
 * @apiGroup User
@@ -26,7 +26,7 @@ router.use('/link', require('./link'));
 * @apiSuccess {Object} data Object that contains the users.
 */
 
-router.get('/debug', mid.checkUser, (req, res) => {
+/*router.get('/debug', mid.checkUser, (req, res) => {
     User.find({}, req.body, (err, users) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
@@ -34,7 +34,7 @@ router.get('/debug', mid.checkUser, (req, res) => {
             return (res.status(403).send({ success: false, message: 'User not found' }));
         res.status(200).send({ success:true, message: 'OK', data: users });
     });
-});
+});*/
 
 /**
 * @api {GET} /api/user/p/:pattern Get list of users by pattern
@@ -51,13 +51,6 @@ router.get('/debug', mid.checkUser, (req, res) => {
 router.get('/p/:pattern', mid.checkUser, (req, res) => {
     if (!req.params.pattern)
         return (res.status(403).send({ success: false, message: 'Path param :pattern is empty' }));
-    // User.find({ $or: [ { username: /req.params.pattern/i }, { firstName: /req.params.pattern/i }, { lastName: /req.params.pattern/i } ] }, (err, users) => {
-    //     if (err)
-    //         return (res.status(403).send({ success: false, message: err }));
-    //     if (!users)
-    //         return (res.status(403).send({ success: false, message: 'Users not found' }));
-    //     res.status(200).send({ success: true, message: 'OK', data: users });
-    // });
     let regexp = { $regex: req.params.pattern, $options: 'i' };
 
     User.find({ $or: [ { username: regexp }, { firstName: regexp }, { lastName: regexp } ] }, (err, users) => {
@@ -154,10 +147,10 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         if (!user)
-            return (res.status(500).send({ success: false, message: 'User \'' + req.fields.username + '\' does not exist' }));
+            return (res.status(403).send({ success: false, message: 'Access forbidden' }));
         user.tryPassword(req.fields.password).then((samePassword) => {
             if (!samePassword)
-                return (res.status(403).send({ success: false, message: 'Incorrect password' }));
+                return (res.status(403).send({ success: false, message: 'Access forbidden' }));
             JWT.sign({ _id: user._id }, config.secret || 'secret', (err, token) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
