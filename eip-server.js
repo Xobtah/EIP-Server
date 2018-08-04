@@ -10,6 +10,7 @@ let config = require('./config');
 let express = require('express');
 let app = express();
 let httpServer = require('http').createServer(app);
+let fileUpload = require('express-fileupload');
 
 // middlewares
 let bodyParser = require('body-parser');
@@ -22,6 +23,7 @@ let mongoose = require('mongoose');
 app.use(Morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(fileUpload());
 
 // adding models
 require('./models');

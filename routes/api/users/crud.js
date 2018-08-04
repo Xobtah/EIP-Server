@@ -7,6 +7,8 @@ let router = require('express').Router();
 let config = require('./../../../config');
 let User = require('mongoose').model('User');
 let mid = require('./../../middlewares');
+let fs = require('fs');
+let path = require('path');
 
 /**
 * @api {GET} /api/user Get current user's info
@@ -118,6 +120,14 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];
+    if (req.fields.profilePic) {
+        req.fields.profilePic.mv(path.join('/', 'public', 'assets', req.files.profilePic.name));
+        user.profilePic = path.join('/', 'static', req.files.profilePic.name);
+    }
+    if (req.fields.coverPic) {
+        req.fields.coverPic.mv(path.join('/', 'public', 'assets', req.files.coverPic.name));
+        user.coverPic = path.join('/', 'static', req.files.coverPic.name);
+    }
     user.setPassword(user.password, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
