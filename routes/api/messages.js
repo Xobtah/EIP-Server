@@ -18,12 +18,29 @@ let mid = require('./../middlewares');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    Message.find({ author: req.token._id }).distinct('to', (error, ids) => {
-        //Message.find({ author: req.token._id, to: { $in: ids } }, (err, messages) => {
-        Message.find({ author: req.token._id, to: { $in: ids } }).sort('-createdAt').exec((err, messages) => {
+    // Message.find({ author: req.token._id }).distinct('to', (error, ids) => {
+    //     //Message.find({ author: req.token._id, to: { $in: ids } }, (err, messages) => {
+    //     Message.find({ author: req.token._id, to: { $in: ids } }).sort('-createdAt').exec((err, messages) => {
+    //         if (err)
+    //             return (res.status(500).send({ success: false, message: err }));
+    //         res.status(200).send({ success: true, message: 'OK', data: messages });
+    //     });
+    // });
+    Message.find({ author: req.token._id }).distinct('to', (err, toIds) => {
+        if (err)
+            return (res.status(500).send({ success: false, message: err }));
+        Message.find({ to: req.token._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'OK', data: messages });
+            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').exec((err, toMessages) => {
+                if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').exec((err, fromMessages) => {
+                    if (err)
+                        return (res.status(500).send({ success: false, message: err }));
+                    res.status(200).send({ success: true, message: 'OK', data: _.union(toMessages, fromMessages) });
+                });
+            });
         });
     });
 });
