@@ -12,6 +12,7 @@ module.exports = {
     //     });
     // },
     link (data, links, socket) {
+        socket.link_id = data.link_id;
         if (links.has(data.link_id)) {
             links.get(data.link_id).push({ type: data.body.type, socket });
             links.get(data.link_id).forEach((link) => {
