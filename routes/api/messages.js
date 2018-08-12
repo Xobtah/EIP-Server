@@ -6,6 +6,7 @@
 let router = require('express').Router();
 let Message = require('mongoose').model('Message');
 let mid = require('./../middlewares');
+let _ = require('lodash');
 
 /**
 * @api {GET} /api/message Get last messages from each of the user's conversations
