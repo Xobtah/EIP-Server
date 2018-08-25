@@ -6,6 +6,7 @@
 let router = require('express').Router();
 let config = require('./../../../config');
 let User = require('mongoose').model('User');
+let Training = require('mongoose').model('Training');
 let mid = require('./../../middlewares');
 let fs = require('fs');
 let path = require('path');

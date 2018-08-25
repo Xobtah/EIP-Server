@@ -117,9 +117,13 @@ router.post('/', mid.token, mid.fields([ 'content' ]), mid.optionalFields([ 'par
 */
 
 router.delete('/:id', (req, res) => {
+    if (!req.params.id)
+        return (res.status(403).send({ success: false, message: 'Missing id field' }));
     Post.findById(req.params.id, (err, post) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
+        if (!post)
+            return (res.status(403).send({ success: false, message: 'Post ' + req.params.id + ' not found' }));
         post.remove((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
