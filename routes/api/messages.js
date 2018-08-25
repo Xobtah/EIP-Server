@@ -63,11 +63,15 @@ router.get('/', mid.checkUser, (req, res) => {
 router.get('/:id', mid.token, mid.checkUser, (req, res) => {
     if (!req.params.id)
         return (req.status(403).send({ success: false, message: 'Missing path param id' }));
-    Message.find({ author: req.token._id, to: req.params.id }, (err, messages) => {
-        if (err)
-            return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'OK', data: messages });
-    });
+    Message.find({ author: req.token._id, to: req.params.id })
+        .then((messagesTo) => {
+            Message.find({ author: req.params.id, to: req.token._id })
+                .then((messagesFrom) => {
+                    res.status(200).send({ success: true, message: 'OK', data: _.union(messagesTo, messagesFrom) });
+                })
+                .catch((err) => res.status(500).send({ success: false, message: err }))
+        })
+        .catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
