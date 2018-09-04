@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  sportsfun-server:
+    build: .
+    container_name: sportsfun-server
+    external_links:
+      - mongodb:mdb
+    ports:
+      - 8080:8080
+    networks:
+      - mongodb
+
+networks:
+  mongodb:
+    external:
+      name: mongodb
