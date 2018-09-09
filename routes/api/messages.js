@@ -37,7 +37,7 @@ router.get('/', mid.checkUser, (req, res) => {
 		    let tasks = [];
 		    messages.forEach((elem, i) => {
 			tasks.push(function (callback) {
-			    User.find({ _id: elem.author }, { firstName: true, lastName: true, profilePic: true }).then((author) => {
+			    User.findById(elem.author, { firstName: true, lastName: true, profilePic: true }).then((author) => {
 				messages[i].author = { firstName: author.firstName, lastName: author.lastName, profilePic: author.profilePic };
 				callback();
 			    }).catch(callback);
@@ -78,7 +78,7 @@ router.get('/:id', mid.token, mid.checkUser, (req, res) => {
 	    let tasks = [];
 	    messages.forEach((elem, i) => {
 		tasks.push(function (callback) {
-		    User.find({ _id: elem.author }).then((author) => {
+		    User.findById(elem.author, { firstName: true, lastName: true, profilePic: true }).then((author) => {
 			messages[i].author = { firstName: author.firstName, lastName: author.lastName, profilePic: author.profilePic };
 			callback();
 		    }).catch(callback);
