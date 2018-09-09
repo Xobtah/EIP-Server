@@ -87,9 +87,11 @@ router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) =
                 });
             });
             async.parallel(funcs, (err) => {
-                res.status(200).send({ success:true, message: 'OK', data: user });
+                res.status(200).send({ success: true, message: 'OK', data: user });
             });
         }
+	else
+            res.status(200).send({ success: true, message: 'OK', data: user });
     }).catch((err) => res.status(403).send({ success: false, message: err }));
 });
 
