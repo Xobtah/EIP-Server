@@ -10,6 +10,8 @@ let mid = require('./../middlewares');
 let _ = require('lodash');
 let async = require('async');
 
+let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
+
 /**
 * @api {GET} /api/message Get last messages from each of the user's conversations
 * @apiName GetMessageSnapshots
@@ -37,9 +39,12 @@ router.get('/', mid.checkUser, (req, res) => {
 		    let tasks = [];
 		    messages.forEach((elem, i) => {
 			tasks.push(function (callback) {
-			    User.findById(elem.author, { firstName: true, lastName: true, profilePic: true }).then((author) => {
-				messages[i].author = { firstName: author.firstName, lastName: author.lastName, profilePic: author.profilePic };
-				callback();
+			    User.findById(elem.author, usrData).then((author) => {
+				User.findById(elem.to, usrData).then((to) => {
+				    messages[i].author = author;
+				    messages[i].to = to;
+				    callback();
+				}).catch(callback);
 			    }).catch(callback);
 			});
 		    });
@@ -78,9 +83,12 @@ router.get('/:id', mid.token, mid.checkUser, (req, res) => {
 	    let tasks = [];
 	    messages.forEach((elem, i) => {
 		tasks.push(function (callback) {
-		    User.findById(elem.author, { firstName: true, lastName: true, profilePic: true }).then((author) => {
-			messages[i].author = { firstName: author.firstName, lastName: author.lastName, profilePic: author.profilePic };
-			callback();
+		    User.findById(elem.author, usrData).then((author) => {
+			User.findById(elem.to, usrData).then((to) => {
+			    messages[i].author = author;
+			    messages[i].to = to;
+			    callback();
+			}).catch(callback);
 		    }).catch(callback);
 		});
 	    });
