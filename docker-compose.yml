@@ -8,10 +8,16 @@ services:
       - mongodb:mdb
     ports:
       - 8080:8080
+    volumes:
+      - ./public:/opt/public
     networks:
       - mongodb
+      - sportsfun
 
 networks:
   mongodb:
     external:
       name: mongodb
+  sportsfun:
+    external:
+      name: sportsfun
