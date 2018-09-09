@@ -64,15 +64,25 @@ router.get('/', mid.checkUser, (req, res) => {
 router.get('/:id', mid.token, mid.checkUser, (req, res) => {
     if (!req.params.id)
         return (req.status(403).send({ success: false, message: 'Missing path param id' }));
-    Message.find({ author: req.token._id, to: req.params.id })
-        .then((messagesTo) => {
-            Message.find({ author: req.params.id, to: req.token._id })
-                .then((messagesFrom) => {
-                    res.status(200).send({ success: true, message: 'OK', data: _.union(messagesTo, messagesFrom) });
-                })
-                .catch((err) => res.status(500).send({ success: false, message: err }))
-        })
-        .catch((err) => res.status(500).send({ success: false, message: err }));
+    Message.find({ author: req.token._id, to: req.params.id }).lean().then((messagesTo) => {
+        Message.find({ author: req.params.id, to: req.token._id }).lean().then((messagesFrom) => {
+	    let messages = _.union(messagesTo, messagesFrom);
+	    let tasks = [];
+	    messages.forEach((elem, i) => {
+		tasks.push(function (callback) {
+		    User.find({ _id: elem.author }).then((author) => {
+			messages[i].author = { firstName: author.firstName, lastName: author.lastName, profilePic: author.profilePic };
+			callback();
+		    }).catch(callback);
+		});
+	    });
+	    async.parallel(tasks, (err) => {
+		if (err)
+		    return (res.status(500).send({ success: false, message: err }));
+		res.status(200).send({ success: true, message: 'OK', data: messages });
+	    });
+        }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
