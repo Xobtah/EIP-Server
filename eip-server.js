@@ -33,6 +33,6 @@ app.use(require('./routes'));
 require('./websocket')(httpServer);
 
 // connect to mongo & run the app
-mongoose.connect(config.mongoURL || 'mongodb://localhost:27017/sportsfun')
+mongoose.connect(config.mongoURL || 'mongodb://mdb:27017/sportsfun')
     .then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)')))
     .catch(console.log);
