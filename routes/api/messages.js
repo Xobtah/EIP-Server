@@ -55,11 +55,11 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/message/:id Get messages by receiver id
+* @api {GET} /api/message/:id Get messages by corresponding id
 * @apiName GetMessageTo
 * @apiGroup Message
 *
-* @apiParam {Number} id The ID of the receiver.
+* @apiParam {Number} id The ID of the person you're talking to.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
