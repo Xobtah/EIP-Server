@@ -6,8 +6,9 @@
   "scripts": {
     "start": "docker-compose build && docker-compose up -d",
     "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/",
-      "docker": "node eip-server.js",
-      "test": "docker-compose build && docker run --rm -it --network mongodb eip-server_sportsfun-server ./node_modules/mocha/bin/mocha"
+    "docker": "node eip-server.js",
+    "buildimage": "docker-compose build",
+    "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server ./node_modules/mocha/bin/mocha /opt/test/index.js"
   },
   "dependencies": {
     "apidoc": "^0.17.6",

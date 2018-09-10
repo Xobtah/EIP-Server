@@ -41,3 +41,7 @@ mongoose.connect(config.mongoURL || 'mongodb://mdb:27017/sportsfun',
     .catch(console.log);
 
 module.exports = app;
+
+module.exports.stop = function () {
+    app.stop();
+};
