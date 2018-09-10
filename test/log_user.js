@@ -43,4 +43,18 @@ describe('Login', () => {
 		done();
 	    });
     });
+
+    it('should grant access to the second user', (done) => {
+	chai.request(server)
+	    .post('/api/user/login')
+	    .send({ username: goodUser2.username, password: goodUser2.password })
+	    .end((err, res) => {
+		res.should.have.status(200);
+		res.should.be.an('object');
+		res.body.should.have.a.property('message').equal('Logged in');
+		res.body.should.have.a.property('data').to.be.an('object').to.have.a.property('token');
+		userToken2 = res.body.data.token;
+		done();
+	    });
+    });
 });

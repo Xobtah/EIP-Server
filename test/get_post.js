@@ -46,4 +46,17 @@ describe('Get post', () => {
 		res.body.data.comments[0].should.be.equal(postId);
 	    });
     });
+
+    it('should get the comment of the post', () => {
+	chai.request(server)
+	    .get('/api/post/comments/' + postId)
+	    .set('token', userToken)
+	    .end((err, res) => {
+		res.should.have.status(200);
+		res.should.be.an('object');
+		res.body.should.have.a.property('data').to.be.an('array');
+		res.body.data.length.should.be.equal(1)
+		res.body.data[0].should.have.a.property('_id').equal(commentId);
+	    });
+    });
 });
