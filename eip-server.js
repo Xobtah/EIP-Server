@@ -18,9 +18,11 @@ let Morgan = require('morgan');
 
 // database
 let mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 // adding middlewares
-app.use(Morgan('combined'));
+if (process.env.NODE_ENV !== 'test')
+    app.use(Morgan('combined'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(fileUpload());
@@ -33,6 +35,13 @@ app.use(require('./routes'));
 require('./websocket')(httpServer);
 
 // connect to mongo & run the app
-mongoose.connect(config.mongoURL || 'mongodb://mdb:27017/sportsfun')
+mongoose.connect(config.mongoURL || 'mongodb://mdb:27017/sportsfun',
+		 { useNewUrlParser: true })
     .then(() => httpServer.listen(config.post || 8080, () => console.log('App is listening! :)')))
     .catch(console.log);
+
+module.exports = app;
+
+module.exports.stop = function () {
+    app.stop();
+};

@@ -29,10 +29,10 @@ router.get('/', mid.checkUser, (req, res) => {
         Message.find({ to: req.token._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((err, toMessages) => {
+            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').limit(1).lean().exec((err, toMessages) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').lean().exec((err, fromMessages) => {
+                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').limit(1).lean().exec((err, fromMessages) => {
                     if (err)
                         return (res.status(500).send({ success: false, message: err }));
 		    let messages = _.union(toMessages, fromMessages);
@@ -60,11 +60,11 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/message/:id Get messages by receiver id
+* @api {GET} /api/message/:id Get messages by corresponding id
 * @apiName GetMessageTo
 * @apiGroup Message
 *
-* @apiParam {Number} id The ID of the receiver.
+* @apiParam {Number} id The ID of the person you're talking to.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.

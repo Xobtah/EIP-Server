@@ -35,14 +35,14 @@ router.put('/:id', mid.checkUser, (req, res) => {
     else
         User.findOne({ _id: req.params.id }, { firstName: true, lastName: true }).then((user) => {
             if (!user)
-                return (res.status(400).send({ success: false, message: 'User does not exist' }));
+                return (res.status(400).send({ success: false, message: 'User not found' }));
             req.user.links.push(req.params.id);
             req.user.save((err) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
                 res.status(200).send({ success: true, message: 'User ' + user.firstName + ' ' + user.lastName + ' has been followed' });
             });
-        });
+        }).catch((err) => res.status(400).send({ success: false, message: 'User not found' }));
 });
 
 module.exports = router;
