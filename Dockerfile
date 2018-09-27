@@ -1,9 +1,12 @@
-FROM node:6.14.4-stretch
+FROM node:8-stretch
+
+# Install packages
+WORKDIR /opt
+ADD ./package.json /opt
+RUN npm install
 
 # Copy EIP-Server
 ADD . /opt
-WORKDIR /opt
-RUN npm install
 
 # Start server
 CMD [ "npm", "run", "docker" ]
