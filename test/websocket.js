@@ -10,7 +10,7 @@ let should = chai.should();
 
 let io = require('socket.io-client');
 
-let socketURL = 'http://0.0.0.0:5000';
+let socketURL = 'http://localhost:8080';
 
 let options = {
     transports: [ 'websocket' ],
@@ -21,14 +21,14 @@ describe('Websocket TEST', () => {
     it('should connect to the server and receive the info', (done) => {
 	let client = io.connect(socketURL, options);
 
+	client.on('connect', (data) => {
+	    (typeof data).should.be.equal('undefined');
+	});
+
 	client.on('info', (data) => {
 	    data.should.be.a('string').equal('You are connected to the server');
 	    client.disconnect();
 	    done();
-	});
-
-	client.on('connect', (data) => {
-	    console.log('Connected');
 	});
     });
 });
