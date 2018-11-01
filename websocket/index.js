@@ -17,7 +17,7 @@ function goodFormat(channel, data) {
             if (data.link_id == undefined) return ('No link_id provided');
             if (!data.body) return ('No body provided');
             if (data.body.command == undefined) return ('No command provided');
-            if (data.body.command == 'link' && data.body.type == undefined) return ('No type provided');
+            if (data.body.command == 'link' && data.type == undefined) return ('No type provided');
             return (0);
         case 'data':
             if (!data) return ('Data is empty');
