@@ -8,9 +8,10 @@ process.env.NODE_ENV = 'test';
 
 // Require the dev-dependencies
 global.chai = require('chai');
-global.chaiHttp = require('chai-http');
+chai.use(require('chai-http'));
+chai.should();
+
 global.server = require('../eip-server');
-global.should = chai.should();
 
 global.mongoose = require('mongoose');
 global.User = mongoose.model('User');
@@ -42,8 +43,6 @@ global.goodUser2 = {
 global.badUser = {
     bio: 'I may miss a lot of info lol'
 };
-
-chai.use(chaiHttp);
 
 // Create user
 require('./create_user');

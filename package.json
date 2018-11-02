@@ -8,8 +8,8 @@
     "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/",
     "docker": "node eip-server.js",
     "buildimage": "docker-compose build",
-      "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server ./node_modules/mocha/bin/mocha /opt/test/index.js",
-    "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server ./node_modules/mocha/bin/mocha /opt/test/websocket.js"
+    "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/index.js",
+    "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/websocket.js"
   },
   "dependencies": {
     "apidoc": "^0.17.6",

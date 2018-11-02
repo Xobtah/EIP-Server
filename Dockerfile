@@ -1,12 +1,12 @@
 FROM node:8-stretch
 
-# Install packages
-WORKDIR /opt
-ADD ./package.json /opt
-RUN npm install
+# Install Mocha
+RUN npm i -g mocha
 
-# Copy EIP-Server
+# Install EIP-Server
 ADD . /opt
+WORKDIR /opt
+RUN npm install
 
 # Start server
 CMD [ "npm", "run", "docker" ]
