@@ -12,12 +12,8 @@ services:
       - ./public:/opt/public
     networks:
       - mongodb
-      - sportsfun
 
 networks:
   mongodb:
     external:
       name: mongodb
-  sportsfun:
-    external:
-      name: sportsfun
