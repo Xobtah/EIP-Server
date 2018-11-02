@@ -49,6 +49,8 @@ module.exports = function (httpServer) {
         socket.emit('info', 'You are connected to the server');
 
         socket.on('data', (data) => {
+	    if (typeof data !== 'object')
+		data = JSON.parse(data);
             let errorMessage = null;
             if (errorMessage = goodFormat('data', data))
                 return (socket.emit('info', errorMessage));
@@ -57,6 +59,8 @@ module.exports = function (httpServer) {
         });
 
         socket.on('command', (data) => {
+	    if (typeof data !== 'object')
+		data = JSON.parse(data);
             let errorMessage = null;
             if (errorMessage = goodFormat('command', data))
                 return (socket.emit('info', errorMessage));
@@ -71,10 +75,12 @@ module.exports = function (httpServer) {
             if (commands[data.body.command])
                 commands[data.body.command](data, links, socket);
             else
-               socket.emit('error', 'Unknown command: ' + data.body.command);
+		socket.emit('error', 'Unknown command: ' + data.body.command);
         });
 
         socket.on('error', (data) => {
+	    if (typeof data !== 'object')
+		data = JSON.parse(data);
             let errorMessage = null;
             if (errorMessage = goodFormat('error', data))
                 return (socket.emit('info', errorMessage));

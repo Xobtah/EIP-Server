@@ -15,6 +15,7 @@ module.exports = {
         }
         else
             links.set(data.link_id, [ { type: data.body.type, socket } ]);
+        console.log('Link: ' + data.link_id);
 	socket.emit('info', 'Linked with id \'' + data.link_id + '\'');
     },
     start_game (data, links, socket) {
