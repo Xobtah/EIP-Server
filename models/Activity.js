@@ -3,6 +3,8 @@
 ** Website: https://github.com/Xobtah
 */
 
+// User's activity
+
 let mongoose = require('mongoose');
 
 let ActivitySchema = mongoose.Schema({

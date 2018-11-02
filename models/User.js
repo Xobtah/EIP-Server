@@ -55,7 +55,7 @@ let UserSchema = mongoose.Schema({
         type: String,
         default: '/static/cover_default.jpg'
     },
-    sportHall: mongoose.Schema.Types.ObjectId,
+    //sportHall: mongoose.Schema.Types.ObjectId,
     goal: {
         type: Number,
         default: 0
@@ -71,6 +71,11 @@ UserSchema.methods.tryPassword = function (password, callback) {
 }
 
 UserSchema.methods.setPassword = function (password, callback) {
+    if (password.length < 8) {
+        if (callback)
+            callback('Password must contain at least 8 characters');
+        return ;
+    }
     return (bcrypt.hash(password, config.saltRounds || saltRounds, (err, hash) => {
         if (err && callback)
             return (callback('Failed to hash password'));
@@ -86,6 +91,13 @@ UserSchema.methods.updateEmail = function (email, callback) {
 }
 
 UserSchema.pre('save', function (next) {
+    let thirteenYearsAgo = new Date();
+
+    thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
+    if (this.birthDate > Date.now())
+        return (next('You can\'t be born in the future, Marty!'));
+    if (this.birthDate > thirteenYearsAgo)
+        return (next('You must be thirteen to use SportsFun'));
     if (!this.links)
         this.links = [];
     next();
