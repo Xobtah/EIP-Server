@@ -1,24 +1,19 @@
-version: "2"
+version: '3'
 
 services:
-  app:
-    container_name: SportsFun-Server
-    restart: always
+  sportsfun-server:
     build: .
+    container_name: sportsfun-server
+    external_links:
+      - mongodb:mdb
     ports:
       - 8080:8080
-    links:
-      - mongo
-    depends_on:
-      - mongo
-  
-  mongo:
-    container_name: mongo
-    image: mongo
     volumes:
-      - /data/db:/data/db
-    ports:
-      - 27017:27017
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/data/null
+      - ./public:/opt/public
+    networks:
+      - mongodb
+
+networks:
+  mongodb:
+    external:
+      name: mongodb

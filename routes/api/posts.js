@@ -73,7 +73,7 @@ router.get('/:id', (req, res) => {
                 res.status(200).send({ success: true, message: 'OK', data: post });
             });
         });
-    }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(403).send({ success: false, message: 'Post not found' }));
 });
 
 /**
@@ -124,11 +124,13 @@ router.delete('/:id', (req, res) => {
             return (res.status(500).send({ success: false, message: err }));
         if (!post)
             return (res.status(403).send({ success: false, message: 'Post ' + req.params.id + ' not found' }));
-        post.remove((err) => {
-            if (err)
-                return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'Post has been deleted' });
-        });
+	Post.find({ parent: req.params.id }).remove((err) => {
+            post.remove((err) => {
+		if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+		res.status(200).send({ success: true, message: 'Post has been deleted' });
+            });
+	});
     });
 });
 

@@ -1,12 +1,16 @@
 /*
-** Author: Sylvain Garant
+1;4601;0c** Author: Sylvain Garant
 ** Website: https://github.com/Xobtah
 */
 
 let router = require('express').Router();
 let Message = require('mongoose').model('Message');
+let User = require('mongoose').model('User');
 let mid = require('./../middlewares');
 let _ = require('lodash');
+let async = require('async');
+
+let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 
 /**
 * @api {GET} /api/message Get last messages from each of the user's conversations
@@ -19,27 +23,36 @@ let _ = require('lodash');
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    // Message.find({ author: req.token._id }).distinct('to', (error, ids) => {
-    //     //Message.find({ author: req.token._id, to: { $in: ids } }, (err, messages) => {
-    //     Message.find({ author: req.token._id, to: { $in: ids } }).sort('-createdAt').exec((err, messages) => {
-    //         if (err)
-    //             return (res.status(500).send({ success: false, message: err }));
-    //         res.status(200).send({ success: true, message: 'OK', data: messages });
-    //     });
-    // });
     Message.find({ author: req.token._id }).distinct('to', (err, toIds) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         Message.find({ to: req.token._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').exec((err, toMessages) => {
+            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').limit(1).lean().exec((err, toMessages) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').exec((err, fromMessages) => {
+                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').limit(1).lean().exec((err, fromMessages) => {
                     if (err)
                         return (res.status(500).send({ success: false, message: err }));
-                    res.status(200).send({ success: true, message: 'OK', data: _.union(toMessages, fromMessages) });
+		    let messages = _.union(toMessages, fromMessages);
+		    let tasks = [];
+		    messages.forEach((elem, i) => {
+			tasks.push(function (callback) {
+			    User.findById(elem.author, usrData).then((author) => {
+				User.findById(elem.to, usrData).then((to) => {
+				    messages[i].author = author;
+				    messages[i].to = to;
+				    callback();
+				}).catch(callback);
+			    }).catch(callback);
+			});
+		    });
+		    async.parallel(tasks, (err) => {
+			if (err)
+			    return (res.status(500).send({ success: false, message: err }));
+			res.status(200).send({ success: true, message: 'OK', data: messages });
+		    });
                 });
             });
         });
@@ -47,11 +60,11 @@ router.get('/', mid.checkUser, (req, res) => {
 });
 
 /**
-* @api {GET} /api/message/:id Get messages by receiver id
+* @api {GET} /api/message/:id Get messages by corresponding id
 * @apiName GetMessageTo
 * @apiGroup Message
 *
-* @apiParam {Number} id The ID of the receiver.
+* @apiParam {Number} id The ID of the person you're talking to.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
@@ -64,15 +77,28 @@ router.get('/', mid.checkUser, (req, res) => {
 router.get('/:id', mid.token, mid.checkUser, (req, res) => {
     if (!req.params.id)
         return (req.status(403).send({ success: false, message: 'Missing path param id' }));
-    Message.find({ author: req.token._id, to: req.params.id })
-        .then((messagesTo) => {
-            Message.find({ author: req.params.id, to: req.token._id })
-                .then((messagesFrom) => {
-                    res.status(200).send({ success: true, message: 'OK', data: _.union(messagesTo, messagesFrom) });
-                })
-                .catch((err) => res.status(500).send({ success: false, message: err }))
-        })
-        .catch((err) => res.status(500).send({ success: false, message: err }));
+    Message.find({ author: req.token._id, to: req.params.id }).lean().then((messagesTo) => {
+        Message.find({ author: req.params.id, to: req.token._id }).lean().then((messagesFrom) => {
+	    let messages = _.union(messagesTo, messagesFrom);
+	    let tasks = [];
+	    messages.forEach((elem, i) => {
+		tasks.push(function (callback) {
+		    User.findById(elem.author, usrData).then((author) => {
+			User.findById(elem.to, usrData).then((to) => {
+			    messages[i].author = author;
+			    messages[i].to = to;
+			    callback();
+			}).catch(callback);
+		    }).catch(callback);
+		});
+	    });
+	    async.parallel(tasks, (err) => {
+		if (err)
+		    return (res.status(500).send({ success: false, message: err }));
+		res.status(200).send({ success: true, message: 'OK', data: messages });
+	    });
+        }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
