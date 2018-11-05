@@ -4,19 +4,25 @@
   "description": "SportsFun EIP - Server Application",
   "main": "eip-server.js",
   "scripts": {
-    "start": "nodemon eip-server.js",
-    "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/"
+    "start": "docker-compose build && docker-compose up -d",
+    "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/",
+    "docker": "node eip-server.js",
+    "buildimage": "docker-compose build",
+    "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/index.js",
+    "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/websocket.js"
   },
   "dependencies": {
     "apidoc": "^0.17.6",
     "async": "^2.6.0",
     "bcrypt": "^1.0.3",
     "express": "^4.16.2",
+    "express-fileupload": "^0.4.0",
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.5",
     "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
-    "nodemon": "^1.12.5",
+    "nodemailer": "^4.6.5",
+    "nodemon": "^1.18.3",
     "socket.io": "^2.0.4"
   },
   "repository": {
@@ -28,5 +34,10 @@
   "bugs": {
     "url": "https://github.com/Xobtah/EIP-Server/issues"
   },
-  "homepage": "https://github.com/Xobtah/EIP-Server#readme"
+  "homepage": "https://github.com/Xobtah/EIP-Server#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
 }

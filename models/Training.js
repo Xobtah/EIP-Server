@@ -3,6 +3,8 @@
 ** Website: https://github.com/Xobtah
 */
 
+// Training defined by a coatch
+
 let mongoose = require('mongoose');
 
 let TrainingSchema = mongoose.Schema({
@@ -27,7 +29,6 @@ let TrainingSchema = mongoose.Schema({
         effortLength: Number,
         restLength: Number,
         iteration: Number
-
     } ]
 }, { timestamps: true });
 

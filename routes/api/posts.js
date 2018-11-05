@@ -73,7 +73,7 @@ router.get('/:id', (req, res) => {
                 res.status(200).send({ success: true, message: 'OK', data: post });
             });
         });
-    }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(403).send({ success: false, message: 'Post not found' }));
 });
 
 /**
@@ -117,14 +117,20 @@ router.post('/', mid.token, mid.fields([ 'content' ]), mid.optionalFields([ 'par
 */
 
 router.delete('/:id', (req, res) => {
+    if (!req.params.id)
+        return (res.status(403).send({ success: false, message: 'Missing id field' }));
     Post.findById(req.params.id, (err, post) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        post.remove((err) => {
-            if (err)
-                return (res.status(500).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'Post has been deleted' });
-        });
+        if (!post)
+            return (res.status(403).send({ success: false, message: 'Post ' + req.params.id + ' not found' }));
+	Post.find({ parent: req.params.id }).remove((err) => {
+            post.remove((err) => {
+		if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+		res.status(200).send({ success: true, message: 'Post has been deleted' });
+            });
+	});
     });
 });
 

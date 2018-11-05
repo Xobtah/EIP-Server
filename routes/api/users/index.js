@@ -179,8 +179,9 @@ router.get('/t/:id', (req, res) => {
     User.findById(req.params.id).then((user) => {
         if (!user)
             return (res.status(400).send({ success: false, message: 'User not found' }));
-        user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => user.trainings[i] = training));
-        res.status(200).send({ success: true, message: 'OK', data: user.trainings });
+	Training.find({ _id: { $in: user.trainings } }, { _id: true, name: true }).then((trainings) => {
+            res.status(200).send({ success: true, message: 'OK', data: trainings });
+	}).catch((err) => res.status(500).send({ success: false, message: err }));
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 

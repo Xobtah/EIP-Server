@@ -1,13 +1,13 @@
 FROM node:8-stretch
 
-# Copy EIP-Server
+# Install Mocha
+RUN npm i -g mocha
+
+# Install EIP-Server
 ADD . /opt
 WORKDIR /opt
 RUN npm install
 
 # Start server
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "docker" ]
 EXPOSE 8080
-
-# Set workdir
-WORKDIR /opt

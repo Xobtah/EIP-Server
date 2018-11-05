@@ -6,7 +6,10 @@
 let router = require('express').Router();
 let config = require('./../../../config');
 let User = require('mongoose').model('User');
+let Training = require('mongoose').model('Training');
 let mid = require('./../../middlewares');
+let fs = require('fs');
+let path = require('path');
 
 /**
 * @api {GET} /api/user Get current user's info
@@ -84,9 +87,11 @@ router.get('/:id', mid.checkUser, mid.optionalFields([ 'fields' ]), (req, res) =
                 });
             });
             async.parallel(funcs, (err) => {
-                res.status(200).send({ success:true, message: 'OK', data: user });
+                res.status(200).send({ success: true, message: 'OK', data: user });
             });
         }
+	else
+            res.status(200).send({ success: true, message: 'OK', data: user });
     }).catch((err) => res.status(403).send({ success: false, message: err }));
 });
 
@@ -118,6 +123,14 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];
+    if (req.fields.profilePic) {
+        req.fields.profilePic.mv(path.join('/', 'public', 'assets', req.files.profilePic.name));
+        user.profilePic = path.join('/', 'static', req.files.profilePic.name);
+    }
+    if (req.fields.coverPic) {
+        req.fields.coverPic.mv(path.join('/', 'public', 'assets', req.files.coverPic.name));
+        user.coverPic = path.join('/', 'static', req.files.coverPic.name);
+    }
     user.setPassword(user.password, (err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
