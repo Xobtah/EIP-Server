@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  mongodb:
+    image: mongo
+    container_name: mdb
+    restart: always
+    volumes:
+      - db:/data/db
+    networks:
+      - mongodb
   sportsfun-server:
     build: .
     container_name: sportsfun-server
@@ -12,6 +20,9 @@ services:
       - ./public:/opt/public
     networks:
       - mongodb
+
+volumes:
+  db:
 
 networks:
   mongodb:
