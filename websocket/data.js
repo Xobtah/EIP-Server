@@ -10,5 +10,5 @@ module.exports = function (data, links, socket) {
         if (link.socket !== socket)
             link.socket.emit('data', { link_id: data.link_id, body: { module: data.body.module, value: data.body.value } });
     });
-    console.log('Data from ' + data.link_id + ': ' + data.body.value);
+    console.log('Data from ' + data.link_id + ': ' + data.body.module + ':' + data.body.value);
 };
