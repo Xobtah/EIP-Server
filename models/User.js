@@ -94,10 +94,12 @@ UserSchema.pre('save', function (next) {
     let thirteenYearsAgo = new Date();
 
     thirteenYearsAgo.setFullYear(thirteenYearsAgo.getFullYear() - 13);
-    if (this.birthDate > Date.now())
+    if (this.birthDate > new Date())
         return (next('You can\'t be born in the future, Marty!'));
     if (this.birthDate > thirteenYearsAgo)
         return (next('You must be thirteen to use SportsFun'));
+    if (this.username.length < 3)
+        return (next('The username must be at least three characters long'));
     if (!this.links)
         this.links = [];
     next();
