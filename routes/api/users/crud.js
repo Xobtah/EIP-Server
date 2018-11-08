@@ -131,12 +131,13 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
         req.fields.coverPic.mv(path.join('/', 'public', 'assets', req.files.coverPic.name));
         user.coverPic = path.join('/', 'static', req.files.coverPic.name);
     }
+    user.roles = [];
     user.setPassword(user.password, (err) => {
         if (err)
-            return (res.status(500).send({ success: false, message: err }));
+            return (res.status(403).send({ success: false, message: err }));
         user.save((err) => {
             if (err)
-                return (res.status(500).send({ success: false, message: err }));
+                return (res.status(403).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'User ' + req.fields.firstName + ' ' + req.fields.lastName + ' has been inserted' });
         });
     });
@@ -176,7 +177,7 @@ router.put('/', mid.token, mid.fieldsFromModelAllOptional(User), (req, res) => {
                 user[key] = req.fields[key];
         user.save((err) => {
             if (err)
-                return (res.status(500).send({ success: false, message: err }));
+                return (res.status(403).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'User ' + user.username + ' has been updated' });
         });
     });

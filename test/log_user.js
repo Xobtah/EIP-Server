@@ -13,7 +13,7 @@ describe('Login', () => {
 	    .end((err, res) => {
 		res.should.have.status(403);
 		res.should.be.an('object');
-		res.body.should.have.a.property('message').equal('Access forbidden');
+		res.body.should.have.a.property('message').equal('Username/password combination doesn\'t match any user');
 		done();
 	    });
     });
@@ -25,7 +25,7 @@ describe('Login', () => {
 	    .end((err, res) => {
 		res.should.have.status(403);
 		res.should.be.an('object');
-		res.body.should.have.a.property('message').equal('Access forbidden');
+		res.body.should.have.a.property('message').equal('Username/password combination doesn\'t match any user');
 		done();
 	    });
     });

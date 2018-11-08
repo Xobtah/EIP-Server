@@ -117,10 +117,10 @@ router.get('/q/:query', mid.checkUser, (req, res) => {
 router.put('/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res) => {
     req.user.setPassword(req.fields.newPassword, (err) => {
         if (err)
-            return (res.status(500).send({ success: false, message: err }));
+            return (res.status(403).send({ success: false, message: err }));
         req.user.save((err) => {
             if (err)
-                return (res.status(500).send({ success: false, message: err }));
+                return (res.status(403).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'User ' + req.user.firstName + ' ' + req.user.lastName + '\'s password has been updated' });
         });
     });
@@ -147,10 +147,10 @@ router.post('/login', mid.fields([ 'username', 'password' ]), (req, res) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         if (!user)
-            return (res.status(403).send({ success: false, message: 'Access forbidden' }));
+            return (res.status(403).send({ success: false, message: 'Username/password combination doesn\'t match any user' }));
         user.tryPassword(req.fields.password).then((samePassword) => {
             if (!samePassword)
-                return (res.status(403).send({ success: false, message: 'Access forbidden' }));
+                return (res.status(403).send({ success: false, message: 'Username/password combination doesn\'t match any user' }));
             JWT.sign({ _id: user._id }, config.secret || 'secret', (err, token) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
