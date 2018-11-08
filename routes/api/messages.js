@@ -102,6 +102,34 @@ router.get('/:id', mid.token, mid.checkUser, (req, res) => {
 });
 
 /**
+* @api {GET} /api/message/last/:id Get last messages from the last ID
+* @apiName GetLastMessages
+* @apiGroup Message
+*
+* @apiParam {Number} id The ID of the message
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+* @apiSuccess {Object} data Object containing the list of the messages.
+*
+* @apiError UserNotFound User not found with the id provided.
+* @apiError NoPathParamProvided Path param id wasn't provided.
+*/
+
+router.get('/last/:id', mid.checkUser, (req, res) => {
+    if (!req.params.id)
+        return (res.status(403).send({ success: false, message: 'Missing param id' }));
+    Message.findById(req.params.id).then((message) => {
+        Message.find({ author: message.author, to: message.to, createdAt: { $gte: message.createdAt } }).then((messagesByAuthor) => {
+            Message.find({ author: message.to, to: message.author, createdAt: { $gte: message.createdAt } }).then((messagesByDestinator) => {
+                res.status(200).send({ success: true, message: 'OK', data: _.union(messagesByAuthor, messagesByDestinator) });
+            }).catch((err) => res.status(404).send({ success: false, message: err }));
+        }).catch((err) => res.status(404).send({ success: false, message: err }));
+    }).catch((err) => res.status(404).send({ success: false, message: err }));
+    res.status(200).send({ success: true, message: 'OK' });
+});
+
+/**
 * @api {POST} /api/message Post a new message
 * @apiName PostMessage
 * @apiGroup Message

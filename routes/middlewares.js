@@ -70,20 +70,8 @@ function checkOneRole(user, roles, next) {
 
 function checkFields(body, fields, success, error) {
     let object = {};
-    //let operationSuccess = false;
     let ключ = null;
 
-    /*operationSuccess = fields.every((key) => {
-        if (!body[key]) {
-            if (typeof error == 'function')
-                error(key);
-            return (false);
-        }
-        object[key] = body[key];
-        return (true);
-    });
-    if (operationSuccess)
-        success(object);*/
     fields.forEach((key) => {
         if (body[key])
             object[key] = body[key];
