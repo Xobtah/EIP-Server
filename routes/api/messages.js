@@ -126,7 +126,6 @@ router.get('/last/:id', mid.checkUser, (req, res) => {
             }).catch((err) => res.status(404).send({ success: false, message: err }));
         }).catch((err) => res.status(404).send({ success: false, message: err }));
     }).catch((err) => res.status(404).send({ success: false, message: err }));
-    res.status(200).send({ success: true, message: 'OK' });
 });
 
 /**
