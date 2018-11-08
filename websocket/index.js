@@ -49,10 +49,10 @@ module.exports = function (httpServer) {
         socket.emit('info', 'You are connected to the server');
 
         socket.on('data', (data) => {
-	    if (typeof data !== 'object') {
-		try { data = JSON.parse(data); }
-		catch (err) { return ('Received object is not a JSON'); }
-	    }
+            if (typeof data !== 'object') {
+                try { data = JSON.parse(data); }
+                catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
+            }
             let errorMessage = null;
             if (errorMessage = goodFormat('data', data))
                 return (socket.emit('info', errorMessage));
@@ -61,10 +61,10 @@ module.exports = function (httpServer) {
         });
 
         socket.on('command', (data) => {
-	    if (typeof data !== 'object') {
-		try { data = JSON.parse(data); }
-		catch (err) { return ('Received object is not a JSON'); }
-	    }
+            if (typeof data !== 'object') {
+                try { data = JSON.parse(data); }
+                catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
+            }
             let errorMessage = null;
             if (errorMessage = goodFormat('command', data))
                 return (socket.emit('info', errorMessage));
@@ -74,7 +74,7 @@ module.exports = function (httpServer) {
             if (commands[data.body.command])
                 commands[data.body.command](data, links, socket);
             else
-		socket.emit('info', 'Unknown command: ' + data.body.command);
+                socket.emit('info', 'Unknown command: ' + data.body.command);
         });
 
         /*socket.on('error', (data) => {
@@ -93,7 +93,7 @@ module.exports = function (httpServer) {
 
         socket.on('disconnect', () => {
             if (!socket.link_id || !links.has(socket.link_id))
-                return ;
+                return;
 
             let linkArray = links.get(socket.link_id);
 
