@@ -7,6 +7,7 @@ RUN npm i -g mocha
 ADD . /opt
 WORKDIR /opt
 RUN npm install
+RUN npm run doc
 
 # Start server
 CMD [ "npm", "run", "docker" ]
