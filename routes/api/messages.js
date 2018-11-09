@@ -30,42 +30,39 @@ router.get('/', mid.checkUser, (req, res) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
             let ids = _.union(fromIds, toIds);
-            console.log('From ID: ' + fromIds + ' - To ID: ' + toIds + ' - Union: ' + ids);
             let messages = [];
-            let tasks = [];
             
-            ids.forEach((id) => {
-                tasks.push(function (callback) {
-                    Message.findOne({ $or: [ { author: req.user._id, to: id }, { author: id, to: req.user._id } ] }).sort('-createdAt').lean().exec((err, message) => {
-                        if (err)
-                            return (callback(err));
+            Message.findOne({ $or: [ { author: req.user._id, to: { $in: ids } }, { author: { $in: ids }, to: req.user._id } ] }).sort('-createdAt').lean().exec((err, messageToSort) => {
+                if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+                messageToSort.forEach((message) => {
+                    if (ids.indexOf(message.to) >= 0) {
+                        ids.splice(ids.indexOf(message.to), 1);
                         messages.push(message);
-                        callback();
-                    });
+                    }
+                    if (ids.indexOf(message.author) >= 0) {
+                        ids.splice(ids.indexOf(message.author), 1);
+                        messages.push(message);
+                    }
                 });
             });
             
+            let tasks = [];
+            messages.forEach((elem, i) => {
+                tasks.push(function (callback) {
+                    User.findById(elem.author, usrData).then((author) => {
+                        User.findById(elem.to, usrData).then((to) => {
+                            messages[i].author = author;
+                            messages[i].to = to;
+                            callback();
+                        }).catch(callback);
+                    }).catch(callback);
+                });
+            });
             async.parallel(tasks, (err) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                tasks = [];
-                console.log(messages);
-                messages.forEach((elem, i) => {
-                    tasks.push(function (callback) {
-                        User.findById(elem.author, usrData).then((author) => {
-                            User.findById(elem.to, usrData).then((to) => {
-                                messages[i].author = author;
-                                messages[i].to = to;
-                                callback();
-                            }).catch(callback);
-                        }).catch(callback);
-                    });
-                });
-                async.parallel(tasks, (err) => {
-                    if (err)
-                        return (res.status(500).send({ success: false, message: err }));
-                    res.status(200).send({ success: true, message: 'OK', data: messages });
-                });
+                res.status(200).send({ success: true, message: 'OK', data: messages });
             });
         });
     });
