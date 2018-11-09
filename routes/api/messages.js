@@ -29,14 +29,23 @@ router.get('/', mid.checkUser, (req, res) => {
         Message.find({ to: req.user._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            let ids = _.union(fromIds, toIds);
+            let ids = fromIds;
+            toIds.forEach((id) => {
+                let add = true;
+                for (let i = 0; i < ids.length; i++) {
+                    if (ids[i].equals(id)) {
+                        add = false;
+                        break ;
+                    }
+                }
+                if (add)
+                    ids.push(id);
+            });
             let messages = [];
             
             Message.find({ $or: [ { author: req.user._id, to: { $in: ids } }, { author: { $in: ids }, to: req.user._id } ] }).sort('-createdAt').lean().exec((err, messageToSort) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                console.log(messageToSort);
-                console.log(ids);
                 messageToSort.forEach((message) => {
                     if (ids.indexOf(message.to) >= 0) {
                         ids.splice(ids.indexOf(message.to), 1);
