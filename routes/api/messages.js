@@ -23,7 +23,7 @@ let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    /*Message.find({ author: req.user._id }).distinct('to', (err, toIds) => {
+    Message.find({ author: req.user._id }).distinct('to', (err, toIds) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         Message.find({ to: req.user._id }).distinct('author', (err, fromIds) => {
@@ -56,33 +56,7 @@ router.get('/', mid.checkUser, (req, res) => {
                 });
             });
         });
-    });*/
-    Message.find({ author: req.user._id }).distinct('to').then((toIds) => {
-        Message.find({ to: req.user._id }).distinct('author').then((fromIds) => {
-            Message.find({ author: req.user._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((toMessages) => {
-                Message.find({ to: req.user._id, author: { $in: fromIds } }).sort('-createdAt').lean().exec((fromMessages) => {
-                    let messages = _.union(toMessages, fromMessages);
-                    let tasks = [];
-                    messages.forEach((elem, i) => {
-                        tasks.push(function (callback) {
-                            User.findById(elem.author, usrData).then((author) => {
-                                User.findById(elem.to, usrData).then((to) => {
-                                    messages[i].author = author;
-                                    messages[i].to = to;
-                                    callback();
-                                }).catch(callback);
-                            }).catch(callback);
-                        });
-                    });
-                    async.parallel(tasks, (err) => {
-                        if (err)
-                            return (res.status(500).send({ success: false, message: err }));
-                        res.status(200).send({ success: true, message: 'OK', data: messages });
-                    });
-                }).catch((err) => res.status(500).send({ success: false, message: err }));
-            }).catch((err) => res.status(500).send({ success: false, message: err }));
-        }).catch((err) => res.status(500).send({ success: false, message: err }));
-    }).catch((err) => res.status(500).send({ success: false, message: err }));
+    });
 });
 
 /**
