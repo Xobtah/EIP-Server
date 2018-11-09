@@ -29,13 +29,22 @@ router.get('/', mid.checkUser, (req, res) => {
         Message.find({ to: req.user._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            Message.find({ author: req.user._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((err, toMessages) => {
+            let messages = [];
+            
+            toIds.forEach((id) => {
+                Message.find({ author: req.user._id, to: id }).sort('-createdAt').limit(1).lean().exec((err, toMessage) => messages.push(toMessage));
+            });
+            fromIds.forEach((id) => {
+                Message.find({ to: req.user._id, author: id }).sort('-createdAt').limit(1).lean().exec((err, fromMessage) => messages.push(fromMessage));
+            });
+            
+            /*Message.find({ author: req.user._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((err, toMessages) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
                 Message.find({ to: req.user._id, author: { $in: fromIds } }).sort('-createdAt').lean().exec((err, fromMessages) => {
                     if (err)
                         return (res.status(500).send({ success: false, message: err }));
-                    let messages = _.union(toMessages, fromMessages);
+                    let messages = _.union(toMessages, fromMessages);*/
                     let tasks = [];
                     messages.forEach((elem, i) => {
                         tasks.push(function (callback) {
@@ -53,8 +62,8 @@ router.get('/', mid.checkUser, (req, res) => {
                             return (res.status(500).send({ success: false, message: err }));
                         res.status(200).send({ success: true, message: 'OK', data: messages });
                     });
-                });
-            });
+                /*});
+            });*/
         });
     });
 });
