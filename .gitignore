@@ -6,3 +6,4 @@ doc/*
 !doc/Data Base Models.md
 !doc/apidoc.json
 public/doc/*
+mail.js

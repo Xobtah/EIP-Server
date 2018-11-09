@@ -37,6 +37,12 @@ function goodFormat(channel, data) {
     }
 }
 
+function checkThatReceivedDataIsAnObjectAndNotAString(data) {
+    if (typeof data !== 'object')
+        data = JSON.parse(data);
+    return (data);
+}
+
 module.exports = function (httpServer) {
     if (!httpServer)
         throw new Error('Empty httpServer!');
@@ -49,10 +55,8 @@ module.exports = function (httpServer) {
         socket.emit('info', 'You are connected to the server');
 
         socket.on('data', (data) => {
-            if (typeof data !== 'object') {
-                try { data = JSON.parse(data); }
-                catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
-            }
+            try { data = checkThatReceivedDataIsAnObjectAndNotAString(data); }
+            catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
             let errorMessage = null;
             if (errorMessage = goodFormat('data', data))
                 return (socket.emit('info', errorMessage));
@@ -61,10 +65,8 @@ module.exports = function (httpServer) {
         });
 
         socket.on('command', (data) => {
-            if (typeof data !== 'object') {
-                try { data = JSON.parse(data); }
-                catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
-            }
+            try { data = checkThatReceivedDataIsAnObjectAndNotAString(data); }
+            catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
             let errorMessage = null;
             if (errorMessage = goodFormat('command', data))
                 return (socket.emit('info', errorMessage));
@@ -77,19 +79,21 @@ module.exports = function (httpServer) {
                 socket.emit('info', 'Unknown command: ' + data.body.command);
         });
 
-        /*socket.on('error', (data) => {
+        socket.on('error', (data) => {
+            try { data = checkThatReceivedDataIsAnObjectAndNotAString(data); }
+            catch (err) { return (socket.emit('info', 'Received object is not a JSON')); }
             let errorMessage = null;
             if (errorMessage = goodFormat('error', data))
                 return (socket.emit('info', errorMessage));
 
-            console.log('Received error from module [' + data.link_id + ']: ' + data.body.value);
+            console.log('Error: ' + data.link_id + ':' + data.body.value);
             if (!links.has(data.link_id))
                 return ;
             links.get(data.link_id).forEach((link) => {
                 if (link.socket !== socket)
                     link.socket.emit('data', data.body.value);
             });
-        });*/
+        });
 
         socket.on('disconnect', () => {
             if (!socket.link_id || !links.has(socket.link_id))
