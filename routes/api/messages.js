@@ -35,6 +35,8 @@ router.get('/', mid.checkUser, (req, res) => {
             Message.find({ $or: [ { author: req.user._id, to: { $in: ids } }, { author: { $in: ids }, to: req.user._id } ] }).sort('-createdAt').lean().exec((err, messageToSort) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
+                console.log(messageToSort);
+                console.log(ids);
                 messageToSort.forEach((message) => {
                     if (ids.indexOf(message.to) >= 0) {
                         ids.splice(ids.indexOf(message.to), 1);
