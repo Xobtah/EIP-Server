@@ -47,7 +47,7 @@ router.get('/', mid.checkUser, (req, res) => {
                     Message.find({ to: req.user._id, author: id }).sort('-createdAt').limit(1).lean().exec((err, fromMessage) => {
                         if (err)
                             return (callback(err));
-                        messages.push(toMessage);
+                        messages.push(fromMessage);
                         callback();
                     });
                 });
