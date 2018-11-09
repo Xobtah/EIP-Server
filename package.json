@@ -9,7 +9,8 @@
     "docker": "node eip-server.js",
     "buildimage": "docker-compose build",
     "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/index.js",
-    "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/websocket.js"
+    "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/websocket.js",
+    "deploy": "docker-compose build && docker-compose down && docker-compose up -d sportsfun-server"
   },
   "dependencies": {
     "apidoc": "^0.17.6",
