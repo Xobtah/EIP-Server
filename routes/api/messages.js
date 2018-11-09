@@ -23,40 +23,66 @@ let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    Message.find({ author: req.token._id }).distinct('to', (err, toIds) => {
+    /*Message.find({ author: req.user._id }).distinct('to', (err, toIds) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        Message.find({ to: req.token._id }).distinct('author', (err, fromIds) => {
+        Message.find({ to: req.user._id }).distinct('author', (err, fromIds) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
-            Message.find({ author: req.token._id, to: { $in: toIds } }).sort('-createdAt').limit(1).lean().exec((err, toMessages) => {
+            Message.find({ author: req.user._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((err, toMessages) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                Message.find({ to: req.token._id, author: { $in: fromIds } }).sort('-createdAt').limit(1).lean().exec((err, fromMessages) => {
+                Message.find({ to: req.user._id, author: { $in: fromIds } }).sort('-createdAt').lean().exec((err, fromMessages) => {
                     if (err)
                         return (res.status(500).send({ success: false, message: err }));
-		    let messages = _.union(toMessages, fromMessages);
-		    let tasks = [];
-		    messages.forEach((elem, i) => {
-			tasks.push(function (callback) {
-			    User.findById(elem.author, usrData).then((author) => {
-				User.findById(elem.to, usrData).then((to) => {
-				    messages[i].author = author;
-				    messages[i].to = to;
-				    callback();
-				}).catch(callback);
-			    }).catch(callback);
-			});
-		    });
-		    async.parallel(tasks, (err) => {
-			if (err)
-			    return (res.status(500).send({ success: false, message: err }));
-			res.status(200).send({ success: true, message: 'OK', data: messages });
-		    });
+                    let messages = _.union(toMessages, fromMessages);
+                    let tasks = [];
+                    messages.forEach((elem, i) => {
+                        tasks.push(function (callback) {
+                            User.findById(elem.author, usrData).then((author) => {
+                                User.findById(elem.to, usrData).then((to) => {
+                                    messages[i].author = author;
+                                    messages[i].to = to;
+                                    callback();
+                                }).catch(callback);
+                            }).catch(callback);
+                        });
+                    });
+                    async.parallel(tasks, (err) => {
+                        if (err)
+                            return (res.status(500).send({ success: false, message: err }));
+                        res.status(200).send({ success: true, message: 'OK', data: messages });
+                    });
                 });
             });
         });
-    });
+    });*/
+    Message.find({ author: req.user._id }).distinct('to').then((toIds) => {
+        Message.find({ to: req.user._id }).distinct('author').then((fromIds) => {
+            Message.find({ author: req.user._id, to: { $in: toIds } }).sort('-createdAt').lean().exec((toMessages) => {
+                Message.find({ to: req.user._id, author: { $in: fromIds } }).sort('-createdAt').lean().exec((fromMessages) => {
+                    let messages = _.union(toMessages, fromMessages);
+                    let tasks = [];
+                    messages.forEach((elem, i) => {
+                        tasks.push(function (callback) {
+                            User.findById(elem.author, usrData).then((author) => {
+                                User.findById(elem.to, usrData).then((to) => {
+                                    messages[i].author = author;
+                                    messages[i].to = to;
+                                    callback();
+                                }).catch(callback);
+                            }).catch(callback);
+                        });
+                    });
+                    async.parallel(tasks, (err) => {
+                        if (err)
+                            return (res.status(500).send({ success: false, message: err }));
+                        res.status(200).send({ success: true, message: 'OK', data: messages });
+                    });
+                }).catch((err) => res.status(500).send({ success: false, message: err }));
+            }).catch((err) => res.status(500).send({ success: false, message: err }));
+        }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
@@ -79,24 +105,24 @@ router.get('/:id', mid.token, mid.checkUser, (req, res) => {
         return (req.status(403).send({ success: false, message: 'Missing path param id' }));
     Message.find({ author: req.token._id, to: req.params.id }).lean().then((messagesTo) => {
         Message.find({ author: req.params.id, to: req.token._id }).lean().then((messagesFrom) => {
-	    let messages = _.union(messagesTo, messagesFrom);
-	    let tasks = [];
-	    messages.forEach((elem, i) => {
-		tasks.push(function (callback) {
-		    User.findById(elem.author, usrData).then((author) => {
-			User.findById(elem.to, usrData).then((to) => {
-			    messages[i].author = author;
-			    messages[i].to = to;
-			    callback();
-			}).catch(callback);
-		    }).catch(callback);
-		});
-	    });
-	    async.parallel(tasks, (err) => {
-		if (err)
-		    return (res.status(500).send({ success: false, message: err }));
-		res.status(200).send({ success: true, message: 'OK', data: messages });
-	    });
+            let messages = _.union(messagesTo, messagesFrom);
+            let tasks = [];
+            messages.forEach((elem, i) => {
+                tasks.push(function (callback) {
+                    User.findById(elem.author, usrData).then((author) => {
+                        User.findById(elem.to, usrData).then((to) => {
+                            messages[i].author = author;
+                            messages[i].to = to;
+                            callback();
+                        }).catch(callback);
+                    }).catch(callback);
+                });
+            });
+            async.parallel(tasks, (err) => {
+                if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+                res.status(200).send({ success: true, message: 'OK', data: messages });
+            });
         }).catch((err) => res.status(500).send({ success: false, message: err }));
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
@@ -143,14 +169,16 @@ router.get('/last/:id', mid.checkUser, (req, res) => {
 * @apiError UserNotFound User not find with provided id.
 */
 
-router.post('/', mid.checkUser, mid.fields([ 'content', 'to' ]), (req, res) => {
+router.post('/', mid.checkUser, mid.fields(['content', 'to']), (req, res) => {
+    if (req.fields.to == req.user._id)
+        return (res.status(403).send({ success: false, message: 'You cannot send a message to yourself' }));
     let message = new Message();
     message.content = req.fields.content;
     message.to = req.fields.to;
     message.author = req.user._id;
     message.save((err) => {
         if (err)
-            return (res.status(500).send({ success: false, message: err }));
+            return (res.status(403).send({ success: false, message: err }));
         res.status(200).send({ success: true, message: 'Message sent' });
     });
 });
@@ -174,7 +202,10 @@ router.delete('/:id', mid.checkUser, (req, res) => {
     Message.remove({ _id: req.params.id }, (err, message) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'Message deleted' });
+        if (message.author == req.user._id)
+            res.status(200).send({ success: true, message: 'Message deleted' });
+        else
+            res.status(403).send({ success: false, message: 'You cannot delete a message that is not yours' });
     });
 });
 
