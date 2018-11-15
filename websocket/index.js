@@ -6,6 +6,7 @@
 let SovietIO = require('socket.io');
 
 let links = new Map();
+global.qrcodes = new Map();
 
 let commands = require('./commands');
 let messages = require('./messages');
@@ -101,6 +102,11 @@ module.exports = function (httpServer) {
         socket.on('message', (data) => messages.sendMessage(socket, data));
         socket.on('startWriting', (data) => messages.startWriting(socket, data));
         socket.on('stopWriting', (data) => messages.stopWriting(socket, data));
+
+        socket.on('qr', (data) => {
+            socket.qrcode = data.qr;
+            qrcodes.put(data.qr, socket);
+        });
 
         socket.on('test', () => socket.emit('test'));
 
