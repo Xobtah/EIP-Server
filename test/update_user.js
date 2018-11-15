@@ -22,7 +22,7 @@ describe('Update user info', () => {
 			});
 	});
 
-	it('should not change password, missing field newPassword', () => {
+	it('should not change password, missing field newPassword', (done) => {
 		chai.request(server)
 			.put('/api/user/password')
 			.set('token', userToken)
@@ -31,21 +31,20 @@ describe('Update user info', () => {
 				res.should.have.status(403);
 				res.should.be.an('object');
 				res.body.should.have.a.property('message').equal("Missing key 'newPassword' in body");
+				done();
 			});
 	});
 
-	it('shouldn\'t change password, too short', () => {
+	it('shouldn\'t change password, too short', (done) => {
 		chai.request(server)
 			.put('/api/user/password')
 			.set('token', userToken)
-			.send({
-				password: goodUser.password,
-				newPassword: 'doot'
-			})
+			.send({ password: goodUser.password, newPassword: 'doot' })
 			.end((err, res) => {
 				res.should.have.status(403);
 				res.should.be.an('object');
-				res.body.should.have.a.property('message').equal("Missing key 'newPassword' in body");
+				res.body.should.have.a.property('message').equal("The username must be at least three characters long");
+				done();
 			});
 	});
 
@@ -55,13 +54,13 @@ describe('Update user info', () => {
 			.set('token', userToken)
 			.send({
 				password: goodUser.password,
-				newPassword: goodUser.password.split('').reverse().join('')
+				newPassword: 'isthecakealie'
 			})
 			.end((err, res) => {
 				res.should.have.status(200);
 				res.should.be.an('object');
 				res.body.should.have.a.property('message').equal("User " + goodUser.firstName + ' ' + goodUser.lastName + "'s password has been updated");
-				goodUser.password = goodUser.password.split('').reverse().join('');
+				goodUser.password = 'isthecakealie';
 				done();
 			});
 	});

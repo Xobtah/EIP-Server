@@ -22,7 +22,7 @@ describe('Websocket TEST', () => {
 	let client1 = null;
 	let client2 = null;
 
-	beforeEach((done) => {
+	/*beforeEach((done) => {
 		client1 = io.connect(socketURL, options);
         client1.on('connect', done);
     });
@@ -33,9 +33,9 @@ describe('Websocket TEST', () => {
 		else
             console.log('no connection to break...');
         done();
-    });
+    });*/
 
-	/*it('should connect client1 to the server and receive the info', (done) => {
+	it('should connect client1 to the server and receive the info', (done) => {
 		client1 = io.connect(socketURL, options);
 
 		client1.on('connect', (data) => {
@@ -61,7 +61,7 @@ describe('Websocket TEST', () => {
 			client2.removeListener('info');
 			done();
 		});
-	});*/
+	});
 
 	it('should link the client1', (done) => {
 		client1.on('info', (data) => {
@@ -84,22 +84,28 @@ describe('Websocket TEST', () => {
 	});
 
 	it('should start the game', (done) => {
-		client1.on('info', (data) => {
+		client1.on('test', () => {
+			client2.removeListener('test');
+			done();
+		});
+
+		/*client1.on('info', (data) => {
 			data.should.be.equal('Game started');
 			client1.removeListener('info');
-			client2.on('command', (data) => {
-				data.should.be.an('object');
-				data.should.have.a.property('link_id').to.be.equal(link_id);
-				data.should.have.a.property('body').to.have.a.property('command').to.be.equal('start_game');
-				client2.removeListener('info');
-				done();
-			});
-			client1.emit('command', { type: 'client1', link_id, body: { command: 'start_game' } });
+		});*/
+		
+		client2.on('command', (data) => {
+			data.should.be.an('object');
+			data.should.have.a.property('link_id').to.be.equal(link_id);
+			data.should.have.a.property('body').to.have.a.property('command').to.be.equal('start_game');
+			client2.removeListener('info');
+			client1.emit('test');
 		});
+
 		client1.emit('command', { type: 'client1', link_id, body: { command: 'start_game' } });
 	});
 
-	it('should end the game', (done) => {
+	/*it('should end the game', (done) => {
 		client1.on('info', (data) => {
 			data.should.be.equal('Game ended');
 			client1.removeListener('info');
@@ -132,7 +138,7 @@ describe('Websocket TEST', () => {
 			done();
 		});
 		client1.emit('data', { type: 'client1', link_id, body: { value: 42 } });
-	});
+	});*/
 
 	after(() => {
 		client1.disconnect();

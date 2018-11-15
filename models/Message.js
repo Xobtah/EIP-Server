@@ -20,4 +20,9 @@ let MessageSchema = mongoose.Schema({
     }
 }, { timestamps: true });
 
+MessageSchema.pre('save', function (next) {
+    if (!this.content.length)
+        return (next('Cannot save an empty message'));
+});
+
 mongoose.model('Message', MessageSchema);

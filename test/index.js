@@ -63,6 +63,9 @@ describe('TESTS', () => {
     // Get notification
     require('./get_notif');
 
+    // CRUD message
+    require('./crud_message');
+
     // Delete post
     require('./delete_post');
 

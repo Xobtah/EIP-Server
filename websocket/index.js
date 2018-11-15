@@ -8,6 +8,7 @@ let SovietIO = require('socket.io');
 let links = new Map();
 
 let commands = require('./commands');
+let messages = require('./messages');
 let dataChannel = require('./data');
 
 function goodFormat(channel, data) {
@@ -94,6 +95,14 @@ module.exports = function (httpServer) {
                     link.socket.emit('data', data.body.value);
             });
         });
+
+        socket.on('snippets', (data) => messages.getSnippets(socket, data));
+        socket.on('conversation', (data) => messages.getConversation(socket, data));
+        socket.on('message', (data) => messages.sendMessage(socket, data));
+        socket.on('startWriting', (data) => messages.startWriting(socket, data));
+        socket.on('stopWriting', (data) => messages.stopWriting(socket, data));
+
+        socket.on('test', () => socket.emit('test'));
 
         socket.on('disconnect', () => {
             if (!socket.link_id || !links.has(socket.link_id))
