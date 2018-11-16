@@ -97,6 +97,7 @@ module.exports = function (httpServer) {
             });
         });
 
+        socket.on('registerMessages', (data) => messages.registerMessages(socket, data));
         socket.on('snippets', (data) => messages.getSnippets(socket, data));
         socket.on('conversation', (data) => messages.getConversation(socket, data));
         socket.on('message', (data) => messages.sendMessage(socket, data));
@@ -113,6 +114,8 @@ module.exports = function (httpServer) {
         socket.on('disconnect', () => {
             if (socket.qrcode)
                 qrcodes.delete(socket.qrcode);
+            if (socket.userId)
+                connectedUsers.delete(socket.userId);
 
             if (!socket.link_id || !links.has(socket.link_id))
                 return;
