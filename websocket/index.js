@@ -111,6 +111,9 @@ module.exports = function (httpServer) {
         socket.on('test', () => socket.emit('test'));
 
         socket.on('disconnect', () => {
+            if (socket.qrcode)
+                qrcodes.delete(socket.qrcode);
+
             if (!socket.link_id || !links.has(socket.link_id))
                 return;
 
