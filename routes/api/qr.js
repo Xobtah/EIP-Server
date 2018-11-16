@@ -19,7 +19,7 @@ let mid = require('./../middlewares');
 * @apiError NoParamProvided QRCode wasn't provided.
 */
 
-router.put('/', mid.token, mid.fields([ 'qr' ]), (req, res) => {
+router.put('/', mid.checkUser, mid.fields([ 'qr' ]), (req, res) => {
     console.log('============ PUT QRCODE ============')
     console.log(qrcodes);
     console.log(req.fields.qr);
