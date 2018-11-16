@@ -105,7 +105,7 @@ module.exports = function (httpServer) {
         socket.on('stopWriting', (data) => messages.stopWriting(socket, data));
 
         socket.on('qr', (data) => {
-            console.log('QRCode registration: ' + data.qr);
+            console.log('QRCode registration: ' + JSON.stringify(data));
             socket.qrcode = data.qr;
             socket.emit('qr', { message: 'QRCode registered' });
             qrcodes.set(data.qr, socket);
