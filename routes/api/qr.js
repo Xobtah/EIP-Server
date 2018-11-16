@@ -20,6 +20,8 @@ let mid = require('./../middlewares');
 */
 
 router.put('/', mid.token, mid.fields([ 'qr' ]), (req, res) => {
+    console.log(qrcodes);
+    console.log(req.fields.qr);
     if (!qrcodes.has(req.fields.qr))
         return (res.status(404).send({ success: false, message: 'QRCode not found' }));
     qrcodes.get(req.fields.qr).emit('qr', req.token);
