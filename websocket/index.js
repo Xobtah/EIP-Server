@@ -51,7 +51,7 @@ module.exports = function (httpServer) {
     let io = SovietIO(httpServer);
 
     io.on('connection', (socket) => {
-        console.log('WebSocket Connection');
+        console.log('WebSocket Connexion');
         let link_id = null;
 
         socket.emit('info', 'You are connected to the server');
@@ -107,7 +107,6 @@ module.exports = function (httpServer) {
         socket.on('qr', (data) => {
             console.log('QRCode registration: ' + JSON.stringify(data));
             socket.qrcode = data.qr;
-            socket.emit('qr', { message: 'QRCode registered' });
             qrcodes.set(data.qr, socket);
         });
 
