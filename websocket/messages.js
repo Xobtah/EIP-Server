@@ -68,13 +68,13 @@ module.exports.getConversation = function (socket, data) {
             return (socket.emit('conversation', { id: data.id, messages }));
         User.find({ _id: { $in: [ messages[0].author, messages[O].to ] } }, usrData).then((users) => {
             messages.forEach((message) => {
-                if (message.author == users[0]._id)
+                if (message.author.equals(users[0]._id))
                     message.author = users[0];
-                if (message.author == users[1]._id)
+                if (message.author.equals(users[1]._id))
                     message.author = users[1];
-                if (message.to == users[0]._id)
+                if (message.to.equals(users[0]._id))
                     message.to = users[0];
-                if (message.to == users[1]._id)
+                if (message.to.equals(users[1]._id))
                     message.to = users[1];
             });
             socket.emit('conversation', { id: data.id, messages });
