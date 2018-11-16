@@ -24,6 +24,8 @@ module.exports.registerMessages = function (socket, data) {
 
     connectedUsers.set(token._id, socket);
     socket.userId = token._id;
+
+    socket.emit('registerMessages', { message: 'OK' });
 };
 
 module.exports.getSnippets = function (socket, data) {
@@ -112,25 +114,21 @@ module.exports.sendMessage = function (socket, data) {
 };
 
 module.exports.startWriting = function (socket, data) {
-    let token = null;
-
     console.log('Start Writing: ' + JSON.stringify(data));
+    if (!socket.userId)
+        return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    if (!data.token)
-        return (socket.emit('info', { message: 'Missing param token' }));
-    try { token = JWT.verify(data.token, config.secret || 'secret'); }
-    catch (err) { return (socket.emit('info', 'Failed to authenticate token')); }
+    if (connectedUsers.has(data.id))
+        connectedUsers.get(data.id).emit('startWriting', { id: socket.userId });
 };
 
 module.exports.stopWriting = function (socket, data) {
-    let token = null;
-
     console.log('Stop Writing: ' + JSON.stringify(data));
+    if (!socket.userId)
+        return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    if (!data.token)
-        return (socket.emit('info', { message: 'Missing param token' }));
-    try { token = JWT.verify(data.token, config.secret || 'secret'); }
-    catch (err) { return (socket.emit('info', 'Failed to authenticate token')); }
+    if (connectedUsers.has(data.id))
+        connectedUsers.get(data.id).emit('stopWriting', { id: socket.userId });
 };
