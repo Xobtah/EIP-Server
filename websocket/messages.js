@@ -35,7 +35,9 @@ module.exports.getSnippets = function (socket, data) {
                         return (socket.emit('info', err));
                     if (!message)
                         return ;
-                    User.find({ _id: { $in: [ message.author, message.to ] } }, usrData).then((users) => {
+                    User.find({ _id: { $in: [ message.author, message.to ] } }, usrData).lean().exec((err, users) => {
+                        if (err)
+                            return (socket.emit('info', err));
                         if (message.author == users[0]._id)
                             message.author = users[0];
                         if (message.author == users[1]._id)
@@ -45,7 +47,7 @@ module.exports.getSnippets = function (socket, data) {
                         if (message.to == users[1]._id)
                             message.to = users[1];
                         socket.emit('snippets', { id: (message.author == token._id ? message.to : message.author), message });
-                    }).catch((err) => socket.emit('info', err));
+                    });
                 });
             });
         });
