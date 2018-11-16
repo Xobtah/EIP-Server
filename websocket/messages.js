@@ -5,6 +5,7 @@
 
 let Message = require('mongoose').model('Message');
 let JWT = require('jsonwebtoken');
+let User = require('mongoose').model('User')
 let _ = require('lodash');
 let config = require('./../config');
 
