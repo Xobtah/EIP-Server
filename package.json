@@ -6,7 +6,7 @@
   "scripts": {
     "start": "docker-compose build && docker-compose up -d",
     "doc": "apidoc -i ./routes/ -o ./public/doc/ -c ./doc/",
-    "docker": "node eip-server.js",
+    "docker": "while true; do node eip-server.js; done",
     "buildimage": "docker-compose build",
     "test": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/index.js",
     "testws": "docker run --rm -it --network mongodb -v $PWD/test:/opt/test eip-server_sportsfun-server mocha --exit /opt/test/websocket.js",

@@ -54,9 +54,7 @@ RECEIVING MESSAGES
 
 Listen to the event `message`, if you receive a message, you get the message through this event.
 
-* `startWriting`
-
-Send data in this channel to notify that the user started typing in the conversation.
+* `startWriting`: Notify that the user started typing in the conversation
 
 Data:
 - id: The id of the correspondant
@@ -64,9 +62,7 @@ Data:
 Response:
 The sender doesn't care about the return of that event. The listenner receives data formated like that `{ id: TheIdOfTheGuyWhoStartedWriting }` on the channel `startWriting`.
 
-* `stopWriting`
-
-Send data in this channel to notify that the user stopped typing in the conversation.
+* `stopWriting`: Notify that the user stopped typing in the conversation
 
 Data:
 - token: User's token
