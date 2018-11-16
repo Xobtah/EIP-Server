@@ -20,6 +20,7 @@ let mid = require('./../middlewares');
 */
 
 router.put('/', mid.token, mid.fields([ 'qr' ]), (req, res) => {
+    console.log('============ PUT QRCODE ============')
     console.log(qrcodes);
     console.log(req.fields.qr);
     if (!qrcodes.has(req.fields.qr))
