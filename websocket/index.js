@@ -105,7 +105,7 @@ module.exports = function (httpServer) {
 
         socket.on('qr', (data) => {
             socket.qrcode = data.qr;
-            qrcodes.put(data.qr, socket);
+            qrcodes.set(data.qr, socket);
         });
 
         socket.on('test', () => socket.emit('test'));
