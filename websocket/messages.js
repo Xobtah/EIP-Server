@@ -12,6 +12,7 @@ let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 module.exports.getSnippets = function (socket, data) {
     let token = null;
 
+    console.log('Snippets: ' + JSON.stringify(data));
     if (!data.token)
         return (socket.emit('info', 'Missing param token'));
     try { token = JWT.verify(data.token, config.secret || 'secret'); }
@@ -52,6 +53,7 @@ module.exports.getSnippets = function (socket, data) {
 module.exports.getConversation = function (socket, data) {
     let token = null;
 
+    console.log('Conversation: ' + JSON.stringify(data));
     if (!data.id)
         return (socket.emit('info', 'Missing param id'));
     if (!data.token)
@@ -81,6 +83,7 @@ module.exports.getConversation = function (socket, data) {
 module.exports.sendMessage = function (socket, data) {
     let token = null;
 
+    console.log('Message: ' + JSON.stringify(data));
     if (!data.to)
         return (socket.emit('info', 'Missing param `to`'));
     if (!data.content)
