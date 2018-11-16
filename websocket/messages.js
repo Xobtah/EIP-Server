@@ -5,6 +5,7 @@
 
 let Message = require('mongoose').model('Message');
 let JWT = require('jsonwebtoken');
+let _ = require('lodash');
 let config = require('./../config');
 
 let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
