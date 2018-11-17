@@ -56,7 +56,7 @@ module.exports.getSnippets = function (socket, data) {
                             message.to = users[0];
                         if (message.to.equals(users[1]._id))
                             message.to = users[1];
-                        socket.emit('snippets', { id: (message.author.equals(socket.userId) ? message.to : message.author), message });
+                        socket.emit('snippets', { id: (message.author.equals(socket.userId) ? message.to._id : message.author._id), message });
                     }).catch((err) => socket.emit('info', err));
                 });
             });
