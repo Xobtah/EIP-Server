@@ -109,7 +109,7 @@ module.exports.sendMessage = function (socket, data) {
             return (socket.emit('info', err));
         if (connectedUsers.has(message.to))
             connectedUsers.get(message.to).emit('message', message);
-        socket.emit('message', { success: true });
+        socket.emit('info', { success: true, message });
     });
 };
 
