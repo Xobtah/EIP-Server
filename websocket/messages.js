@@ -70,9 +70,9 @@ module.exports.getConversation = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    //Message.find({ $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] }).sort('-createdAt').limit(30).lean().then((messages) => {
-    Message.find({ author: socket.userId, to: data.id }).sort('-createdAt').lean().then((messagesTo) => {
-        Message.find({ author: data.id, to: socket.userId }).sort('-createdAt').lean().then((messagesFrom) => {
+    Message.find({ $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] }).sort('-createdAt').limit(30).lean().then((messages) => {
+    /*Message.find({ author: socket.userId, to: data.id }).sort('-createdAt').lean().then((messagesTo) => {
+        Message.find({ author: data.id, to: socket.userId }).sort('-createdAt').lean().then((messagesFrom) => {*/
             let messages = _.union(messagesFrom, messagesTo);
             if (!messages.length)
                 return (socket.emit('conversation', { id: data.id, messages }));
@@ -89,9 +89,12 @@ module.exports.getConversation = function (socket, data) {
                 });
                 socket.emit('conversation', { id: data.id, messages });
             }).catch((err) => socket.emit('info', { message: 'Users not found' }));
-        }).catch((err) => socket.emit('info', { message: 'Messages not found' }));
-    }).catch((err) => socket.emit('info', { message: 'Messages not found' }));
+        //}).catch((err) => socket.emit('info', { message: 'Messages not found' }));
     //}).catch((err) => socket.emit('info', { message: 'Messages not found' }));
+    }).catch((err) => {
+        console.log(err);
+        socket.emit('info', { message: 'Messages not found' });
+    });
 };
 
 module.exports.sendMessage = function (socket, data) {
