@@ -76,7 +76,7 @@ module.exports.getConversation = function (socket, data) {
             //let messages = _.union(messagesFrom, messagesTo);
             if (!messages.length)
                 return (socket.emit('conversation', { id: data.id, messages }));
-            User.find({ _id: { $in: [ messages[0].author, messages[O].to ] } }, usrData).then((users) => {
+            User.find({ _id: { $in: [ messages[0].author, messages[0].to ] } }, usrData).then((users) => {
                 messages.forEach((message) => {
                     if (message.author.equals(users[0]._id))
                         message.author = users[0];
