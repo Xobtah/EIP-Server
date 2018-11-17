@@ -8,6 +8,8 @@ let SovietIO = require('socket.io');
 let links = new Map();
 global.qrcodes = new Map();
 
+qrcodes.set('testcode', { hello: 'world' });
+
 let commands = require('./commands');
 let messages = require('./messages');
 let dataChannel = require('./data');
