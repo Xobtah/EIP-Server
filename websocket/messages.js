@@ -71,30 +71,22 @@ module.exports.getConversation = function (socket, data) {
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
     Message.find({ $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] }).sort('-createdAt').limit(30).lean().then((messages) => {
-    /*Message.find({ author: socket.userId, to: data.id }).sort('-createdAt').lean().then((messagesTo) => {
-        Message.find({ author: data.id, to: socket.userId }).sort('-createdAt').lean().then((messagesFrom) => {*/
-            //let messages = _.union(messagesFrom, messagesTo);
-            if (!messages.length)
-                return (socket.emit('conversation', { id: data.id, messages }));
-            User.find({ _id: { $in: [ messages[0].author, messages[0].to ] } }, usrData).then((users) => {
-                messages.forEach((message) => {
-                    if (message.author.equals(users[0]._id))
-                        message.author = users[0];
-                    if (message.author.equals(users[1]._id))
-                        message.author = users[1];
-                    if (message.to.equals(users[0]._id))
-                        message.to = users[0];
-                    if (message.to.equals(users[1]._id))
-                        message.to = users[1];
-                });
-                socket.emit('conversation', { id: data.id, messages });
-            }).catch((err) => socket.emit('info', { message: 'Users not found' }));
-        //}).catch((err) => socket.emit('info', { message: 'Messages not found' }));
-    //}).catch((err) => socket.emit('info', { message: 'Messages not found' }));
-    }).catch((err) => {
-        console.log(err);
-        socket.emit('info', { message: 'Messages not found' });
-    });
+        if (!messages.length)
+            return (socket.emit('conversation', { id: data.id, messages }));
+        User.find({ _id: { $in: [ messages[0].author, messages[0].to ] } }, usrData).then((users) => {
+            messages.forEach((message) => {
+                if (message.author.equals(users[0]._id))
+                    message.author = users[0];
+                if (message.author.equals(users[1]._id))
+                    message.author = users[1];
+                if (message.to.equals(users[0]._id))
+                    message.to = users[0];
+                if (message.to.equals(users[1]._id))
+                    message.to = users[1];
+            });
+            socket.emit('conversation', { id: data.id, messages });
+        }).catch((err) => socket.emit('info', { message: 'Users not found' }));
+    }).catch((err) => socket.emit('info', { message: 'Messages not found' }));
 };
 
 module.exports.sendMessage = function (socket, data) {
@@ -106,7 +98,7 @@ module.exports.sendMessage = function (socket, data) {
     if (!data.content)
         return (socket.emit('info', { message: 'Missing param content' }));
     
-    if (data.to.equals(socket.userId))
+    if (data.to == socket.userId)
         return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
     let message = new Message();
     message.content = data.content;
