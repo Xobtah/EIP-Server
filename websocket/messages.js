@@ -73,7 +73,7 @@ module.exports.getConversation = function (socket, data) {
     Message.find({ $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] }).sort('-createdAt').limit(30).lean().then((messages) => {
     /*Message.find({ author: socket.userId, to: data.id }).sort('-createdAt').lean().then((messagesTo) => {
         Message.find({ author: data.id, to: socket.userId }).sort('-createdAt').lean().then((messagesFrom) => {*/
-            let messages = _.union(messagesFrom, messagesTo);
+            //let messages = _.union(messagesFrom, messagesTo);
             if (!messages.length)
                 return (socket.emit('conversation', { id: data.id, messages }));
             User.find({ _id: { $in: [ messages[0].author, messages[O].to ] } }, usrData).then((users) => {
