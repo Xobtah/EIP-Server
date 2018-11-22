@@ -38,7 +38,8 @@ module.exports.getSnippets = function (socket, data) {
         Message.find({ to: socket.userId }).distinct('author', (err, fromIds) => {
             if (err)
                 return (socket.emit('info', err));
-            let ids = _.union(fromIds, toIds);
+            //let ids = _.union(fromIds, toIds);
+            let ids = _.uniqBy(_.union(fromIds, toIds), (e) => e.toString());
             let messages = [];
             
             ids.forEach((id) => {
