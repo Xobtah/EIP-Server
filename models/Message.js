@@ -21,7 +21,7 @@ let MessageSchema = mongoose.Schema({
 }, { timestamps: true });
 
 MessageSchema.pre('save', function (next) {
-    if (!this.content.length)
+    if (!Object.keys(this.content).length && !this.content.length)
         return (next('Cannot save an empty message'));
 });
 
