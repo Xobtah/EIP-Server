@@ -118,8 +118,6 @@ module.exports = function (httpServer) {
                 qrcodes.delete(socket.qrcode);
             if (socket.userId)
                 connectedUsers = _.remove(connectedUsers, (user) => { return (user.userId == socket.userId); });
-                //connectedUsers.delete(socket.userId);
-            console.log(connectedUsers);
 
             if (!socket.link_id || !links.has(socket.link_id))
                 return;

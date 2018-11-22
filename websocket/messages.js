@@ -11,7 +11,6 @@ let config = require('./../config');
 
 let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 
-//global.connectedUsers = new Map();
 global.connectedUsers = [];
 
 module.exports.registerMessages = function (socket, data) {
@@ -23,10 +22,8 @@ module.exports.registerMessages = function (socket, data) {
     try { token = JWT.verify(data.token, config.secret || 'secret'); }
     catch (err) { return (socket.emit('info', { message: 'Failed to authenticate token' })); }
 
-    //connectedUsers.set(token._id.toString(), socket.id);
     connectedUsers.push({ userId: token._id, socketId: socket.id });
     socket.userId = token._id;
-    console.log(connectedUsers);
 
     socket.emit('registerMessages', { message: 'OK' });
 };
@@ -110,8 +107,6 @@ module.exports.sendMessage = function (socket, data) {
     message.save((err) => {
         if (err)
             return (socket.emit('info', err));
-        /*if (connectedUsers.has(message.to))
-            connectedUsers.get(message.to).emit('message', message);*/
         connectedUsers.forEach((user) => {
             if (user.userId == message.to)
                 socket.broadcast.to(user.socketId).emit('message', message);
@@ -126,8 +121,10 @@ module.exports.startWriting = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    if (connectedUsers.has(data.id))
-        connectedUsers.get(data.id).emit('startWriting', { id: socket.userId });
+    connectedUsers.forEach((user) => {
+        if (user.userId == message.to)
+            socket.broadcast.to(user.socketId).emit('startWriting', { id: socket.userId });
+    });
 };
 
 module.exports.stopWriting = function (socket, data) {
@@ -136,6 +133,8 @@ module.exports.stopWriting = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    if (connectedUsers.has(data.id))
-        connectedUsers.get(data.id).emit('stopWriting', { id: socket.userId });
+    connectedUsers.forEach((user) => {
+        if (user.userId == message.to)
+            socket.broadcast.to(user.socketId).emit('stopWriting', { id: socket.userId });
+    });
 };
