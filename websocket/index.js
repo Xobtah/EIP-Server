@@ -4,6 +4,7 @@
 */
 
 let SovietIO = require('socket.io');
+let _ = require('lodash');
 
 let links = new Map();
 global.qrcodes = new Map();
@@ -116,7 +117,9 @@ module.exports = function (httpServer) {
             if (socket.qrcode)
                 qrcodes.delete(socket.qrcode);
             if (socket.userId)
-                connectedUsers.delete(socket.userId);
+                connectedUsers = _.remove(connectedUsers, (user) => { return (user.userId == socket.userId); });
+                //connectedUsers.delete(socket.userId);
+            console.log(connectedUsers);
 
             if (!socket.link_id || !links.has(socket.link_id))
                 return;
