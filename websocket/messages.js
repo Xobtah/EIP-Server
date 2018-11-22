@@ -128,10 +128,11 @@ module.exports.sendMessage = function (socket, data) {
     console.log('Is it the same user? ' + (data.to == socket.userId));
     if (data.to == socket.userId)
         return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
-    let message = new Message();
+    /*let message = new Message();
     message.content = data.content;
     message.to = data.to;
-    message.author = socket.userId;
+    message.author = socket.userId;*/
+    let message = new Message({ content: req.fields.content, to: req.fields.to, author: req.user._id });
     console.log('Final Message: ' + JSON.stringify(message));
     message.save((err) => {
         console.log('Message sent cb: ' + JSON.stringify(err));
