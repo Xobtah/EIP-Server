@@ -89,7 +89,7 @@ module.exports.getConversation = function (socket, data) {
     }).catch((err) => socket.emit('info', { message: 'Messages not found' }));
 };
 
-/*module.exports.sendMessage = function (socket, data) {
+module.exports.sendMessage = function (socket, data) {
     console.log('Message: ' + JSON.stringify(data));
     if (!socket.userId)
         return (socket.emit('info', { message: 'Register before getting messages' }));
@@ -111,9 +111,9 @@ module.exports.getConversation = function (socket, data) {
             connectedUsers.get(message.to).emit('message', message);
         socket.emit('info', { success: true, message });
     });
-};*/
+};
 
-module.exports.sendMessage = function (socket, data) {
+/*module.exports.sendMessage = function (socket, data) {
     console.log('Message: ' + JSON.stringify(data));
     console.log('Scocket ID: ' + socket.userId);
     if (!socket.userId)
@@ -144,7 +144,7 @@ module.exports.sendMessage = function (socket, data) {
             connectedUsers.get(message.to).emit('message', message);
         socket.emit('info', { success: true, message });
     });
-};
+};*/
 
 module.exports.startWriting = function (socket, data) {
     console.log('Start Writing: ' + JSON.stringify(data));
