@@ -109,8 +109,12 @@ module.exports.sendMessage = function (socket, data) {
             return (socket.emit('info', err));
         /*if (connectedUsers.has(message.to))
             connectedUsers.get(message.to).emit('message', message);*/
-        if (connectedUsers.has(message.to))
-            socket.broadcast.to(connectedUsers.has(message.to)).emit('message', message);
+        if (connectedUsers.has(data.to.toString()))
+            socket.broadcast.to(connectedUsers.has(data.to.toString())).emit('message', message);
+        if (connectedUsers.has(message.to.toString()))
+            socket.broadcast.to(connectedUsers.has(message.to.toString())).emit('message', message);
+        if (connectedUsers.has(data.to))
+            socket.broadcast.to(connectedUsers.has(data.to)).emit('message', message);
         socket.emit('info', { success: true, message });
     });
 };
