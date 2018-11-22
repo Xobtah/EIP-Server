@@ -15,14 +15,15 @@ let MessageSchema = mongoose.Schema({
         required: true
     },
     content: {
-        type: Object,
+        type: String,
         required: true
     }
 }, { timestamps: true });
 
 MessageSchema.pre('save', function (next) {
-    if (!Object.keys(this.content).length && !this.content.length)
+    if (/*!Object.keys(this.content).length && */!this.content.length)
         return (next('Cannot save an empty message'));
+    next();
 });
 
 mongoose.model('Message', MessageSchema);
