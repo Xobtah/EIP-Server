@@ -132,7 +132,7 @@ module.exports.sendMessage = function (socket, data) {
     message.content = data.content;
     message.to = data.to;
     message.author = socket.userId;*/
-    let message = new Message({ content: req.fields.content, to: req.fields.to, author: req.user._id });
+    let message = new Message({ content: data.content, to: data.to, author: socket.userId });
     console.log('Final Message: ' + JSON.stringify(message));
     message.save((err) => {
         console.log('Message sent cb: ' + JSON.stringify(err));
