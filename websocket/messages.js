@@ -108,8 +108,7 @@ module.exports.sendMessage = function (socket, data) {
     message.save((err) => {
         if (err)
             return (socket.emit('info', err));
-        console.log('Destinataire: ' + message.to + ' (' + typeof message.to.toString() + ')');
-        console.log('Connected users: ' + JSON.stringify(connectedUsers));
+        connectedUsers.forEach(console.log);
         if (connectedUsers.has(message.to))
             connectedUsers.get(message.to).emit('message', message);
         socket.emit('info', { success: true, message });
