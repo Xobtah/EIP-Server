@@ -22,7 +22,7 @@ module.exports.registerMessages = function (socket, data) {
     try { token = JWT.verify(data.token, config.secret || 'secret'); }
     catch (err) { return (socket.emit('info', { message: 'Failed to authenticate token' })); }
 
-    connectedUsers.set(token._id.toString(), socket);
+    connectedUsers.set(token._id.toString(), socket.id);
     socket.userId = token._id.toString();
 
     socket.emit('registerMessages', { message: 'OK' });
@@ -38,7 +38,6 @@ module.exports.getSnippets = function (socket, data) {
         Message.find({ to: socket.userId }).distinct('author', (err, fromIds) => {
             if (err)
                 return (socket.emit('info', err));
-            //let ids = _.union(fromIds, toIds);
             let ids = _.uniqBy(_.union(fromIds, toIds), (e) => e.toString());
             let messages = [];
             
@@ -108,10 +107,10 @@ module.exports.sendMessage = function (socket, data) {
     message.save((err) => {
         if (err)
             return (socket.emit('info', err));
-        if (connectedUsers.has(message.to)) {
-            console.log(connectedUsers.get(message.to));
-            connectedUsers.get(message.to).emit('message', message);
-        }
+        /*if (connectedUsers.has(message.to))
+            connectedUsers.get(message.to).emit('message', message);*/
+        if (connectedUsers.has(message.to))
+            socket.broadcast.to(connectedUsers.has(message.to)).emit('message', message);
         socket.emit('info', { success: true, message });
     });
 };
