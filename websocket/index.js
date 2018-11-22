@@ -99,7 +99,7 @@ module.exports = function (httpServer) {
 
         socket.on('registerMessages', (data) => {
             messages.registerMessages(socket, data);
-            console.log('Connected users: ' + JSON.stringify(connectedUsers));
+            console.log('Connected users: ' + connectedUsers);
         });
         socket.on('snippets', (data) => messages.getSnippets(socket, data));
         socket.on('conversation', (data) => messages.getConversation(socket, data));
