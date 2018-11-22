@@ -97,13 +97,13 @@ module.exports = function (httpServer) {
             });
         });
 
-        socket.on('registerMessages', (data) => messages.registerMessages(socket, data));
+        socket.on('registerMessages', (data) => {
+            console.log('Connected users: ' + JSON.stringify(io.sockets));
+            messages.registerMessages(socket, data);
+        });
         socket.on('snippets', (data) => messages.getSnippets(socket, data));
         socket.on('conversation', (data) => messages.getConversation(socket, data));
-        socket.on('message', (data) => {
-            console.log('Connected users: ' + JSON.stringify(io.sockets));
-            messages.sendMessage(socket, data);
-        });
+        socket.on('message', (data) => messages.sendMessage(socket, data));
         socket.on('startWriting', (data) => messages.startWriting(socket, data));
         socket.on('stopWriting', (data) => messages.stopWriting(socket, data));
 
