@@ -22,8 +22,8 @@ module.exports.registerMessages = function (socket, data) {
     try { token = JWT.verify(data.token, config.secret || 'secret'); }
     catch (err) { return (socket.emit('info', { message: 'Failed to authenticate token' })); }
 
-    connectedUsers.set(token._id, socket);
-    socket.userId = token._id;
+    connectedUsers.set(token._id.toString(), socket);
+    socket.userId = token._id.toString();
 
     socket.emit('registerMessages', { message: 'OK' });
 };
