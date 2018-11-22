@@ -162,6 +162,8 @@ router.post('/', mid.checkUser, mid.fields(['content', 'to']), (req, res) => {
     message.save((err) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
+        if (connectedUsers.has(message.to))
+            connectedUsers.get(message.to).emit('message', message);
         res.status(200).send({ success: true, message: 'Message sent' });
     });
 });
