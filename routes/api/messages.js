@@ -155,10 +155,10 @@ router.get('/last/:id', mid.checkUser, (req, res) => {
 router.post('/', mid.checkUser, mid.fields(['content', 'to']), (req, res) => {
     if (req.fields.to == req.user._id)
         return (res.status(403).send({ success: false, message: 'You cannot send a message to yourself' }));
-    let message = new Message();
-    message.content = req.fields.content;
+    let message = new Message({ content: req.fields.content, to: req.fields.to, author: req.user._id });
+    /*message.content = req.fields.content;
     message.to = req.fields.to;
-    message.author = req.user._id;
+    message.author = req.user._id;*/
     message.save((err) => {
         if (err)
             return (res.status(403).send({ success: false, message: err }));
