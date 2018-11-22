@@ -25,6 +25,9 @@ module.exports.registerMessages = function (socket, data) {
     connectedUsers.set(token._id.toString(), socket);
     socket.userId = token._id.toString();
 
+    console.log('Destinataire: ' + message.to + ' (' + typeof message.to.toString() + ')');
+    console.log('Connected users: ' + JSON.stringify(connectedUsers));
+
     socket.emit('registerMessages', { message: 'OK' });
 };
 
