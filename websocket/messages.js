@@ -11,7 +11,8 @@ let config = require('./../config');
 
 let usrData = { firstName: true, lastName: true, profilePic: true, _id: true };
 
-global.connectedUsers = new Map();
+//global.connectedUsers = new Map();
+global.connectedUsers = [];
 
 module.exports.registerMessages = function (socket, data) {
     let token = null;
@@ -22,8 +23,9 @@ module.exports.registerMessages = function (socket, data) {
     try { token = JWT.verify(data.token, config.secret || 'secret'); }
     catch (err) { return (socket.emit('info', { message: 'Failed to authenticate token' })); }
 
-    connectedUsers.set(token._id.toString(), socket.id);
-    socket.userId = token._id.toString();
+    //connectedUsers.set(token._id.toString(), socket.id);
+    connectedUsers.push({ userId: token._id, socketId: socket.id });
+    socket.userId = token._id;
 
     socket.emit('registerMessages', { message: 'OK' });
 };
@@ -109,12 +111,10 @@ module.exports.sendMessage = function (socket, data) {
             return (socket.emit('info', err));
         /*if (connectedUsers.has(message.to))
             connectedUsers.get(message.to).emit('message', message);*/
-        if (connectedUsers.has(data.to.toString()))
-            socket.broadcast.to(connectedUsers.has(data.to.toString())).emit('message', message);
-        if (connectedUsers.has(message.to.toString()))
-            socket.broadcast.to(connectedUsers.has(message.to.toString())).emit('message', message);
-        if (connectedUsers.has(data.to))
-            socket.broadcast.to(connectedUsers.has(data.to)).emit('message', message);
+        connectedUsers.forEach((user) => {
+            if (user.userId == message.to)
+                socket.broadcast.to(user.socketId).emit('message', message);
+        });
         socket.emit('info', { success: true, message });
     });
 };
