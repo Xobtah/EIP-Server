@@ -108,44 +108,13 @@ module.exports.sendMessage = function (socket, data) {
     message.save((err) => {
         if (err)
             return (socket.emit('info', err));
+        console.log('Destinataire: ' + message.to + ' (' + typeof message.to.toString() + ')');
+        console.log('Connected users: ' + JSON.stringify(connectedUsers));
         if (connectedUsers.has(message.to))
             connectedUsers.get(message.to).emit('message', message);
         socket.emit('info', { success: true, message });
     });
 };
-
-/*module.exports.sendMessage = function (socket, data) {
-    console.log('Message: ' + JSON.stringify(data));
-    console.log('Scocket ID: ' + socket.userId);
-    if (!socket.userId)
-        return (socket.emit('info', { message: 'Register before getting messages' }));
-    console.log('Destinataire: ' + data.to);
-    if (!data.to)
-        return (socket.emit('info', { message: 'Missing param `to`' }));
-    console.log('Content: ' + data.to);
-    if (!data.content)
-        return (socket.emit('info', { message: 'Missing param content' }));
-    
-    console.log('Is it the same user? ' + (data.to == socket.userId));
-    if (data.to == socket.userId)
-        return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
-    let message = new Message();
-    message.content = data.content;
-    message.to = data.to;
-    message.author = socket.userId;
-    //let message = new Message({ content: data.content, to: data.to, author: socket.userId });
-    console.log('Final Message: ' + JSON.stringify(message));
-    message.save((err) => {
-        console.log('Message sent cb: ' + JSON.stringify(err));
-        if (err)
-            return (socket.emit('info', err));
-        console.log('Connected users: ' + connectedUsers);
-        console.log('Destinataire exists? ' + connectedUsers.has(message.to));
-        if (connectedUsers.has(message.to))
-            connectedUsers.get(message.to).emit('message', message);
-        socket.emit('info', { success: true, message });
-    });
-};*/
 
 module.exports.startWriting = function (socket, data) {
     console.log('Start Writing: ' + JSON.stringify(data));
