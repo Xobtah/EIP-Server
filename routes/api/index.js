@@ -6,7 +6,7 @@
 let router = require('express').Router();
 
 router.get('/mail', (req, res) => {
-    require('./../mail').welcome({ username: 'Oui', email: 'sylvain.garant@epitech.eu' }, console.log);
+    require('./../mailer').welcome({ username: 'Oui', email: 'sylvain.garant@epitech.eu' }, console.log);
     res.send('OK' );
 });
 
