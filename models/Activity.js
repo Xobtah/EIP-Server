@@ -21,6 +21,7 @@ let ActivitySchema = mongoose.Schema({
         default: 'sport'
     },
     timeSpent: Number,
+    score: Number,
     date: {
         type: Date,
         default: new Date()
