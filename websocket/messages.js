@@ -40,7 +40,7 @@ module.exports.getSnippets = function (socket, data) {
                 return (socket.emit('info', err));
             let ids = _.uniqBy(_.union(fromIds, toIds), (e) => e.toString());
             let messages = [];
-            
+
             ids.forEach((id) => {
                 Message.findOne({ $or: [ { author: socket.userId, to: id }, { author: id, to: socket.userId } ] }).sort('-createdAt').lean().exec((err, message) => {
                     if (err)
@@ -97,22 +97,34 @@ module.exports.sendMessage = function (socket, data) {
         return (socket.emit('info', { message: 'Missing param `to`' }));
     if (!data.content)
         return (socket.emit('info', { message: 'Missing param content' }));
-    
+
     if (data.to == socket.userId)
         return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
-    let message = new Message();
-    message.content = data.content;
-    message.to = data.to;
-    message.author = socket.userId;
-    message.save((err) => {
-        if (err)
-            return (socket.emit('info', err));
-        connectedUsers.forEach((user) => {
-            if (user.userId == message.to)
-                socket.broadcast.to(user.socketId).emit('message', message);
-        });
-        socket.emit('info', { success: true, message });
-    });
+
+    User.find({ _id: { $in: [ socket.userId, data.to ] } }, usrData).then((users) => {
+	let message = new Message();
+	message.content = data.content;
+	message.to = data.to;
+	message.author = socket.userId;
+
+        if (message.author.equals(users[0]._id))
+            message.author = users[0];
+        if (message.author.equals(users[1]._id))
+            message.author = users[1];
+        if (message.to.equals(users[0]._id))
+            message.to = users[0];
+        if (message.to.equals(users[1]._id))
+            message.to = users[1];
+	message.save((err) => {
+            if (err)
+		return (socket.emit('info', err));
+            connectedUsers.forEach((user) => {
+		if (user.userId == message.to)
+                    socket.broadcast.to(user.socketId).emit('message', message);
+            });
+            socket.emit('info', { success: true, message });
+	});
+    }).catch((err) => socket.emit('info', { message: 'Users not found' }));
 };
 
 module.exports.startWriting = function (socket, data) {
