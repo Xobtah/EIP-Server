@@ -110,14 +110,14 @@ module.exports.sendMessage = function (socket, data) {
     message.to = data.to;
     message.author = socket.userId;
 
-    message.save((err) => {
+    message.save((err, message) => {
         if (err)
             return (socket.emit('info', err));
         User.findOne({ _id: socket.userId }, usrData).lean().then((user) => {
             message.author = user;
             connectedUsers.forEach((connectedUser) => {
                 if (connectedUser.userId == message.to)
-                    socket.broadcast.to(connectedUser.socketId).emit('message', { content: message.content, author: user });
+                    socket.broadcast.to(connectedUser.socketId).emit('message', { content: message.content, author: user, createdAt: message.createdAt });
             });
             socket.emit('info', { success: true, message });
         }).catch((err) => socket.emit('info', { message: 'Users not found' }));
