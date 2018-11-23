@@ -9,7 +9,7 @@ let User = require('mongoose').model('User');
 let Training = require('mongoose').model('Training');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
-let mailer = require('./../mailer');
+let mailer = require('./mailer');
 let _ = require('lodash');
 let async = require('async');
 
