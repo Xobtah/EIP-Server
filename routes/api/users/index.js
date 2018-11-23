@@ -125,7 +125,7 @@ router.lock('/password', mid.fields([ 'username', 'email' ]), (req, res) => {
         user.setPassword(newPassword, (err) => {
             if (err)
                 return (res.status(403).send({ success: false, message: err }));
-            req.user.save((err) => {
+            user.save((err) => {
                 if (err)
                     return (res.status(403).send({ success: false, message: err }));
                 mailer.lostPassword(user, newPassword, (err, info) => {
