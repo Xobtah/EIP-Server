@@ -8,7 +8,7 @@ let config = require('./../../../config');
 let User = require('mongoose').model('User');
 let Training = require('mongoose').model('Training');
 let mid = require('./../../middlewares');
-let mailer = require('./../mailer');
+let mailer = require('./../../mailer');
 let fs = require('fs');
 let path = require('path');
 

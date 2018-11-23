@@ -109,8 +109,11 @@ router.put('/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res
 
 /**
 * @api {LOCK} /api/user/password Recover user's password
-* @apiName GetUserPassword
+* @apiName LockUserPassword
 * @apiGroup User
+*
+* @apiParam {String} username User's username.
+* @apiParam {String} email User's email address.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
