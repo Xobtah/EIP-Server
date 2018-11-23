@@ -123,14 +123,14 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
     let user = new User();
     for (key in req.fields)
         user[key] = req.fields[key];
-    if (req.fields.profilePic) {
+    /*if (req.fields.profilePic) {
         req.fields.profilePic.mv(path.join('/', 'public', 'assets', req.files.profilePic.name));
         user.profilePic = path.join('/', 'static', req.files.profilePic.name);
     }
     if (req.fields.coverPic) {
         req.fields.coverPic.mv(path.join('/', 'public', 'assets', req.files.coverPic.name));
         user.coverPic = path.join('/', 'static', req.files.coverPic.name);
-    }
+    }*/
     user.roles = [];
     user.setPassword(user.password, (err) => {
         if (err)
