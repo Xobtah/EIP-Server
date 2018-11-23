@@ -70,7 +70,7 @@ module.exports.getConversation = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    Message.find({ $or: [{ author: socket.userId, to: data.id }, { author: data.id, to: socket.userId }] }).sort('-createdAt').limit(30).lean().then((messages) => {
+    Message.find({ $or: [{ author: socket.userId, to: data.id }, { author: data.id, to: socket.userId }] }).sort('-createdAt').skip(data.page ? data.page * 30 : 0).limit(30).lean().then((messages) => {
         if (!messages.length)
             return (socket.emit('conversation', { id: data.id, messages }));
         User.find({ _id: { $in: [messages[0].author, messages[0].to] } }, usrData).then((users) => {
