@@ -15,25 +15,23 @@ let transporter = nodemailer.createTransport({
 });
 
 module.exports.welcome = function (user, callback) {
-    let text = 'Welcome to SportsFun ' + user.username + '!\n\nWe hope you\'ll have fun on our games. You can connect to the SportsFun network using this link: http://sportsfun.shr.ovh/\n\nSee you soon! :)\nThe SportsFun Staff';
     let mail = {
         from: config.email || 'contactsportsfun@gmail.com',
         to: user.email,
         subject: 'Welcome to SportsFun :)',
-        text
+        text: 'Welcome to SportsFun ' + user.username + '!\n\nWe hope you\'ll have fun on our games. You can connect to the SportsFun network using this link: http://sportsfun.shr.ovh/\n\nSee you soon! :)\nThe SportsFun Staff'
     };
     transporter.sendMail(mail, callback);
 };
 
 module.exports.lostPassword = function (user, newPassword, callback) {
-    let text = 'Hi ' + user.username + '!\n\n'
-    + 'I\'ve heard that you\'ve lost your password? Here is your temporary password, you can connect to SportsFun with it, but change it as soon as you can: ' + newPassword
-    + '\n\nSee you soon! :)\nThe SportsFun Staff';
     let mail = {
         from: config.email || 'contactsportsfun@gmail.com',
         to: user.email,
         subject: 'Here is your temporary password ;)',
-        text
+        text: 'Hi ' + user.username + '!\n\n'
+        + 'I\'ve heard that you\'ve lost your password? Here is your temporary password, you can connect to SportsFun with it, but change it as soon as you can: ' + newPassword
+        + '\n\nSee you soon! :)\nThe SportsFun Staff'
     };
     transporter.sendMail(mail, callback);
 };

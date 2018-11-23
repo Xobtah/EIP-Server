@@ -5,6 +5,11 @@
 
 let router = require('express').Router();
 
+router.get('/mail', (req, res) => {
+    require('./../mail').welcome({ username: 'Oui', email: 'sylvain.garant@epitech.eu' }, console.log);
+    res.send('OK' );
+});
+
 router.use('/user', require('./users'));
 router.use('/coach', require('./users').use(require('./coaches')));
 router.use('/post', require('./posts'));
