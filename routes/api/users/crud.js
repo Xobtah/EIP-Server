@@ -8,6 +8,7 @@ let config = require('./../../../config');
 let User = require('mongoose').model('User');
 let Training = require('mongoose').model('Training');
 let mid = require('./../../middlewares');
+let mailer = require('./../mailer');
 let fs = require('fs');
 let path = require('path');
 
@@ -138,7 +139,12 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
         user.save((err) => {
             if (err)
                 return (res.status(403).send({ success: false, message: err }));
-            res.status(200).send({ success: true, message: 'User ' + req.fields.firstName + ' ' + req.fields.lastName + ' has been inserted' });
+            mailer.welcome(user, (err, info) => {
+                if (err)
+                    return (res.status(500).send({ success: false, message: err }));
+                console.log('Email sent: ' + info.response);
+                res.status(200).send({ success: true, message: 'User ' + req.fields.firstName + ' ' + req.fields.lastName + ' has been inserted' });
+            });
         });
     });
 });

@@ -9,32 +9,13 @@ let User = require('mongoose').model('User');
 let Training = require('mongoose').model('Training');
 let JWT = require('jsonwebtoken');
 let mid = require('./../../middlewares');
+let mailer = require('./../mailer');
 let _ = require('lodash');
 let async = require('async');
 
 router.use('/', require('./crud'));
 router.use('/training', require('./training'));
 router.use('/link', require('./link'));
-
-/*
-* @api {GET} /api/user/debug Get all the users
-* @apiName GetAllUsers
-* @apiGroup User
-*
-* @apiSuccess {Boolean} success True
-* @apiSuccess {String} message Success message.
-* @apiSuccess {Object} data Object that contains the users.
-*/
-
-/*router.get('/debug', mid.checkUser, (req, res) => {
-    User.find({}, req.body, (err, users) => {
-        if (err)
-            return (res.status(403).send({ success: false, message: err }));
-        if (!users)
-            return (res.status(403).send({ success: false, message: 'User not found' }));
-        res.status(200).send({ success:true, message: 'OK', data: users });
-    });
-});*/
 
 /**
 * @api {GET} /api/user/p/:pattern Get list of users by pattern
@@ -124,6 +105,35 @@ router.put('/password', mid.checkLogin, mid.fields([ 'newPassword' ]), (req, res
             res.status(200).send({ success: true, message: 'User ' + req.user.firstName + ' ' + req.user.lastName + '\'s password has been updated' });
         });
     });
+});
+
+/**
+* @api {LOCK} /api/user/password Recover user's password
+* @apiName GetUserPassword
+* @apiGroup User
+*
+* @apiSuccess {Boolean} success True
+* @apiSuccess {String} message Success message.
+*/
+
+router.lock('/password', mid.fields([ 'username', 'email' ]), (req, res) => {
+    let newPassword = Math.random().toString(36).slice(-8);
+    User.findOne({ username: req.fields.username, email: req.fields.email }).then((user) => {
+        user.setPassword(newPassword, (err) => {
+            if (err)
+                return (res.status(403).send({ success: false, message: err }));
+            req.user.save((err) => {
+                if (err)
+                    return (res.status(403).send({ success: false, message: err }));
+                mailer.lostPassword(user, newPassword, (err, info) => {
+                    if (err)
+                        return (res.status(500).send({ success: false, message: err }));
+                    console.log('Email sent: ' + info.response);
+                    res.status(200).send({ success: true, message: 'Recovery email sent' });
+                });
+            });
+        });
+    }).catch((err) => res.status(403).send({ success: false, message: err }));
 });
 
 /**

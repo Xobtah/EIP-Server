@@ -34,6 +34,7 @@ router.get('/', mid.token, (req, res) => {
 * @apiParam {Number} game If you read this line stp envoie-moi un message et dis moi ce que c'est cette variable.
 * @apiParam {Number} type The type of the exercice.
 * @apiParam {Number} timeSpent The amount of time spent on the exercice.
+* @apiParam {Number} score The user's score.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
