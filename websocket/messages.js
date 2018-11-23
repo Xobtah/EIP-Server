@@ -105,30 +105,23 @@ module.exports.sendMessage = function (socket, data) {
     if (data.to == socket.userId)
         return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
 
-    User.find({ _id: { $in: [ socket.userId, data.to ] } }, usrData).then((users) => {
-        let message = new Message();
-        message.content = data.content;
-        message.to = data.to;
-        message.author = socket.userId;
+    let message = new Message();
+    message.content = data.content;
+    message.to = data.to;
+    message.author = socket.userId;
 
-        if (message.author.toString() == users[0]._id.toString())
-            message.author = users[0];
-        else if (message.author.toString() == users[1]._id.toString())
-            message.author = users[1];
-        if (message.to.toString() == users[0]._id.toString())
-            message.to = users[0];
-        else if (message.to.toString() == users[1]._id.toString())
-            message.to = users[1];
-        message.save((err) => {
-            if (err)
-                return (socket.emit('info', err));
-            connectedUsers.forEach((user) => {
-                if (user.userId == message.to)
-                    socket.broadcast.to(user.socketId).emit('message', message);
+    message.save((err) => {
+        if (err)
+            return (socket.emit('info', err));
+        User.findOne({ _id: socket.userId }, usrData).then((user) => {
+            message.author = user;
+            connectedUsers.forEach((connectedUser) => {
+                if (connectedUser.userId == message.to)
+                    socket.broadcast.to(connectedUser.socketId).emit('message', message);
             });
             socket.emit('info', { success: true, message });
-        });
-    }).catch((err) => socket.emit('info', { message: 'Users not found' }));
+        }).catch((err) => socket.emit('info', { message: 'Users not found' }));
+    });
 };
 
 module.exports.startWriting = function (socket, data) {
