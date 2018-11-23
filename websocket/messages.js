@@ -42,19 +42,19 @@ module.exports.getSnippets = function (socket, data) {
             let messages = [];
 
             ids.forEach((id) => {
-                Message.findOne({ $or: [ { author: socket.userId, to: id }, { author: id, to: socket.userId } ] }).sort('-createdAt').lean().exec((err, message) => {
+                Message.findOne({ $or: [{ author: socket.userId, to: id }, { author: id, to: socket.userId }] }).sort('-createdAt').lean().exec((err, message) => {
                     if (err)
                         return (socket.emit('info', err));
                     if (!message)
-                        return ;
-                    User.find({ _id: { $in: [ message.author, message.to ] } }, usrData).then((users) => {
+                        return;
+                    User.find({ _id: { $in: [message.author, message.to] } }, usrData).then((users) => {
                         if (message.author.equals(users[0]._id))
                             message.author = users[0];
-                        if (message.author.equals(users[1]._id))
+                        else if (message.author.equals(users[1]._id))
                             message.author = users[1];
                         if (message.to.equals(users[0]._id))
                             message.to = users[0];
-                        if (message.to.equals(users[1]._id))
+                        else if (message.to.equals(users[1]._id))
                             message.to = users[1];
                         socket.emit('snippets', { id: (message.author.equals(socket.userId) ? message.to._id : message.author._id), message });
                     }).catch((err) => socket.emit('info', err));
@@ -70,18 +70,18 @@ module.exports.getConversation = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    Message.find({ $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] }).sort('-createdAt').limit(30).lean().then((messages) => {
+    Message.find({ $or: [{ author: socket.userId, to: data.id }, { author: data.id, to: socket.userId }] }).sort('-createdAt').limit(30).lean().then((messages) => {
         if (!messages.length)
             return (socket.emit('conversation', { id: data.id, messages }));
-        User.find({ _id: { $in: [ messages[0].author, messages[0].to ] } }, usrData).then((users) => {
+        User.find({ _id: { $in: [messages[0].author, messages[0].to] } }, usrData).then((users) => {
             messages.forEach((message) => {
                 if (message.author.equals(users[0]._id))
                     message.author = users[0];
-                if (message.author.equals(users[1]._id))
+                else if (message.author.equals(users[1]._id))
                     message.author = users[1];
                 if (message.to.equals(users[0]._id))
                     message.to = users[0];
-                if (message.to.equals(users[1]._id))
+                else if (message.to.equals(users[1]._id))
                     message.to = users[1];
             });
             socket.emit('conversation', { id: data.id, messages });
@@ -102,28 +102,28 @@ module.exports.sendMessage = function (socket, data) {
         return (socket.emit('info', { message: 'You cannot send a message to yourself' }));
 
     User.find({ _id: { $in: [ socket.userId, data.to ] } }, usrData).then((users) => {
-	let message = new Message();
-	message.content = data.content;
-	message.to = data.to;
-	message.author = socket.userId;
+        let message = new Message();
+        message.content = data.content;
+        message.to = data.to;
+        message.author = socket.userId;
 
-        if (message.author.equals(users[0]._id))
+        if (message.author.toString() == users[0]._id.toString())
             message.author = users[0];
-        if (message.author.equals(users[1]._id))
+        else if (message.author.toString() == users[1]._id.toString())
             message.author = users[1];
-        if (message.to.equals(users[0]._id))
+        if (message.to.toString() == users[0]._id.toString())
             message.to = users[0];
-        if (message.to.equals(users[1]._id))
+        else if (message.to.toString() == users[1]._id.toString())
             message.to = users[1];
-	message.save((err) => {
+        message.save((err) => {
             if (err)
-		return (socket.emit('info', err));
+                return (socket.emit('info', err));
             connectedUsers.forEach((user) => {
-		if (user.userId == message.to)
+                if (user.userId == message.to)
                     socket.broadcast.to(user.socketId).emit('message', message);
             });
             socket.emit('info', { success: true, message });
-	});
+        });
     }).catch((err) => socket.emit('info', { message: 'Users not found' }));
 };
 
