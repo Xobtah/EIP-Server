@@ -131,7 +131,7 @@ router.lock('/password', mid.fields([ 'username', 'email' ]), (req, res) => {
                 mailer.lostPassword(user, newPassword, (err, info) => {
                     if (err)
                         return (res.status(500).send({ success: false, message: err }));
-                    console.log('Email sent: ' + info.response);
+                    console.log('Email sent: ' + JSON.stringify(info));
                     res.status(200).send({ success: true, message: 'Recovery email sent' });
                 });
             });

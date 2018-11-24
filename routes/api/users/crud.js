@@ -142,7 +142,7 @@ router.post('/', mid.fieldsFromModel(User), (req, res) => {
             mailer.welcome(user, (err, info) => {
                 if (err)
                     return (res.status(500).send({ success: false, message: err }));
-                console.log('Email sent: ' + info.response);
+                console.log('Email sent: ' + JSON.stringify(info));
                 res.status(200).send({ success: true, message: 'User ' + req.fields.firstName + ' ' + req.fields.lastName + ' has been inserted' });
             });
         });
