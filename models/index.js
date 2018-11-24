@@ -10,3 +10,4 @@ require('./Activity');
 require('./SportsHall');
 require('./Notification');
 require('./Training');
+require('./Game');

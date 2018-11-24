@@ -12,6 +12,7 @@ router.use('/message', require('./messages'));
 router.use('/activity', require('./activities'));
 router.use('/notif', require('./notifications'));
 router.use('/training', require('./trainings'));
+router.use('/game', require('./game'));
 router.use('/qr', require('./qr'));
 
 module.exports = router;
