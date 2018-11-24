@@ -13,7 +13,7 @@ let ActivitySchema = mongoose.Schema({
         required: true
     },
     game: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     type: {

@@ -59,7 +59,7 @@ router.post('/', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent', 's
 * @apiGroup Activity
 *
 * @apiParam {Number} user The targeted user's ID.
-* @apiParam {Number} game If you read this line stp envoie-moi un message et dis moi ce que c'est cette variable.
+* @apiParam {Number} game Game ID.
 * @apiParam {Number} type The type of the exercice.
 * @apiParam {Number} timeSpent The amount of time spent on the exercice.
 *
