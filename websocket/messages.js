@@ -70,7 +70,6 @@ module.exports.getConversation = function (socket, data) {
         return (socket.emit('info', { message: 'Register before getting messages' }));
     if (!data.id)
         return (socket.emit('info', { message: 'Missing param id' }));
-    //.skip(data.page ? data.page * 30 : 0)
     var query = { $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] };
     if (data.last)
         query.createdAt = { $lt: new Date(data.last) };
