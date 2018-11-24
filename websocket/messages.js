@@ -89,8 +89,8 @@ module.exports.getConversation = function (socket, data) {
                     message.to = users[1];
             });
             socket.emit('conversation', { id: data.id, messages });
-        }).catch((err) => socket.emit('info', { message: 'Users not found' }));
-    }).catch((err) => socket.emit('info', { message: 'Messages not found' }));
+        }).catch((err) => socket.emit('info', { message: 'Users not found', err }));
+    }).catch((err) => socket.emit('info', { message: 'Messages not found', err }));
 };
 
 module.exports.sendMessage = function (socket, data) {
