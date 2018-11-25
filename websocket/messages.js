@@ -72,7 +72,7 @@ module.exports.getConversation = function (socket, data) {
         return (socket.emit('info', { message: 'Missing param id' }));
     var query = { $or: [ { author: socket.userId, to: data.id }, { author: data.id, to: socket.userId } ] };
     if (data.last)
-        query.createdAt = { $lt: data.last };
+        query.createdAt = { $lt: new Date(data.last) };
     Message.find(query).sort('-createdAt').limit(30).lean().then((messages) => {
         if (!messages.length)
             return (socket.emit('conversation', { id: data.id, messages }));

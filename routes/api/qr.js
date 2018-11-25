@@ -23,7 +23,7 @@ router.put('/', mid.checkUser, mid.fields([ 'qr' ]), (req, res) => {
     console.log('QRCode request: ' + req.fields.qr);
     if (!qrcodes.has(req.fields.qr))
         return (res.status(404).send({ success: false, message: 'QRCode not found' }));
-    qrcodes.get(req.fields.qr).emit('qr', { token: req.token });
+    qrcodes.get(req.fields.qr).emit('qr', { token: req.headers.token });
     qrcodes.delete(req.fields.qr);
     res.status(200).send({ success: true, message: 'OK' });
 });
