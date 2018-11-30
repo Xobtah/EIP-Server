@@ -30,7 +30,6 @@ router.get('/', mid.token, (req, res) => {
 * @apiName PostActivity
 * @apiGroup Activity
 *
-* @apiParam {Number} user The targeted user's ID.
 * @apiParam {Number} game If you read this line stp envoie-moi un message et dis moi ce que c'est cette variable.
 * @apiParam {Number} type The type of the exercice.
 * @apiParam {Number} timeSpent The amount of time spent on the exercice.
@@ -42,10 +41,11 @@ router.get('/', mid.token, (req, res) => {
 * @apiError FieldMissing Missing a field.
 */
 
-router.post('/', mid.token, mid.fields([ 'user', 'game', 'type', 'timeSpent', 'score' ]), mid.optionalFields([ 'date' ]), (req, res) => {
+router.post('/', mid.checkUser, mid.fields([ 'game', 'type', 'timeSpent', 'score' ]), mid.optionalFields([ 'date' ]), (req, res) => {
     let activity = new Activity();
     for (key in req.fields)
         activity[key] = req.fields[key];
+    activity.user = req.user._id;
     activity.save((err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));

@@ -107,7 +107,7 @@ router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Training), (req
 * @apiSuccess {String} message Success message.
 */
 
-router.delete('/', mid.checkUser, mid.fields('id'), (req, res) => {
+router.delete('/', mid.checkUser, mid.fields([ 'id' ]), (req, res) => {
     req.user.trainings = _.difference(req.user.trainings, req.fields.id);
     Training.find({ _id: { $in: req.fields.id } }).remove().exec();
     res.status(200).send({ success: true, message: 'OK' });

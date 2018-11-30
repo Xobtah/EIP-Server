@@ -7,7 +7,7 @@ let mongoose = require('mongoose');
 
 let GameSchema = mongoose.Schema({
     name: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true
     },
     type: {
