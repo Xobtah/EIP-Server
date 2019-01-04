@@ -38,10 +38,10 @@ router.put('/', mid.checkUser, mid.fields([ 'id', 'username' ]), (req, res) => {
 	//user.trainings = _.uniq(user.trainings, req.fields.id);
         user.save((err) => {
             if (err)
-                return (res.status(500).send({ success: false, message: err }));
+                return (res.status(500).send({ success: false, message: 'Failed to save the user' }));
             res.status(200).send({ success: true, message: 'User trainings added' });
         });
-    }).catch((err) => res.status(500).send({ success: false, message: err }));
+    }).catch((err) => res.status(500).send({ success: false, message: 'User not found' }));
 });
 
 /**
