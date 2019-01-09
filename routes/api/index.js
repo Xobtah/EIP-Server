@@ -14,5 +14,6 @@ router.use('/notif', require('./notifications'));
 router.use('/training', require('./trainings'));
 router.use('/game', require('./games'));
 router.use('/qr', require('./qr'));
+router.use('/sportshall', require('./sportshalls'));
 
 module.exports = router;

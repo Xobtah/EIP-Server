@@ -55,7 +55,7 @@ let UserSchema = mongoose.Schema({
         type: String,
         default: '/static/cover_default.jpg'
     },
-    //sportHall: mongoose.Schema.Types.ObjectId,
+    sportsHall: mongoose.Schema.Types.ObjectId,
     goal: {
         type: Number,
         default: 0

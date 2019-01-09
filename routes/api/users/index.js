@@ -16,6 +16,7 @@ let async = require('async');
 router.use('/', require('./crud'));
 router.use('/training', require('./training'));
 router.use('/link', require('./link'));
+router.use('/sub', require('./qr'));
 
 /**
 * @api {GET} /api/user/p/:pattern Get list of users by pattern

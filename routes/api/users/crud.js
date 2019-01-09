@@ -7,6 +7,7 @@ let router = require('express').Router();
 let config = require('./../../../config');
 let User = require('mongoose').model('User');
 let Training = require('mongoose').model('Training');
+let SportsHall = require('mongoose').model('SportsHall');
 let mid = require('./../../middlewares');
 let mailer = require('./../../mailer');
 let fs = require('fs');
@@ -38,7 +39,10 @@ router.get('/', mid.checkUser, (req, res) => {
     if (!req.user)
         return (res.status(403).send({ success: false, message: 'User not found' }));
     req.user.trainings.forEach((trainingId, index) => Training.findById(trainingId).then((training) => req.user.trainings[index] = training));
-    res.status(200).send({ success: true, message: 'OK', data: req.user });
+    if (req.user.sportsHall)
+	SportsHall.findById(req.user.sportsHall).then((sh) => req.user.sportsHall = sh).catch((err) => res.status(200).send({ success: true, message: 'OK', data: req.user }));
+    else
+	res.status(200).send({ success: true, message: 'OK', data: req.user });
 });
 
 /**

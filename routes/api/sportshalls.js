@@ -4,39 +4,38 @@
 */
 
 let router = require('express').Router();
-let Game = require('mongoose').model('Game');
+let SportsHall = require('mongoose').model('SportsHall');
 let mid = require('./../middlewares');
 
 /**
-* @api {GET} /api/game Get all the games
-* @apiName GetGames
-* @apiGroup Game
+* @api {GET} /api/sportshall Get all the sports halls
+* @apiName GetSportsHalls
+* @apiGroup SportsHall
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
-* @apiSuccess {Object} data Array that contains all games.
+* @apiSuccess {Object} data Array that contains all sports halls.
 */
 
 router.get('/', mid.checkUser, (req, res) => {
-    Game.find({}).then((games) => {
-        res.status(200).send({ success: true, message: 'OK', data: games });
+    SportsHall.find({}).then((sportshalls) => {
+        res.status(200).send({ success: true, message: 'OK', data: sportshalls });
     }).catch((err) => res.status(500).send({ success: false, message: err }));
 });
 
 /**
-* @api {POST} /api/game Post a new game
-* @apiName PostGame
-* @apiGroup Game
+* @api {POST} /api/sportshall Post a new sports hall
+* @apiName PostSportsHall
+* @apiGroup SportsHall
 *
-* @apiParam {String} name The name of the game.
-* @apiParam {String} type The type of the game.
+* @apiParam {String} name The name of the sports hall.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
 */
 
-router.post('/', mid.checkUser, mid.fieldsFromModel(Game), (req, res) => {
-    new Game(req.fields).save((err) => {
+router.post('/', mid.checkUser, mid.fieldsFromModel(SportsHall), (req, res) => {
+    new SportsHall(req.fields).save((err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
         res.status(200).send({ success: true, message: 'OK' });
@@ -44,27 +43,24 @@ router.post('/', mid.checkUser, mid.fieldsFromModel(Game), (req, res) => {
 });
 
 /**
-* @api {PUT} /api/game/:id Update a game
-* @apiName UpdateGame
-* @apiGroup Game
+* @api {PUT} /api/sportshall/:id Update a sports hall
+* @apiName UpdateSportsHall
+* @apiGroup SportsHall
 *
-* @apiParam {String} id The id of the game.
-* @apiParam {String} name The name of the game.
-* @apiParam {String} type The type of the game.
+* @apiParam {String} id The id of the sports hall.
+* @apiParam {String} name The name of the sports hall.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
 */
 
-router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Game), (req, res) => {
+router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(SportsHall), (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Missing path param id' }));
-    Game.findById(req.params.id).then((game) => {
+    SportsHall.findById(req.params.id).then((sportshall) => {
         if (req.fields.name)
-            game.name = req.fields.name;
-        if (req.fields.type)
-            game.name = req.fields.type;
-        game.save((err) => {
+            sportshall.name = req.fields.name;
+        sportshall.save((err) => {
             if (err)
                 return (res.status(500).send({ success: false, message: err }));
             res.status(200).send({ success: true, message: 'OK' });
@@ -73,11 +69,11 @@ router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Game), (req, re
 });
 
 /**
-* @api {DELETE} /api/game Delete a game by id
-* @apiName DeleteGame
-* @apiGroup Game
+* @api {DELETE} /api/sportshall Delete a sportshall by id
+* @apiName DeleteSportsHall
+* @apiGroup SportsHall
 *
-* @apiParam {String} id The id of the game.
+* @apiParam {String} id The id of the sportshall.
 *
 * @apiSuccess {Boolean} success True
 * @apiSuccess {String} message Success message.
@@ -86,10 +82,10 @@ router.put('/:id', mid.checkUser, mid.fieldsFromModelAllOptional(Game), (req, re
 router.delete('/:id', mid.checkUser, (req, res) => {
     if (!req.params.id)
         return (res.status(403).send({ success: false, message: 'Missing path param id' }));
-    Game.findById({ _id: req.params.id }).remove((err) => {
+    SportsHall.findById({ _id: req.params.id }).remove((err) => {
         if (err)
             return (res.status(500).send({ success: false, message: err }));
-        res.status(200).send({ success: true, message: 'Game deleted' });
+        res.status(200).send({ success: true, message: 'SportsHall deleted' });
     });
 });
 
